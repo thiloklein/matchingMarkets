@@ -8,7 +8,7 @@ Authors@R:
 Maintainer: Thilo Klein <thilo@klein.co.uk>
 Author: Thilo Klein <thilo@klein.co.uk>
 Depends:
-    R (>= 3.0.2)
+    R (>= 2.15.2)
 License: GPL (>= 2)
 Collate:
     'daa.R'
