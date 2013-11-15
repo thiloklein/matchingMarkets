@@ -15,11 +15,7 @@
 #'
 #' @param P list of individuals' preference rankings over objects
 #' @param X 2-column-matrix of objects ('obj') and their owners ('ind')
-#' @export
-#' @section Values: 
-#' 'ttc' returns a list with the following items.
-#' \code{Assignment.matrix}: upper triangular matrix of dimension \code{NxN} with entries of 1 for equilibrium pairs and 0 otherwise.
-#' \code{Equilibrium.groups}: matrix that gives the \code{N/2} equilibrium pairs and equilibrium partners' mutual valuations.
+#' @section Value: 'ttc' returns a stable matching solution for the housing market problem based on the Top-Trading-Cycles algorithm.
 #' @author Thilo Klein <\email{thilo@@klein.co.uk}>
 #' @references Abdulkadiroglu, A. and Sonmez, T. (1999). House Allocation with Existing Tenants. Journal of Economic Theory, 88(2):233--260.
 #' @examples
@@ -36,6 +32,7 @@
 #' 
 #' ## find assignment based on TTC algorithm
 #' ttc(P=P,X=X)
+#' @export
 ttc <- function(P=NULL,X=NULL){
   
   ## 2-column-matrix of home objects ('obj') and their owners ('ind')

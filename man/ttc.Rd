@@ -16,13 +16,9 @@
   with existing tenants. Uses the Top-Trading-Cycles
   Algorithm proposed in Abdulkadiroglu and Sonmez (1999).
 }
-\section{Values}{
-  'ttc' returns a list with the following items.
-  \code{Assignment.matrix}: upper triangular matrix of
-  dimension \code{NxN} with entries of 1 for equilibrium
-  pairs and 0 otherwise. \code{Equilibrium.groups}: matrix
-  that gives the \code{N/2} equilibrium pairs and
-  equilibrium partners' mutual valuations.
+\section{Value}{
+  'ttc' returns a stable matching solution for the housing
+  market problem based on the Top-Trading-Cycles algorithm.
 }
 \examples{
 ## generate list of individuals' preference rankings over objects

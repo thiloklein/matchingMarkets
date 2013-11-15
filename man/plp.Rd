@@ -17,13 +17,14 @@
   roommates problem} with transferable utility. Uses the
   Partitioning Linear Programme formulated in Quint (1991).
 }
-\section{Values}{
-  'plp' returns a list with the following items.
-  \code{Assignment.matrix}: upper triangular matrix of
-  dimension \code{NxN} with entries of 1 for equilibrium
-  pairs and 0 otherwise. \code{Equilibrium.groups}: matrix
-  that gives the \code{N/2} equilibrium pairs and
-  equilibrium partners' mutual valuations.
+\section{Value}{
+  'plp' returns a list with the following items. \describe{
+  \item{\code{Assignment.matrix}}{upper triangular matrix
+  of dimension \code{NxN} with entries of 1 for equilibrium
+  pairs and 0 otherwise.}
+  \item{\code{Equilibrium.groups}}{matrix that gives the
+  \code{N/2} equilibrium pairs and equilibrium partners'
+  mutual valuations.} }
 }
 \examples{
 ## Roommate problem with 10 players, transferable utility and random preferences:

@@ -50,16 +50,18 @@
   given preferences: \code{s.prefs, c.prefs, nSlots}.
 }
 
-\section{Values}{
-  'daa' returns a list with the following items.
-  \code{s.prefs}: students' preference matrix.
-  \code{c.prefs}: colleges' preference matrix.
-  \code{iterations}: number of interations required to find
-  the stable matching. \code{matches}: identifier of
-  students (men) assigned to colleges (women).
-  \code{match.mat}: matching matrix of dimension
-  \code{nStudents x nColleges}. \code{singles}: identifier
-  of single/unmatched students (men).
+\section{Value}{
+  'daa' returns a list with the following items. \describe{
+  \item{\code{s.prefs}}{students' preference matrix.}
+  \item{\code{c.prefs}}{colleges' preference matrix.}
+  \item{\code{iterations}}{number of interations required
+  to find the stable matching.}
+  \item{\code{matches}}{identifier of students (men)
+  assigned to colleges (women).}
+  \item{\code{match.mat}}{matching matrix of dimension
+  \code{nStudents x nColleges}.}
+  \item{\code{singles}}{identifier of single/unmatched
+  students (men).} }
 }
 \examples{
 ## Marriage problem (3 men, 2 women) with random preferences:

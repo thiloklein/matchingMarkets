@@ -33,14 +33,16 @@
 #' Marriage problem with given preferences: \code{s.prefs, c.prefs}.
 #' College admissions problem with random preferences: \code{nStudents, nSlots}.
 #' College admissions problem with given preferences: \code{s.prefs, c.prefs, nSlots}.
-#' @section Values: 
+#' @section Value: 
 #' 'daa' returns a list with the following items.
-#' \code{s.prefs}: students' preference matrix.
-#' \code{c.prefs}: colleges' preference matrix.
-#' \code{iterations}: number of interations required to find the stable matching.
-#' \code{matches}: identifier of students (men) assigned to colleges (women).
-#' \code{match.mat}: matching matrix of dimension \code{nStudents x nColleges}.
-#' \code{singles}: identifier of single/unmatched students (men).
+#' \describe{
+#' \item{\code{s.prefs}}{students' preference matrix.}
+#' \item{\code{c.prefs}}{colleges' preference matrix.}
+#' \item{\code{iterations}}{number of interations required to find the stable matching.}
+#' \item{\code{matches}}{identifier of students (men) assigned to colleges (women).}
+#' \item{\code{match.mat}}{matching matrix of dimension \code{nStudents x nColleges}.}
+#' \item{\code{singles}}{identifier of single/unmatched students (men).}
+#' }
 #' @author Thilo Klein <\email{thilo@@klein.co.uk}>
 #' @references Gale, D. and Shapley, L.S. (1962). College admissions and the stability 
 #' of marriage. The American Mathematical Monthly, 69(1):9--15.
