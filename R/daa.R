@@ -1,21 +1,92 @@
-#' Deferred Acceptance Algorithm
+# ----------------------------------------------------------------------------
+# R-code (www.r-project.org/) for the Deferred Acceptance Algorithm
+#
+# Copyright (c) 2013 Thilo Klein
+#
+# This library is distributed under the terms of the GNU Public License (GPL)
+# for full details see the file LICENSE
+#
+# ----------------------------------------------------------------------------
+
+#' @title Deferred Acceptance Algorithm
 #'
-#' This function implements the student-proposing version of the Gale-Shapley algorithm. It takes student and college preference matrices and returns the unique stable assignment.
+#' @description Finds the student (men) optimal matching in the
+#' \href{http://en.wikipedia.org/wiki/Hospital_resident}{college admissions} 
+#' (\href{http://en.wikipedia.org/wiki/Stable_matching}{stable marriage}) problem. 
+#' Uses the Gale-Shapley (1962) Deferred Acceptance Algorithm with student (male) 
+#' offer based on given or randomly generated preferences.
 #'
-#' @param nStudents an integer indicating the number of students in the market
-#' @param nSlots a vector of length nColleges that indicates the quota of each college
-#' @param s.prefs a nColleges x nStudents matrix with each column containing student i's ranking over colleges in decreasing order of preference (most preferred first)
-#' @param c.prefs a nStudents x nColleges matrix with each column containing college j's ranking over students in decreasing order of preference (most preferred first) 
+#' @param nStudents integer indicating the number of students (in the college admissions problem) or men (in the stable marriage problem) in the market
+#' @param nColleges integer indicating the number of colleges (in the college admissions problem) or women (in the stable marriage problem) in the market
+#' @param nSlots vector of length \code{nColleges} indicating the number of places (i.e. 
+#' quota) of each college. Defaults to \code{rep(1,nColleges)} for the marriage problem.
+#' @param s.prefs matrix of dimension \code{nColleges x nStudents} with the \code{i}th 
+#' column containing student \code{i}'s ranking over colleges in decreasing order of 
+#' preference (i.e. most preferred first)
+#' @param c.prefs matrix of dimension \code{nStudents x nColleges} with the \code{j}th 
+#' column containing college \code{j}'s rankimatg over students in decreasing order of 
+#' preference (i.e. most preferred first) 
 #' @export
-daa <- function(nStudents, nSlots, s.prefs=NULL, c.prefs=NULL){
+#' @section Minimum required arguments:
+#' Subject to the matching problem, 'daa' requires the following arguments.
+#' Marriage problem with random preferences: \code{nStudents, nColleges}.
+#' Marriage problem with given preferences: \code{s.prefs, c.prefs}.
+#' College admissions problem with random preferences: \code{nStudents, nSlots}.
+#' College admissions problem with given preferences: \code{s.prefs, c.prefs, nSlots}.
+#' @section Values: 
+#' 'daa' returns a list with the following items.
+#' \code{s.prefs}: students' preference matrix.
+#' \code{c.prefs}: colleges' preference matrix.
+#' \code{iterations}: number of interations required to find the stable matching.
+#' \code{matches}: identifier of students (men) assigned to colleges (women).
+#' \code{match.mat}: matching matrix of dimension \code{nStudents x nColleges}.
+#' \code{singles}: identifier of single/unmatched students (men).
+#' @author Thilo Klein <\email{thilo@@klein.co.uk}>
+#' @references Gale, D. and Shapley, L.S. (1962). College admissions and the stability 
+#' of marriage. The American Mathematical Monthly, 69(1):9--15.
+#' @examples
+#' ## Marriage problem (3 men, 2 women) with random preferences:
+#' daa(nStudents=3, nColleges=2)
+#' 
+#' ## Marriage problem (3 men, 2 women) with given preferences:
+#' s.prefs <- matrix(c(1,2, 1,2, 1,2), 2,3)
+#' c.prefs <- matrix(c(1,2,3, 1,2,3), 3,2)
+#' daa(s.prefs=s.prefs, c.prefs=c.prefs)
+#' 
+#' ## College admission problem (7 students, 2 colleges 
+#' ## with 3 slots each) with random preferences:
+#' daa(nStudents=7, nSlots=c(3,3))
+#' 
+#' ## College admission problem (7 students, 2 colleges 
+#' ## with 3 slots each) with given preferences:
+#' s.prefs <- matrix(c(1,2, 1,2, 1,2, 1,2, 1,2, 1,2, 1,2), 2,7)
+#' c.prefs <- matrix(c(1,2,3,4,5,6,7, 1,2,3,4,5,6,7), 7,2)
+#' daa(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=c(3,3))
+daa <- function(nStudents=dim(s.prefs)[2], nColleges=dim(c.prefs)[2], nSlots=rep(1,nColleges), s.prefs=NULL, c.prefs=NULL){
 
-  nColleges = length(nSlots)
-  iter = 0
-
-  if (is.null(s.prefs)){  # if no prefs given, make them randomly
+  ## If 'nColleges' not given, obtain it from nSlots
+  if (is.null(nColleges)){
+    nColleges <- length(nSlots)
+  }
+  ## If no prefs given, make them randomly:
+  if (is.null(s.prefs)){  
     s.prefs <- replicate(n=nStudents,sample(seq(from=1,to=nColleges,by=1)))
+  }
+  if (is.null(c.prefs)){    
     c.prefs <- replicate(n=nColleges,sample(seq(from=1,to=nStudents,by=1)))
   }
+  
+  ## Consistency checks:
+  if ( dim(s.prefs)[1] != dim(c.prefs)[2] | dim(s.prefs)[2] != dim(c.prefs)[1] | 
+       dim(s.prefs)[2] != nStudents | dim(c.prefs)[2] != nColleges | 
+       dim(c.prefs)[1] != nStudents | dim(s.prefs)[1] != nColleges ){
+    stop("'s.prefs' and 'c.prefs' must be of dimensions 'nColleges x nStudents' and 'nStudents x nColleges'!")
+  }
+  if ( length(nSlots) != nColleges | length(nSlots) != dim(c.prefs)[2] ){
+    stop("length of 'nSlots' must equal 'nColleges' and the number of columns of 'c.prefs'!")
+  }
+
+  iter = 0
 
   s.hist    <- rep(0,length=nStudents)  # number of proposals made
   c.hist    <- lapply(nSlots, function(x) rep(0,length=x))  # current students
