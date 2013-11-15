@@ -28,11 +28,13 @@
 #' preference (i.e. most preferred first) 
 #' @export
 #' @section Minimum required arguments:
-#' Subject to the matching problem, 'daa' requires the following arguments.
-#' Marriage problem with random preferences: \code{nStudents, nColleges}.
-#' Marriage problem with given preferences: \code{s.prefs, c.prefs}.
-#' College admissions problem with random preferences: \code{nStudents, nSlots}.
-#' College admissions problem with given preferences: \code{s.prefs, c.prefs, nSlots}.
+#' 'daa' requires the following combination of arguments, subject to the matching problem.
+#' \describe{
+#' \item{\code{nStudents, nColleges}}{Marriage problem with random preferences.}
+#' \item{\code{s.prefs, c.prefs}}{Marriage problem with given preferences.}
+#' \item{\code{nStudents, nSlots}}{College admissions problem with random preferences.}
+#' \item{\code{s.prefs, c.prefs, nSlots}}{College admissions problem with given preferences.}
+#' }
 #' @section Value: 
 #' 'daa' returns a list with the following items.
 #' \describe{
