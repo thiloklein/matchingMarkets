@@ -16,16 +16,18 @@
 #' Uses the Gale-Shapley (1962) Deferred Acceptance Algorithm with student (male) 
 #' offer based on given or randomly generated preferences.
 #'
-#' @param nStudents integer indicating the number of students (in the college admissions problem) or men (in the stable marriage problem) in the market
-#' @param nColleges integer indicating the number of colleges (in the college admissions problem) or women (in the stable marriage problem) in the market
+#' @param nStudents integer indicating the number of students (in the college admissions problem) 
+#' or men (in the stable marriage problem) in the market. Defaults to \code{ncol(s.prefs)}.
+#' @param nColleges integer indicating the number of colleges (in the college admissions problem) 
+#' or women (in the stable marriage problem) in the market. Defaults to \code{ncol(c.prefs)}.
 #' @param nSlots vector of length \code{nColleges} indicating the number of places (i.e. 
 #' quota) of each college. Defaults to \code{rep(1,nColleges)} for the marriage problem.
-#' @param s.prefs matrix of dimension \code{nColleges x nStudents} with the \code{i}th 
+#' @param s.prefs matrix of dimension \code{nColleges} x \code{nStudents} with the \code{i}th 
 #' column containing student \code{i}'s ranking over colleges in decreasing order of 
-#' preference (i.e. most preferred first)
-#' @param c.prefs matrix of dimension \code{nStudents x nColleges} with the \code{j}th 
-#' column containing college \code{j}'s rankimatg over students in decreasing order of 
-#' preference (i.e. most preferred first) 
+#' preference (i.e. most preferred first).
+#' @param c.prefs matrix of dimension \code{nStudents} x \code{nColleges} with the \code{j}th 
+#' column containing college \code{j}'s ranking over students in decreasing order of 
+#' preference (i.e. most preferred first).
 #' @export
 #' @section Minimum required arguments:
 #' 'daa' requires the following combination of arguments, subject to the matching problem.
@@ -35,17 +37,15 @@
 #' \item{\code{nStudents, nSlots}}{College admissions problem with random preferences.}
 #' \item{\code{s.prefs, c.prefs, nSlots}}{College admissions problem with given preferences.}
 #' }
-#' @section Value: 
+#' @return
 #' 'daa' returns a list with the following items.
-#' \describe{
-#' \item{\code{s.prefs}}{students' preference matrix.}
-#' \item{\code{c.prefs}}{colleges' preference matrix.}
-#' \item{\code{iterations}}{number of interations required to find the stable matching.}
-#' \item{\code{matches}}{identifier of students (men) assigned to colleges (women).}
-#' \item{\code{match.mat}}{matching matrix of dimension \code{nStudents x nColleges}.}
-#' \item{\code{singles}}{identifier of single/unmatched students (men).}
-#' }
-#' @author Thilo Klein <\email{thilo@@klein.co.uk}>
+#' \item{s.prefs}{students' preference matrix.}
+#' \item{c.prefs}{colleges' preference matrix.}
+#' \item{iterations}{number of interations required to find the stable matching.}
+#' \item{matches}{identifier of students (men) assigned to colleges (women).}
+#' \item{match.mat}{matching matrix of dimension \code{nStudents x nColleges}.}
+#' \item{singles}{identifier of single/unmatched students (men).}
+#' @author Thilo Klein \email{thilo@@klein.co.uk}
 #' @references Gale, D. and Shapley, L.S. (1962). College admissions and the stability 
 #' of marriage. The American Mathematical Monthly, 69(1):9--15.
 #' @examples
@@ -66,7 +66,7 @@
 #' s.prefs <- matrix(c(1,2, 1,2, 1,2, 1,2, 1,2, 1,2, 1,2), 2,7)
 #' c.prefs <- matrix(c(1,2,3,4,5,6,7, 1,2,3,4,5,6,7), 7,2)
 #' daa(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=c(3,3))
-daa <- function(nStudents=dim(s.prefs)[2], nColleges=dim(c.prefs)[2], nSlots=rep(1,nColleges), s.prefs=NULL, c.prefs=NULL){
+daa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), s.prefs=NULL, c.prefs=NULL){
 
   ## If 'nColleges' not given, obtain it from nSlots
   if (is.null(nColleges)){

@@ -18,13 +18,11 @@
 #' @param V valuation matrix of dimension \code{NxN} that gives row-players valuation 
 #' over column players (or vice versa)
 #' @export
-#' @section Value: 
+#' @return
 #' 'plp' returns a list with the following items.
-#' \describe{
-#' \item{\code{Assignment.matrix}}{upper triangular matrix of dimension \code{NxN} with entries of 1 for equilibrium pairs and 0 otherwise.}
-#' \item{\code{Equilibrium.groups}}{matrix that gives the \code{N/2} equilibrium pairs and equilibrium partners' mutual valuations.}
-#' }
-#' @author Thilo Klein <\email{thilo@@klein.co.uk}>
+#' \item{Assignment.matrix}{upper triangular matrix of dimension \code{NxN} with entries of 1 for equilibrium pairs and 0 otherwise.}
+#' \item{Equilibrium.groups}{matrix that gives the \code{N/2} equilibrium pairs and equilibrium partners' mutual valuations.}
+#' @author Thilo Klein \email{thilo@@klein.co.uk}
 #' @references Quint, T. (1991). Necessary and sufficient conditions for balancedness 
 #' in partitioning games. Mathematical Social Sciences, 22(1):87--91.
 #' @examples

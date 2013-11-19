@@ -11,14 +11,17 @@
   \item{X}{2-column-matrix of objects ('obj') and their
   owners ('ind')}
 }
-\description{
-  Finds the stable matching in the house allocation problem
-  with existing tenants. Uses the Top-Trading-Cycles
-  Algorithm proposed in Abdulkadiroglu and Sonmez (1999).
+\value{
+  'ttc' returns a 2-column matrix of the stable matching
+  solution for the housing market problem based on the
+  Top-Trading-Cycles algorithm.
 }
-\section{Value}{
-  'ttc' returns a stable matching solution for the housing
-  market problem based on the Top-Trading-Cycles algorithm.
+\description{
+  Finds the stable matching in the
+  \href{http://en.wikipedia.org/wiki/Herbert_Scarf}{house
+  allocation problem} with existing tenants. Uses the
+  Top-Trading-Cycles Algorithm proposed in Abdulkadiroglu
+  and Sonmez (1999).
 }
 \examples{
 ## generate list of individuals' preference rankings over objects
@@ -36,7 +39,7 @@ X <- data.frame(ind=1:5, obj=1:5); X
 ttc(P=P,X=X)
 }
 \author{
-  Thilo Klein <\email{thilo@klein.co.uk}>
+  Thilo Klein \email{thilo@klein.co.uk}
 }
 \references{
   Abdulkadiroglu, A. and Sonmez, T. (1999). House

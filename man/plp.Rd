@@ -11,20 +11,19 @@
   gives row-players valuation over column players (or vice
   versa)}
 }
+\value{
+  'plp' returns a list with the following items.
+  \item{Assignment.matrix}{upper triangular matrix of
+  dimension \code{NxN} with entries of 1 for equilibrium
+  pairs and 0 otherwise.} \item{Equilibrium.groups}{matrix
+  that gives the \code{N/2} equilibrium pairs and
+  equilibrium partners' mutual valuations.}
+}
 \description{
   Finds the stable matching in the
   \href{http://matchingmarkets.org/sites/en.wikipedia.org/wiki/Stable_roommates_problem}{stable
   roommates problem} with transferable utility. Uses the
   Partitioning Linear Programme formulated in Quint (1991).
-}
-\section{Value}{
-  'plp' returns a list with the following items. \describe{
-  \item{\code{Assignment.matrix}}{upper triangular matrix
-  of dimension \code{NxN} with entries of 1 for equilibrium
-  pairs and 0 otherwise.}
-  \item{\code{Equilibrium.groups}}{matrix that gives the
-  \code{N/2} equilibrium pairs and equilibrium partners'
-  mutual valuations.} }
 }
 \examples{
 ## Roommate problem with 10 players, transferable utility and random preferences:
@@ -35,7 +34,7 @@ V <- matrix(rep(1:10, 10), 10, 10)
 plp(V=V)
 }
 \author{
-  Thilo Klein <\email{thilo@klein.co.uk}>
+  Thilo Klein \email{thilo@klein.co.uk}
 }
 \references{
   Quint, T. (1991). Necessary and sufficient conditions for
