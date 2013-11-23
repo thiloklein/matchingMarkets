@@ -1,5 +1,5 @@
-p = 1;
-m = 0;
+a=1;
+b=5;
 
 function [p,m] = stat(a,b)
 p = a+b;
