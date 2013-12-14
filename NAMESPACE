@@ -1,3 +1,4 @@
 export(daa)
 export(plp)
+export(smm)
 export(ttc)
