@@ -449,6 +449,9 @@ for iter=1:niter
             if selection == true
                 postmean = mean([alphadraws(:,startiter:iter);betadraws(:,startiter:iter);deltadraws(:,startiter:iter)],2);
                 poststd = std([alphadraws(:,startiter:iter);betadraws(:,startiter:iter);deltadraws(:,startiter:iter)],0,2);
+                for i=1:length(Two)*2
+                    eta(i) = mean(etadraws(i,startiter:iter));
+                end
             else
                 postmean = mean(betadraws(:,startiter:iter),2);
                 poststd = std(betadraws(:,startiter:iter),0,2);
@@ -467,6 +470,9 @@ for iter=1:niter
             if selection == true
                 postmean = mean([alphadraws(:,startiter:iter);betadraws(:,startiter:iter);deltadraws(:,startiter:iter)],2);
                 poststd = std([alphadraws(:,startiter:iter);betadraws(:,startiter:iter);deltadraws(:,startiter:iter)],0,2);
+                for i=1:length(Two)*2
+                    eta(i) = mean(etadraws(i,startiter:iter));
+                end
             else
                 postmean = mean(betadraws(:,startiter:iter),2);
                 poststd = std(betadraws(:,startiter:iter),0,2);
