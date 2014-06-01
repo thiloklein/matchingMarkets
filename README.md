@@ -1,6 +1,6 @@
 # matchingMarkets
 
-> An R package for the analysis of data from stable matchings.
+> An R package for the analysis of stable matchings.
 
 # Functions
 
@@ -18,11 +18,11 @@ and three algorithms that can be used to simulate matching data:
 
 # Installation
 
-To get the current development version from github:
+To get the current development version from GitHub:
 
 ```R
 install.packages("devtools")
-devtools::install_github(repo="matchingMarkets", username="thiloklein")
+devtools::install_github(repo="matchingMarkets", username="thiloklein", dependencies=TRUE)
 library(matchingMarkets)
 ```
 

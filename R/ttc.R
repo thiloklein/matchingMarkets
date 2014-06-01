@@ -8,16 +8,17 @@
 #
 # ----------------------------------------------------------------------------
 
-#' @title Top-Trading-Cycles Algorithm
+#' @title Top-Trading-Cycles Algorithm for the house allocation problem
 #'
-#' @description Finds the stable matching in the \href{http://en.wikipedia.org/wiki/Herbert_Scarf}{house allocation problem} with existing tenants.
+#' @description Finds the stable matching in the \href{http://en.wikipedia.org/wiki/Herbert_Scarf\#8._The_Housing_Market}{house allocation problem} with existing tenants.
 #' Uses the Top-Trading-Cycles Algorithm proposed in Abdulkadiroglu and Sonmez (1999).
 #'
-#' @param P list of individuals' preference rankings over objects
-#' @param X 2-column-matrix of objects ('obj') and their owners ('ind')
-#' @return 'ttc' returns a 2-column matrix of the stable matching solution for the housing market problem based on the Top-Trading-Cycles algorithm.
-#' @author Thilo Klein \email{thilo@@klein.co.uk}
-#' @references Abdulkadiroglu, A. and Sonmez, T. (1999). House Allocation with Existing Tenants. Journal of Economic Theory, 88(2):233--260.
+#' @param P list of individuals' preference rankings over objects.
+#' @param X 2-column-matrix of objects (\code{obj}) and their owners (\code{ind}).
+#' @return \code{ttc} returns a 2-column matrix of the stable matching solution for the housing market problem based on the Top-Trading-Cycles algorithm.
+#' @author Thilo Klein 
+#' @keywords algorithms
+#' @references Abdulkadiroglu, A. and Sonmez, T. (1999). House Allocation with Existing Tenants. \emph{Journal of Economic Theory}, 88(2):233--260.
 #' @examples
 #' ## generate list of individuals' preference rankings over objects
 #' P <- list()

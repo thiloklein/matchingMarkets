@@ -1,0 +1,44 @@
+\name{khb}
+\alias{khb}
+\title{Karlson-Holm-Breen method for comparing probit coefficients}
+\usage{
+khb(X, y, z)
+}
+\arguments{
+  \item{X}{data frame comprising independent variables
+  including confounding variable.}
+
+  \item{y}{vector of dependent variable.}
+
+  \item{z}{character string giving the name of the
+  confounding variable in \code{X}.}
+}
+\description{
+Significance test for confounding; that is, the difference
+between regression coefficients from same-sample nested
+logit and probit models. The test procedure follows Karlson
+et al (2012), Section 3.4.
+}
+\examples{
+## Read model results from Klein (2014), Table 5
+filepath <- system.file("scripts/TK_gibbsiter_ntu.mat", package="matchingMarkets")
+M <- mfx(m=filepath)
+
+## Extract variables
+X <- data.frame(M$X[,!names(M$X)\%in\%c("intercept","one")])
+y <- M$R
+
+## Apply K-H-B method
+khb(X=X, y=y, z="eta")
+}
+\author{
+Thilo Klein
+}
+\references{
+Karlson, K.B., A. Holm and R. Breen (2012). Comparing
+regression coefficients between same-sample nested models
+using logit and probit: A new method, \emph{Sociological
+Methodology}, 42(1):286--313.
+}
+\keyword{summary}
+
