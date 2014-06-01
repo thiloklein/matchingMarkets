@@ -1,7 +1,8 @@
-function [alphadraws,betadraws,deltadraws,postmean,poststd,tstat,inOctave]=smm(selection,NTU,binary,offsetOut,offsetSel,marketFE,censored,dropOnes,repeatRun,niter,data)
+function [alphadraws,betadraws,deltadraws,X,W,R,eta,postmean,poststd,an,bn,sigmasquareximean]=smm(selection,NTU,binary,offsetOut,offsetSel,marketFE,censored,gPrior,dropOnes,interOut,interSel,repeatRun,niter,data)
 
 % TK Gibbssampling  
-%clear;
+% by Thilo Klein
+% 2 May 2014
 
 % -----------------------------------------------------------------------------
 % Preliminaries.
@@ -13,7 +14,6 @@ if exist ('OCTAVE_VERSION', 'builtin') > 0 % checks if we are in octave
 else
     isOctave = false;
 end
-
 rand('state',111);
 randn('state',333);
 
@@ -43,8 +43,11 @@ randn('state',333);
 %offsetOut = 0; % vector of integers indicating the indices of columns in X for which coefficients should be forced to 1. Use 0 for none.
 %offsetSel = 0; % vector of integers indicating the indices of columns in W for which coefficients should be forced to 1. Use 0 for none.
 %marketFE  = 0; % logical: if TRUE use market-level fixed effects in outcome equation; if FALSE don't.
-%censored  = 0; % ? delta is 0:not censored, 1:from below, 2:from above
-%dropOnes  = 0; % one-group-markets exluded for estimation
+%censored  = 0; % categorical: delta is 0:not censored, 1:censored from below, 2:censored from above
+%gPrior    = 0; % logical: if TRUE use g-prior for variance-covariance matrix
+%dropOnes  = 0; % logical: if TRUE one-group-markets are exluded for estimation
+%interOut  = 0; % two-colum matrix indicating the indices of columns in X that should be interacted in estimation. Use 0 for none.
+%interSel  = 0; % two-colum matrix indicating the indices of columns in W that should be interacted in estimation. Use 0 for none.
 %repeatRun = 0; % repeated run
 %niter     = 800000; % iterations
 
@@ -76,9 +79,35 @@ if repeatRun == false
     end
 
     % -----------------------------------------------------------------------------
+    % Interactions.
+    % -----------------------------------------------------------------------------
+    if interSel(1,1) ~= 0
+        for i = 1:size(interSel,1)
+            h = size(W{1},2);
+            for j = 1:length(Two)
+                W{j}(:,h+1) = W{j}(:,interSel(i,1)) .* W{j}(:,interSel(i,2));
+            end
+            an = [an' [char(an(interSel(i,1))),' x ',char(an(interSel(i,2)))]]';
+        end
+    end
+
+    if interOut(1,1) ~= 0
+        for i = 1:size(interOut,1)
+            h = size(X{1},2);
+            for j = 1:length(T)
+                X{j}(:,h+1) = X{j}(:,interOut(i,1)) .* X{j}(:,interOut(i,2));
+            end
+            bn = [bn' [char(bn(interOut(i,1))),' x ',char(bn(interOut(i,2)))]]';
+        end
+    end
+
+    % -----------------------------------------------------------------------------
     % One-group-markets.
     % -----------------------------------------------------------------------------
-    if dropOnes == true
+
+    %warning('off', 'Octave:possible-matlab-short-circuit-operator');
+    warn = dropOnes == true | size(One,1) == 0;
+    if warn == true
         One = []; % drop one-group markets
         T = Two;
     else
@@ -88,6 +117,7 @@ if repeatRun == false
         for t=Two
             X{t} = [X{t} zeros(2,1)];
         end
+        bn = [bn' 'one']';
     end
 
     % -----------------------------------------------------------------------------
@@ -107,6 +137,7 @@ if repeatRun == false
                 if R{t}(1) ~= R{t}(2) % both groups in market have different outcome.
                     X{t}(:,end-count2) = ones(2,1);
                     count2 = count2+1;
+                    bn = [bn' ['d',num2str(count2)]]';
                 end
             end
             for t=One
@@ -118,6 +149,7 @@ if repeatRun == false
                 X{t} = [X{t} repmat(0,2,length(Two))];
                 X{t}(:,end-count2) = ones(2,1);
                 count2 = count2+1;
+                bn = [bn' ['d',num2str(count2)]]';
             end
             for t=One
                 X{t} = [X{t} repmat(0,1,length(Two))];
@@ -133,6 +165,7 @@ if repeatRun == false
             offOut{t} = sum(X{t}(:,offsetOut),2);
             X{t}(:,offsetOut) = [];
         end
+        bn(offsetOut) = [];
     else
         for t=T % set offset to zero
             offOut{t} = zeros(size(X{t},1),1);
@@ -147,6 +180,7 @@ if repeatRun == false
             offSel{t} = sum(W{t}(:,offsetSel),2);
             W{t}(:,offsetSel) = [];
         end
+        an(offsetSel) = [];
     else
         for t=Two % set offset to zero
             offSel{t} = zeros(size(W{t},1),1);
@@ -207,6 +241,7 @@ if repeatRun == false
         for t=Uneq
             count = count + 1;
             W{t}(:,s+count) = [1, 0, ones(1,p{t}-2), zeros(1,p{t}-2)]';
+            an = [an' ['d',num2str(count)]]';
         end
     end
 
@@ -226,13 +261,23 @@ if repeatRun == false
     % alpha.
     alphabar = zeros(size(W{1}(1,:),2),1); 
     N = size(vertcat(W{1:end}),1);
-    sigmabaralphainverse = vertcat(W{1:end})'*vertcat(W{1:end}) ./ N;
+    if gPrior == false
+        sigmabaralpha = 10.*eye(size(alphabar,1));
+        sigmabaralphainverse = inv(sigmabaralpha);
+    else
+        sigmabaralphainverse = vertcat(W{1:end})'*vertcat(W{1:end}) ./ N;
+    end
     alphabaroversigma = sigmabaralphainverse*alphabar;
 
     % beta.
     betabar = zeros(size(X{1}(1,:),2),1); 
     n = size(vertcat(X{1:end}),1);
-    sigmabarbetainverse = vertcat(X{1:end})'*vertcat(X{1:end}) ./ n;
+    if gPrior == false
+        sigmabarbeta = 10.*eye(size(betabar,1));
+        sigmabarbetainverse = inv(sigmabarbeta);
+    else
+        sigmabarbetainverse = vertcat(X{1:end})'*vertcat(X{1:end}) ./ n;
+    end
     betabaroversigma = sigmabarbetainverse*betabar;
 
     % delta.
@@ -258,17 +303,25 @@ alphadraws = repmat(NaN,length(alpha),niter);
 betadraws = repmat(NaN,length(beta),niter);
 deltadraws = repmat(NaN,length(delta),niter);
 etadraws = repmat(NaN,2*length(Two),niter);
+sigmasquarexidraws = repmat(NaN,length(sigmasquarexi),niter);
 
-if isOctave == true
-    t0 = clock ();
-else
-    timerID = tic;  %% Start a clock and return the timer ID
-end
+% if isOctave == true
+%     t0 = clock ();
+% else
+%     timerID = tic;  %% Start a clock and return the timer ID
+% end
+
+disp(['Processing ',num2str(niter),' iterations...'])
 
 for iter=1:niter
-    iter
+    if mod(iter, 100) == 0
+        disp([num2str(iter),' of ',num2str(niter)])
+    end
 
+    %% -----------------------------------------------------------------------------
     %% Simulate the latent outcomes conditional on the latent group valuations, data, and parameters.
+    %% -----------------------------------------------------------------------------
+
     if binary == true
         for t=One % one-group-market identifiers.        
             Yhat = X{t}*beta;
@@ -299,7 +352,9 @@ for iter=1:niter
 
     if selection == true
 
+        %% -----------------------------------------------------------------------------
         %% Simulate the latent valuations conditional on the latent group outcomes, data, and parameters.
+        %% -----------------------------------------------------------------------------
 
         if NTU == true % non-transferable utility
             for t=Two
@@ -352,8 +407,13 @@ for iter=1:niter
 
     end
     
+    %% -----------------------------------------------------------------------------
     %% Simulate each group of parameters conditional on latents, data, and all other parameters.
+    %% -----------------------------------------------------------------------------
+
+    %% -----------------------------------------------------------------------------
     %% beta.
+    %% -----------------------------------------------------------------------------
     sum1 = 0;
     sum2 = 0;
     for t=One % market identifiers.
@@ -377,7 +437,9 @@ for iter=1:niter
     beta = mvnrnd(betahat',sigmahatbeta)';
 
     if selection == true    
+        %% -----------------------------------------------------------------------------
         %% alpha.
+        %% -----------------------------------------------------------------------------
         sum1 = 0;
         sum2 = 0;
         for t=Two % two-group-market identifiers.
@@ -389,7 +451,9 @@ for iter=1:niter
         alphahat = -sigmahatalpha * (-alphabaroversigma + sum2);
         alpha = mvnrnd(alphahat',sigmahatalpha)';
 
+        %% -----------------------------------------------------------------------------
         %% delta.
+        %% -----------------------------------------------------------------------------
         sum1 = 0;
         sum2 = 0;
         for t=Two % two-group-market identifiers.
@@ -410,7 +474,9 @@ for iter=1:niter
     end
 
     if binary == false
+        %% -----------------------------------------------------------------------------
         %% sigma xi.
+        %% -----------------------------------------------------------------------------
         sum1 = 0;
         for t=One % one-group-market identifiers
                 sum1 = sum1 + sum( (Y{t} - X{t}*beta).^2 );
@@ -430,8 +496,11 @@ for iter=1:niter
         sigmasquarexi = (1./sigmasquarexiinverse);
     end
 
+    %% -----------------------------------------------------------------------------
     %% Save this iteration's draws.
+    %% -----------------------------------------------------------------------------
     betadraws(:,iter) = beta;
+    sigmasquarexidraws(:,iter) = sigmasquarexi;
     if selection == true
         alphadraws(:,iter) = alpha;
         deltadraws(:,iter) = delta;
@@ -442,49 +511,40 @@ for iter=1:niter
         etadraws(:,iter) = eta;
     end
 
-    if isOctave == true
-        if iter == niter
-            % The last half of all draws are used in approximating the posterior means and the posterior standard deviations.
-            startiter = ceil(iter./2);
-            if selection == true
-                postmean = mean([alphadraws(:,startiter:iter);betadraws(:,startiter:iter);deltadraws(:,startiter:iter)],2);
-                poststd = std([alphadraws(:,startiter:iter);betadraws(:,startiter:iter);deltadraws(:,startiter:iter)],0,2);
-                for i=1:length(Two)*2
-                    eta(i) = mean(etadraws(i,startiter:iter));
-                end
-            else
-                postmean = mean(betadraws(:,startiter:iter),2);
-                poststd = std(betadraws(:,startiter:iter),0,2);
-            end
-            tstat = postmean./poststd;
-    
-            elapsed = etime (clock (), t0)./(60.*60)
+    if iter == niter % Matlab only: | toc(timerID)./(60.*60) > 11.9
 
-        %    filestr = sprintf('TK_gibbsiter_%d.mat',iter);
-        %    save(filestr);
-        end
-    else
-        if iter == niter | toc(timerID)./(60.*60) > 11.9
-            % The last half of all draws are used in approximating the posterior means and the posterior standard deviations.
-            startiter = ceil(iter./2);
-            if selection == true
-                postmean = mean([alphadraws(:,startiter:iter);betadraws(:,startiter:iter);deltadraws(:,startiter:iter)],2);
-                poststd = std([alphadraws(:,startiter:iter);betadraws(:,startiter:iter);deltadraws(:,startiter:iter)],0,2);
-                for i=1:length(Two)*2
-                    eta(i) = mean(etadraws(i,startiter:iter));
-                end
-            else
-                postmean = mean(betadraws(:,startiter:iter),2);
-                poststd = std(betadraws(:,startiter:iter),0,2);
-            end
-            tstat = postmean./poststd;
-    
-            elapsed = toc(timerID)./(60.*60)
+        %% -----------------------------------------------------------------------------
+        %% The last half of all draws are used in approximating the posterior means and the posterior standard deviations.
+        %% -----------------------------------------------------------------------------
+        startiter = ceil(iter./2);
+        postmean = mean([alphadraws(:,startiter:iter);betadraws(:,startiter:iter);deltadraws(:,startiter:iter)],2);
+        poststd = std([alphadraws(:,startiter:iter);betadraws(:,startiter:iter);deltadraws(:,startiter:iter)],0,2);
+        tstat = postmean./poststd;
+        sigmasquareximean = mean(sigmasquarexidraws(:,startiter:iter));
 
-        %    filestr = sprintf('TK_gibbsiter_%d.mat',iter);
-        %    save(filestr);
-            break;
+        if selection == true
+            for i=1:length(Two)*2
+                eta(i) = mean(etadraws(i,startiter:iter));
+            end
+        else
+            eta = NaN;
         end
+
+        % Matlab: elapsed = toc(timerID)./(60.*60); Octave: elapsed = etime (clock (), t0)./(60.*60)
+
+        % Compact results and input variables        
+        % filestr = sprintf(['TK_gibbsiter_',fileName,'_%d.mat'],iter);
+        % save(filestr);
+
+        % if selection == true
+        %     save(['TK_gibbsiter_',fileName,'.mat'],'postmean','poststd','eta','X','W','R','an','bn','sigmasquareximean','alphadraws','betadraws','deltadraws');
+        %     save(['TK_gibbsiter_',fileName,'.mat'],'postmean','poststd','an','bn','sigmasquareximean');
+        % else
+        %     save(['TK_gibbsiter_',fileName,'.mat'],'postmean','poststd','X','R','bn','sigmasquareximean','betadraws');
+        %     save(['TK_gibbsiter_',fileName,'.mat'],'postmean','poststd','bn','sigmasquareximean');
+        % end
+
+        break;
     end
 
 end

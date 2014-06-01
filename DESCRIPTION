@@ -1,17 +1,24 @@
 Package: matchingMarkets
-Version: 0.1
-Date: 2013-11-13
-Title: Analysis of Matching Markets
-Description: An R package for the analysis of data from stable matchings.
-URL: http://www.matchingmarkets.org, http://www.klein.co.uk
-Maintainer: Thilo Klein <thilo@klein.co.uk>
-Author: Thilo Klein <thilo@klein.co.uk>
+Version: 0.1.0
 Depends:
-    R (>= 2.15.2),
-    lpSolve (>= 5.6.6)
+    R (>= 2.15.2)
+Imports:
+    lpSolve (>= 5.6.6),
+    partitions,
+    R.matlab (>= 3.0.0)
+Suggests:
+    RcppOctave
+SystemRequirements: Matlab (>=v6) or Octave (>=3.6)
+Date: 2014-05-13
+Title: An R package for the analysis of stable matchings
+Author: Thilo Klein
+Maintainer: Thilo Klein <thilo@klein.co.uk>
+Description: This package implements a structural estimator to correct for the
+    sample selection bias from observed outcomes in matching markets. It also
+    contains R code for matching algorithms such as the deferred-acceptance
+    algorithm for college admissions, the top-trading-cycles algorithm for
+    house allocation and a partitioning linear program for the roommates
+    problem.
+URL: https://github.com/thiloklein/matchingMarkets
 License: GPL (>= 2) | file LICENSE
-Collate:
-    'daa.R'
-    'plp.R'
-    'ttc.R'
-    'smm.R'
+Repository: GitHub

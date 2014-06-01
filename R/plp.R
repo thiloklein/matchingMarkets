@@ -8,23 +8,26 @@
 #
 # ----------------------------------------------------------------------------
 
-#' @title Partitioning Linear Programme
+#' @title Partitioning Linear Programme for the stable roommates problem 
 #'
-#' @description Finds the stable matching in the \href{http://matchingmarkets.org/sites/en.wikipedia.org/wiki/Stable_roommates_problem}{stable roommates problem} 
+#' @description Finds the stable matching in the \href{http://en.wikipedia.org/wiki/Stable_roommates_problem}{stable roommates problem} 
 #' with transferable utility. 
 #' Uses the Partitioning Linear Programme formulated in Quint (1991).
 #'
-#' @param N number of players in the market
+#' @param N integer (divisible by 2) that gives the number of players in the market.
 #' @param V valuation matrix of dimension \code{NxN} that gives row-players valuation 
-#' over column players (or vice versa)
+#' over column players (or vice versa).
 #' @export
 #' @return
-#' 'plp' returns a list with the following items.
+#' \code{plp} returns a list with the following items.
+#' \item{Valuation.matrix}{input values of V.}
 #' \item{Assignment.matrix}{upper triangular matrix of dimension \code{NxN} with entries of 1 for equilibrium pairs and 0 otherwise.}
 #' \item{Equilibrium.groups}{matrix that gives the \code{N/2} equilibrium pairs and equilibrium partners' mutual valuations.}
-#' @author Thilo Klein \email{thilo@@klein.co.uk}
+#' @author Thilo Klein 
+#' @keywords algorithms
+#' @import lpSolve
 #' @references Quint, T. (1991). Necessary and sufficient conditions for balancedness 
-#' in partitioning games. Mathematical Social Sciences, 22(1):87--91.
+#' in partitioning games. \emph{Mathematical Social Sciences}, 22(1):87--91.
 #' @examples
 #' ## Roommate problem with 10 players, transferable utility and random preferences:
 #' plp(N=10)
@@ -62,7 +65,7 @@ plp <- function(V=NULL,N=NULL){
   }
 
   ## Integer LP solver
-  #require(lpSolve)
+  #library(lpSolve)
   so = lp(direction="max", objective.in=f, const.mat=A, const.dir=dir, const.rhs=b, all.bin=TRUE)
 
   ## Equilibrium groups
