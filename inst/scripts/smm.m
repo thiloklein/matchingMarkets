@@ -124,6 +124,10 @@ if repeatRun == false
     % Fixed effects.
     % -----------------------------------------------------------------------------
     if marketFE == true
+        for t=T
+            X{t}(:,1) = []; % drop intercept to avoid perfect multicollinearity
+        end
+        bn(1) = [];
         if binary == true
             count1 = 0;
             for t=Two
@@ -304,12 +308,6 @@ betadraws = repmat(NaN,length(beta),niter);
 deltadraws = repmat(NaN,length(delta),niter);
 etadraws = repmat(NaN,2*length(Two),niter);
 sigmasquarexidraws = repmat(NaN,length(sigmasquarexi),niter);
-
-% if isOctave == true
-%     t0 = clock ();
-% else
-%     timerID = tic;  %% Start a clock and return the timer ID
-% end
 
 disp(['Processing ',num2str(niter),' iterations...'])
 

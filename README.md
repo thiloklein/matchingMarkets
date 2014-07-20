@@ -22,7 +22,18 @@ To get the current development version from GitHub:
 
 ```R
 install.packages("devtools")
-devtools::install_github(repo="matchingMarkets", username="thiloklein", dependencies=TRUE)
+devtools::install_github(repo="matchingMarkets", username="thiloklein")
+library(matchingMarkets)
+```
+or from R-Forge:
+
+```R
+install.packages("matchingMarkets", repos="http://R-Forge.R-project.org")
 library(matchingMarkets)
 ```
 
+To browse the package documentation:
+
+```R
+?matchingMarkets
+```
