@@ -13,63 +13,52 @@
 #' @description Marginal effects from regression coefficients for probit 
 #' and matching models. 
 #'
-#' @param m EITHER: an object returned from function \code{smm}; OR: the file path to a \code{.mat} file after running \code{smm.m} in Matlab.
+#' @param m an object returned from function \code{stabit}.
 #' @param toLatex logical: if \code{TRUE} the result tables are printed in Latex format. The default setting is \code{FALSE}.
-#' @export
-#' @author Thilo Klein 
-#' @keywords summary
-#' @examples
-#' ## Read model results from Klein (2014), Table 5
-#' filepath <- system.file("scripts/TK_gibbsiter_ntu.mat", package="matchingMarkets")
 #' 
-#' ## Apply mfx function and print results
-#' M <- mfx(m=filepath)
-#' M$mfx.selection; M$mfx.outcome
+#' @export
+#' 
+#' @author Thilo Klein 
+#' 
+#' @keywords summary
+#' 
+#' @examples
+#' ## 1. Read model results from Klein (2014), Table 5
+#' ## filepath <- system.file("scripts/TK_gibbsiter_ntu.mat", package="matchingMarkets")
+#' 
+#' ## 2. Apply mfx function and print results
+#' ## mfx(m=filepath)
 mfx <- function(m,toLatex=FALSE){
-
-  ## read results from Matlab
-  if(is.character(m)){
-    m <- readMat(m)
-  }
   
-  if(!is.null(m$eta) && !is.nan(m$eta[1])){
-    ## variable names
-    names(m$postmean) <- names(m$poststd) <- c(unlist(m$an), unlist(m$bn), "delta")
-    
+  if(!is.null(m$coefs$alpha)){ ## Selectiom and Outcome Eqns
+
     ## model matrix
-    X <- do.call(rbind.data.frame, m$X)
-    names(X) <- unlist(m$bn)
-    eta <- c(m$eta, rep(0, length(m$X)-length(m$W)))
-    X <- as.matrix(cbind(X,eta))
+    X <- do.call(rbind.data.frame, m$model.list$X)
+    eta <- c(m$coefs$eta, rep(0, length(m$model.list$X)-length(m$model.list$W)))
+    X <- as.matrix(data.frame(X=X,eta=eta))
     
     ## valuation equation
-    nrowX <- sum(sapply(1:length(m$W), function(i) nrow(m$W[[i]])))
-    sel <- mfxVal(postmean=m$postmean[1:length(unlist(m$an))]
-      , poststd=m$poststd[1:length(unlist(m$an))], nrowX=nrowX, toLatex=toLatex)    
+    nrowX <- dim(do.call(rbind.data.frame, m$model.list$W))[1]
+    sel <- mfxVal(postmean=m$coefs$alpha[,1], poststd=m$coefs$alpha[,2],
+           nrowX=nrowX, toLatex=toLatex)
+    
     ## structral model outcome
-    out <- mfxOut(sims=10000,postmean=m$postmean[-(1:length(unlist(m$an)))]
-      , poststd=m$poststd[-(1:length(unlist(m$an)))], X=X, toLatex=toLatex)
+    out <- mfxOut(sims=10000, postmean=unlist(c(m$coefs$beta[,1], data.frame(delta=m$coefs$delta[1]))),
+           poststd=c(m$coefs$beta[,2], m$coefs$delta[2]), X=X, toLatex=toLatex)
 
-    return(list(X=data.frame(X),R=unlist(m$R),alpha=m$postmean[1:length(unlist(m$an))]
-      ,alpha.se=m$poststd[1:length(unlist(m$an))],beta=m$postmean[-(1:length(unlist(m$an)))]
-      ,beta.se=m$poststd[-(1:length(unlist(m$an)))],mfx.selection=sel,mfx.outcome=out))
+    return(list(mfx.selection=sel, mfx.outcome=out))
 
-  } else{
-    ## variable names
-    m$postmean <- na.omit(m$postmean)
-    m$poststd <- na.omit(m$poststd)
-    names(m$postmean) <- names(m$poststd) <- unlist(m$bn)
+  } else{ ## Outcome Eqn only
     
     ## model matrix
-    X <- do.call(rbind.data.frame, m$X)
-    names(X) <- unlist(m$bn)
+    X <- do.call(rbind.data.frame, m$model.list$X)
     X <- as.matrix(X)
     
     ## model outcome    
-    out <- mfxOut(sims=10000,postmean=m$postmean[1:length(m$postmean)]
-      , poststd=m$poststd[1:length(m$poststd)], X=X, toLatex=toLatex)
+    out <- mfxOut(sims=10000, postmean=m$coefs$beta[,1],
+           poststd=m$coefs$beta[,2], X=X, toLatex=toLatex)
     
-    return(list(X=data.frame(X),R=unlist(m$R),beta=c(m$postmean),beta.se=c(m$poststd),mfx.outcome=out))
+    return(list(mfx.outcome=out))
   }
 }
 

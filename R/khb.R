@@ -17,21 +17,26 @@
 #' @param X data frame comprising independent variables including confounding variable.
 #' @param y vector of dependent variable.
 #' @param z character string giving the name of the confounding variable in \code{X}.
+#' 
 #' @export
+#' 
 #' @author Thilo Klein 
+#' 
 #' @keywords summary
+#' 
 #' @references Karlson, K.B., A. Holm and R. Breen (2012). Comparing regression coefficients between same-sample nested models using logit and probit: A new method, \emph{Sociological Methodology}, 42(1):286--313.
+#' 
 #' @examples
 #' ## Read model results from Klein (2014), Table 5
-#' filepath <- system.file("scripts/TK_gibbsiter_ntu.mat", package="matchingMarkets")
-#' M <- mfx(m=filepath)
+#' ##filepath <- system.file("scripts/TK_gibbsiter_ntu.mat", package="matchingMarkets")
+#' ##M <- mfx(m=filepath)
 #' 
 #' ## Extract variables
-#' X <- data.frame(M$X[,!names(M$X)%in%c("intercept","one")]) 
-#' y <- M$R
+#' ##X <- data.frame(M$X[,!names(M$X)%in%c("intercept","one")]) 
+#' ##y <- M$R
 #' 
 #' ## Apply K-H-B method
-#' khb(X=X, y=y, z="eta")
+#' ##khb(X=X, y=y, z="eta")
 khb <- function(X,y,z){
 
   ## -------------------------------------------------------
@@ -46,21 +51,27 @@ khb <- function(X,y,z){
   ## -------------------------------------------------------
   
   ## --- Reduced and Full model, Equations (1) and (2) on page 289 ---
-  glmR <- glm(y ~ ., family=binomial(link=probit),data=X[,-which(names(X)==z)]);glmR
-  glmF <- glm(y ~ ., family=binomial(link=probit),data=X); glmF
+  glmR <- glm(y ~ -1 + ., family=binomial(link=probit),data=X[,-which(names(X)==z)])
+  glmF <- glm(y ~ -1 + ., family=binomial(link=probit),data=X)
 
   ## --- Auxiliary regression, Equation (8) on page 292 ---
-  lmA <- lm(X$eta ~ ., data=X); lmA
-  glmFs <- glm(y ~ . + lmA$resid, family=binomial(link=probit),data=X[,-which(names(X)==z)]); glmFs
+  lmA <- lm(X$eta ~ -1 + ., data=X)
+  glmFs <- glm(y ~ -1 + . + lmA$resid, family=binomial(link=probit),data=X[,-which(names(X)==z)])
 
   ## --- Recovery of parameters from Full model and Auxiliary regression ---
   b.yx.zt <- glmFs$coef[!names(glmFs$coef)%in%c("(Intercept)","lmA$resid")]
   b.yx.z <- glmF$coef[!names(glmF$coef)%in%c("(Intercept)",z)]
   b.yz.x <- glmF$coef[names(glmF$coef)==z]
   sigma.b.yz.x <- diag(vcov(glmF))[names(diag(vcov(glmF)))==z]
-  t.zx <- lmA$coef[-1]
-  sigma.t.zx <- diag(vcov(lmA))[-1]
-
+  
+  if(sum(X[,1])!=dim(X)[1]){ ## X doesn't have an intercept
+    t.zx <- lmA$coef
+    sigma.t.zx <- diag(vcov(lmA))
+  } else{ ## X has an intercept
+    t.zx <- lmA$coef[-1]
+    sigma.t.zx <- diag(vcov(lmA))[-1]
+  }
+  
   ## --- Significance Test (page 295-296) ---
   
   ## Equation (17)

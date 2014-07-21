@@ -2,8 +2,7 @@ Package: matchingMarkets
 Version: 0.1-1
 Depends:
     R (>= 2.15.2),
-    Rcpp (>= 0.11.2),
-    RcppArmadillo (>= 0.4.300.8.0)
+    Rcpp (>= 0.11.2)
 Imports:
     lpSolve (>= 5.6.6),
     partitions

@@ -18,9 +18,11 @@
 #' @param seed integer setting the state for random number generation. Defaults to \code{set.seed(123)}.
 #' @param singles integer giving the number of one-group markets.
 #' @param gpm integer giving the number of groups per market.
+#' 
 #' @export
+#' 
 #' @return
-#' \code{simData} returns a data frame with the randomly generated variables 
+#' \code{stabsim} returns a data frame with the randomly generated variables 
 #' mimicking those in dataset \code{\link{baac00}}.
 #' \item{m.id}{categorical: market identifier.}
 #' \item{g.id}{categorical: group identifier.}
@@ -29,16 +31,24 @@
 #' \item{occ1}{continuous: percentage of revenue from income group 1.}
 #' \item{occ2}{continuous: percentage of revenue from income group 2.}
 #' \item{occ3}{continuous: percentage of revenue from income group 3.}
-#' \item{R}{NA: group outcome is not simulated. It can be obtained using the \code{design.matrix} function.}
-#' @author Thilo Klein 
-#' @keywords generate
-#' @examples
-#' ## Coalitions
-#' idata <- simData(m=4, ind=2:4, seed=124, singles=2, gpm=2)  
+#' \item{R}{NA: group outcome is not simulated. It can be obtained using the  \code{simulation} argument 
+#' in function \code{stabit}.}
 #' 
-#' ## Rommmates
-#' idata <- simData(m=3, ind=2, seed=124, gpm=3)
-simData <- function(m, ind, seed=123, singles=NULL, gpm=2){
+#' @author Thilo Klein 
+#' 
+#' @keywords generate
+#' 
+#' @examples
+#' ## Coalitions [gpm := 2 !]
+#' ## Simulate one-sided matching data for 4 markets (m=4) with 2 groups
+#' ## per market (gpm=2) and 2 to 4 individuals per group (ind=2:4)
+#' idata <- stabsim(m=4, ind=2:4, seed=124, singles=2, gpm=2)  
+#' 
+#' ## Rommmates [ind := 2 !]
+#' ## Simulate one-sided matching data for 3 markets (m=3) with 3 groups
+#' ## per market (gpm=3) and 2 individuals per group (ind=2)
+#' idata <- stabsim(m=3, ind=2, seed=124, gpm=3)
+stabsim <- function(m, ind, seed=123, singles=NULL, gpm=2){
   
   # --------------------------------------------------------------------
   # R-code (www.r-project.org) for simulating purely random (!) data for
@@ -54,8 +64,8 @@ simData <- function(m, ind, seed=123, singles=NULL, gpm=2){
   
   # ## Examples:
   #
-  # simData(m=30, ind=2:4, seed=124, singles=5, gpm=2)  # coalitions
-  # simData(m=3, ind=2, seed=124, gpm=3)  # rommmates
+  # stabsim(m=30, ind=2:4, seed=124, singles=5, gpm=2)  # coalitions
+  # stabsim(m=3, ind=2, seed=124, gpm=3)  # rommmates
   # --------------------------------------------------------------------
   
   set.seed(seed)

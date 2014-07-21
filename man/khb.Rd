@@ -19,15 +19,15 @@ Karlson et al (2012), Section 3.4.
 }
 \examples{
 ## Read model results from Klein (2014), Table 5
-filepath <- system.file("scripts/TK_gibbsiter_ntu.mat", package="matchingMarkets")
-M <- mfx(m=filepath)
+##filepath <- system.file("scripts/TK_gibbsiter_ntu.mat", package="matchingMarkets")
+##M <- mfx(m=filepath)
 
 ## Extract variables
-X <- data.frame(M$X[,!names(M$X)\%in\%c("intercept","one")])
-y <- M$R
+##X <- data.frame(M$X[,!names(M$X)\%in\%c("intercept","one")])
+##y <- M$R
 
 ## Apply K-H-B method
-khb(X=X, y=y, z="eta")
+##khb(X=X, y=y, z="eta")
 }
 \author{
 Thilo Klein
