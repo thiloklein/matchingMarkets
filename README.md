@@ -6,7 +6,7 @@
 
 `matchingMarkets` currently comes with one estimator:
 
-* `smm`: Implements a Bayes estimator that corrects for sample selection in matching markets when the selection process is a one-sided matching game.
+* `stabit`: Implements a Bayes estimator that corrects for sample selection in matching markets when the selection process is a one-sided matching game.
 
 and three algorithms that can be used to simulate matching data:
 
@@ -22,7 +22,7 @@ To get the current development version from GitHub:
 
 ```R
 install.packages("devtools")
-devtools::install_github(repo="matchingMarkets", username="thiloklein")
+devtools::install_github("thiloklein/matchingMarkets")
 library(matchingMarkets)
 ```
 or from R-Forge:
