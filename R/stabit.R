@@ -190,15 +190,13 @@
 #' #########################################
 #' 
 #' ## --- ROOMMATES GAME ---
-#' \dontrun{
 #' ## 1. Simulate one-sided matching data for 3 markets (m=3) with 3 groups 
 #' ##    per market (gpm=3) and 2 individuals per group (ind=2)
 #'  idata <- stabsim(m=3, ind=2, gpm=3)
 #' ## 2. Obtain the model frame
-#' # s1 <- stabit(x=idata, selection = list(add="pi", ieq="wst"), 
+#'  s1 <- stabit(x=idata, selection = list(add="pi", ieq="wst"), 
 #'      outcome = list(add="pi", ieq="wst"), 
 #'      method="model.frame", simulation="TU", roommates=TRUE)
-#' }
 #' 
 #' ## --- GROUP/COALITION FORMATION (I) ---
 #' ## 1. Simulate one-sided matching data for 3 markets (m=3) with 2 groups 
@@ -225,7 +223,6 @@
 #' ###############################
 #' 
 #' \dontrun{
-#' 
 #' ## --- SIMULATED EXAMPLE ---
 #' ## 1. Simulate one-sided matching data for 3 markets (m=3) with 2 groups
 #' ##    per market (gpm=2) and 2 to 4 individuals per group (ind=2:4)
@@ -247,7 +244,6 @@
 #'         method="NTU", binary=TRUE, gPrior=TRUE, marketFE=TRUE, niter=2000)
 #' ## 3. Get results
 #'  names(fit2)
-#' 
 #' }
 stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=NULL, 
             roommates=FALSE, simulation="none", seed=123, max.combs=Inf,
@@ -269,8 +265,13 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
   # -----------------------------------------------------------------------------
   # Obtain parameter estimates.
   # -----------------------------------------------------------------------------
-  ##if(method != "model.frame"){
-  
+  if(roommates == TRUE){
+    
+    model.frame <- unlistData(x=data, roommates=roommates)
+    return(list(model.list=data, model.frame=model.frame))
+    
+  } else{ # roommates == FALSE
+      
     sel <- ifelse(method=="outcome", FALSE, TRUE)
     NTU <- ifelse(method=="NTU", TRUE, FALSE)
   
@@ -485,96 +486,97 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
     
     if(method != "model.frame"){
   
-    # -----------------------------------------------------------------------------
-    # Source C++ script
-    # -----------------------------------------------------------------------------    
-    #sourceCpp("/home/thilo/Documents/Packages/matchingMarkets/src/stabitCpp.cpp")
-    #.Call("stabitCpp.cpp")
+      # -----------------------------------------------------------------------------
+      # Source C++ script
+      # -----------------------------------------------------------------------------    
+      #sourceCpp("/home/thilo/Documents/Packages/matchingMarkets/src/stabitCpp.cpp")
+      #.Call("stabitCpp.cpp")
   
-    res <- stabitCpp(Xr=X, Rr=R, Wr=W, One=One, Two=Two, T=T, 
+      res <- stabitCpp(Xr=X, Rr=R, Wr=W, One=One, Two=Two, T=T, 
              offOutr=offOut, offSelr=offSel,
              sigmabarbetainverse=sigmabarbetainverse, sigmabaralphainverse=sigmabaralphainverse,
              niter=niter, n=n, l=matrix(unlist(l),length(l),1), Pr=P, p=matrix(unlist(p),length(p),1),
              binary=binary, selection=sel, censored=censored, gPrior=gPrior, ntu=NTU)
   
-    # -----------------------------------------------------------------------------
-    # Add names to coefficients.
-    # ----------------------------------------------------------------------------- 
-    if(binary==TRUE & sel==TRUE){
-      # parameter draws
-      rownames(res$alphadraws) = an
-      rownames(res$betadraws) = bn
-      rownames(res$deltadraws) = "delta"
-      # posterior means
-      rownames(res$alpha) = an
-      rownames(res$beta) = bn
-      rownames(res$delta) = "delta"
-      rownames(res$sigmasquarexi) = "sigma"
-      colnames(res$eta) = "eta"
-      #
-      colnames(res$alpha) = colnames(res$beta) = colnames(res$delta)  = colnames(res$sigmasquarexi) = c("coef","s.e.")
-      #
-      out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,deltadraws=deltadraws)), 
+      # -----------------------------------------------------------------------------
+      # Add names to coefficients.
+      # ----------------------------------------------------------------------------- 
+      if(binary==TRUE & sel==TRUE){
+        # parameter draws
+        rownames(res$alphadraws) = an
+        rownames(res$betadraws) = bn
+        rownames(res$deltadraws) = "delta"
+        # posterior means
+        rownames(res$alpha) = an
+        rownames(res$beta) = bn
+        rownames(res$delta) = "delta"
+        rownames(res$sigmasquarexi) = "sigma"
+        colnames(res$eta) = "eta"
+        #
+        colnames(res$alpha) = colnames(res$beta) = colnames(res$delta)  = colnames(res$sigmasquarexi) = c("coef","s.e.")
+        #
+        out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,deltadraws=deltadraws)), 
                 coefs=with(res,list(eta=eta,alpha=alpha,beta=beta,delta=delta,sigmasquarexi=sigmasquarexi)))
     
-    } else if(binary==TRUE & sel==FALSE){
-      # parameter draws
-      rownames(res$betadraws) = bn
-      # posterior means
-      rownames(res$beta) = bn
-      rownames(res$sigmasquarexi) = "sigma"
-      #
-      colnames(res$beta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
-      #
-      out <- list(draws=with(res,list(betadraws=betadraws)), 
+      } else if(binary==TRUE & sel==FALSE){
+        # parameter draws
+        rownames(res$betadraws) = bn
+        # posterior means
+        rownames(res$beta) = bn
+        rownames(res$sigmasquarexi) = "sigma"
+        #
+        colnames(res$beta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
+        #
+        out <- list(draws=with(res,list(betadraws=betadraws)), 
                 coefs=with(res,list(beta=beta,sigmasquarexi=sigmasquarexi)))
     
-    } else if(binary==FALSE & sel==TRUE){
-      # parameter draws
-      rownames(res$alphadraws) = an
-      rownames(res$betadraws) = bn
-      rownames(res$deltadraws) = "delta"
-      rownames(res$sigmasquarexidraws) = "sigma"
-      # posterior means
-      rownames(res$alpha) = an
-      rownames(res$beta) = bn
-      rownames(res$delta) = "delta"
-      rownames(res$sigmasquarexi) = "sigma"
-      colnames(res$eta) = "eta"
-      #
-      colnames(res$alpha) = colnames(res$beta) = colnames(res$delta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
-      #
-      out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,deltadraws=deltadraws,sigmasquarexidraws=sigmasquarexidraws)), 
+      } else if(binary==FALSE & sel==TRUE){
+        # parameter draws
+        rownames(res$alphadraws) = an
+        rownames(res$betadraws) = bn
+        rownames(res$deltadraws) = "delta"
+        rownames(res$sigmasquarexidraws) = "sigma"
+        # posterior means
+        rownames(res$alpha) = an
+        rownames(res$beta) = bn
+        rownames(res$delta) = "delta"
+        rownames(res$sigmasquarexi) = "sigma"
+        colnames(res$eta) = "eta"
+        #
+        colnames(res$alpha) = colnames(res$beta) = colnames(res$delta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
+        #
+        out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,deltadraws=deltadraws,sigmasquarexidraws=sigmasquarexidraws)), 
                 coefs=with(res,list(eta=eta,alpha=alpha,beta=beta,delta=delta,sigmasquarexi=sigmasquarexi)))
     
-    } else if(binary==FALSE & sel==FALSE){
-      # parameter draws
-      rownames(res$betadraws) = bn
-      rownames(res$sigmasquarexidraws) = "sigma"
-      # posterior means
-      rownames(res$beta) = bn
-      rownames(res$sigmasquarexi) = "sigma"
-      #
-      colnames(res$beta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
-      #
-      out <- list(draws=with(res,list(betadraws=betadraws,sigmasquarexidraws=sigmasquarexidraws)), 
+      } else if(binary==FALSE & sel==FALSE){
+        # parameter draws
+        rownames(res$betadraws) = bn
+        rownames(res$sigmasquarexidraws) = "sigma"
+        # posterior means
+        rownames(res$beta) = bn
+        rownames(res$sigmasquarexi) = "sigma"
+        #
+        colnames(res$beta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
+        #
+        out <- list(draws=with(res,list(betadraws=betadraws,sigmasquarexidraws=sigmasquarexidraws)), 
                 coefs=with(res,list(beta=beta,sigmasquarexi=sigmasquarexi)))
-    }
+      }
     
-    # -----------------------------------------------------------------------------
-    # Returns .
-    # ----------------------------------------------------------------------------- 
-    model.frame <- unlistData(x=data, roommates=roommates)
-    return(list(model.list=data, model.frame=model.frame, draws=out$draws, coefs=out$coefs))
+      # -----------------------------------------------------------------------------
+      # Returns .
+      # ----------------------------------------------------------------------------- 
+      model.frame <- unlistData(x=data, roommates=roommates)
+      return(list(model.list=data, model.frame=model.frame, draws=out$draws, coefs=out$coefs))
   
-  } else{ ## if method == "model.frame"
+    } else{ ## if method == "model.frame"
+     
+      # -----------------------------------------------------------------------------
+      # Returns .
+      # ----------------------------------------------------------------------------- 
+      model.frame <- unlistData(x=data, roommates=roommates)
+      return(list(model.list=data, model.frame=model.frame))
     
-    # -----------------------------------------------------------------------------
-    # Returns .
-    # ----------------------------------------------------------------------------- 
-    model.frame <- unlistData(x=data, roommates=roommates)
-    return(list(model.list=data, model.frame=model.frame))
-    
+    }
   }
 }
 

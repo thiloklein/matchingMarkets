@@ -203,15 +203,13 @@ number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
 #########################################
 
 ## --- ROOMMATES GAME ---
-\dontrun{
 ## 1. Simulate one-sided matching data for 3 markets (m=3) with 3 groups
 ##    per market (gpm=3) and 2 individuals per group (ind=2)
  idata <- stabsim(m=3, ind=2, gpm=3)
 ## 2. Obtain the model frame
-# s1 <- stabit(x=idata, selection = list(add="pi", ieq="wst"),
+ s1 <- stabit(x=idata, selection = list(add="pi", ieq="wst"),
      outcome = list(add="pi", ieq="wst"),
      method="model.frame", simulation="TU", roommates=TRUE)
-}
 
 ## --- GROUP/COALITION FORMATION (I) ---
 ## 1. Simulate one-sided matching data for 3 markets (m=3) with 2 groups
@@ -238,7 +236,6 @@ number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
 ###############################
 
 \dontrun{
-
 ## --- SIMULATED EXAMPLE ---
 ## 1. Simulate one-sided matching data for 3 markets (m=3) with 2 groups
 ##    per market (gpm=2) and 2 to 4 individuals per group (ind=2:4)
@@ -260,7 +257,6 @@ number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
         method="NTU", binary=TRUE, gPrior=TRUE, marketFE=TRUE, niter=2000)
 ## 3. Get results
  names(fit2)
-
 }
 }
 \author{
