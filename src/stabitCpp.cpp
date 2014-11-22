@@ -446,7 +446,7 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
   
   int startiter = niter/2;
   
-  if(binary==TRUE & selection==TRUE){
+  if((binary==TRUE) & (selection==TRUE)){
     return List::create(  
       // parameter draws
       Named("alphadraws") = alphadraws,
@@ -459,14 +459,14 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
       Named("delta") = join_rows( mean(deltadraws.cols(startiter,niter-1),1), stddev(deltadraws.cols(startiter,niter-1),0,1) ),
       Named("sigmasquarexi") = join_rows( arma::ones(1,1) , arma::zeros(1,1) )
     );  
-  } else if(binary==TRUE & selection==FALSE){
+  } else if((binary==TRUE) & (selection==FALSE)){
     return List::create(  
       Named("betadraws") = betadraws,
       // posterior means
       Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
       Named("sigmasquarexi") = join_rows( arma::ones(1,1) , arma::zeros(1,1) )
     );  
-  } else if(binary==FALSE & selection==TRUE){
+  } else if((binary==FALSE) & (selection==TRUE)){
         return List::create(  
       // parameter draws
       Named("alphadraws") = alphadraws,
@@ -480,7 +480,7 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
       Named("delta") = join_rows( mean(deltadraws.cols(startiter,niter-1),1), stddev(deltadraws.cols(startiter,niter-1),0,1) ),
       Named("sigmasquarexi") = join_rows( mean(sigmasquarexidraws.cols(startiter,niter-1),1), stddev(sigmasquarexidraws.cols(startiter,niter-1),0,1) )
     );  
-  } else if(binary==FALSE & selection==FALSE){
+  } else if((binary==FALSE) & (selection==FALSE)){
     return List::create(  
       // parameter draws
       Named("betadraws") = betadraws,
@@ -489,6 +489,8 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
       Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
       Named("sigmasquarexi") = join_rows( mean(sigmasquarexidraws.cols(startiter,niter-1),1), stddev(sigmasquarexidraws.cols(startiter,niter-1),0,1) )
     );      
+  } else{
+      return 0;
   }
 }
 
@@ -498,7 +500,7 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
 // ---------------------------------------------  
 
 arma::colvec mvrnormArma(arma::colvec mu, arma::mat sigma, int ncols) {
-  arma::rowvec y = as<arma::rowvec>(rnorm(ncols)); //arma::randn(1,ncols);
+  arma::rowvec y = as<arma::rowvec>(rnorm(ncols)); //arma::randn(1,ncols)
   return arma::trans( arma::trans(mu) + y*arma::chol(sigma));
 }
 
