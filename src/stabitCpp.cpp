@@ -498,7 +498,7 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
 // ---------------------------------------------  
 
 arma::colvec mvrnormArma(arma::colvec mu, arma::mat sigma, int ncols) {
-  arma::rowvec y = arma::randn(1,ncols);
+  arma::rowvec y = as<arma::rowvec>(rnorm(ncols)); //arma::randn(1,ncols);
   return arma::trans( arma::trans(mu) + y*arma::chol(sigma));
 }
 

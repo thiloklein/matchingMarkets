@@ -110,7 +110,7 @@
 #' 
 #' @useDynLib matchingMarkets
 #' 
-#' @import RcppArmadillo partitions lpSolve
+#' @import partitions lpSolve
 #' @importFrom Rcpp evalCpp
 #' 
 #' @aliases stabitCpp
@@ -488,7 +488,8 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
     # -----------------------------------------------------------------------------
     # Source C++ script
     # -----------------------------------------------------------------------------    
-    sourceCpp("/home/thilo/Documents/Packages/matchingMarkets/src/stabitCpp.cpp")
+    #sourceCpp("/home/thilo/Documents/Packages/matchingMarkets/src/stabitCpp.cpp")
+    #.Call("stabitCpp.cpp")
   
     res <- stabitCpp(Xr=X, Rr=R, Wr=W, One=One, Two=Two, T=T, 
              offOutr=offOut, offSelr=offSel,

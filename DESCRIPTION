@@ -1,12 +1,12 @@
 Package: matchingMarkets
 Version: 0.1-1
 Depends:
-    R (>= 2.15.2),
-    Rcpp (>= 0.11.2),
-    RcppArmadillo (>= 0.4.300.8.0)
+    R (>= 2.15.2)
 Imports:
+    Rcpp (>= 0.11.2),
     lpSolve (>= 5.6.6),
     partitions
+LinkingTo: Rcpp, RcppArmadillo
 Date: 2014-08-14
 Title: An R package for the analysis of stable matchings
 Author: Thilo Klein
@@ -20,4 +20,3 @@ Description: This package implements a structural estimator to correct for the
 URL: https://github.com/thiloklein/matchingMarkets
 License: GPL (>= 2) | file LICENSE
 Repository: GitHub
-LinkingTo: Rcpp, RcppArmadillo
