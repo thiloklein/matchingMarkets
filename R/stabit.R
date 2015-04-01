@@ -43,7 +43,7 @@
 #' unobserved, and \eqn{1[.]} is the Iverson bracket. 
 #' A match is observed if its match valuation is in the set of valuations \eqn{\Gamma}
 #' that satisfy the equilibrium condition (see Klein, 2014). This condition differs for matching
-#' games with transferable and non-transferable utility and can be specified using the \code{NTU} 
+#' games with transferable and non-transferable utility and can be specified using the \code{method} 
 #' argument. 
 #' The match valuation \eqn{V} is a linear function of \eqn{W}, a matrix of characteristics for 
 #' \emph{all feasible} groups, and \eqn{\eta}, a vector of random errors. \eqn{\alpha} is a paramter 
@@ -125,6 +125,7 @@
 #' divide by the number of those.}
 #' \item{\code{ive}}{sum over all possible two-way interactions of vectors
 #' of variables of group members and divide by number of those.}
+#' \item{\code{inv}}{...}
 #' \item{\code{dst}}{sum over all possible two-way distances between players and divide by
 #' number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
 #' \item{\code{sel}}{for \code{roommates=TRUE} only: variable for individual (for peer effects estimation).}
@@ -234,7 +235,7 @@
 #' ## 3. Get results
 #'  names(fit1)
 #' 
-#' ## --- REPLICATION, Klein (2014), Table 5 ---
+#' ## --- REPLICATION, Klein (2014), Table 8 ---
 #' ## 1. Load data 
 #'  data(baac00)
 #' ## 2. Run Gibbs sampler
@@ -331,7 +332,7 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         for( j in 1:length(T) ){
           X[[j]][,h+1] = X[[j]][,interOut[i,1]] * X[[j]][,interOut[i,2]]
         }
-        bn = c( bn, paste(an[interOut[i,1]],an[interOut[i,2]],sep=":") )
+        bn = c( bn, paste(bn[interOut[i,1]],bn[interOut[i,2]],sep=":") )
       }
     }
   
@@ -675,6 +676,9 @@ design.matrix <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, ou
   names(x)[names(x) == m.id] <- "m.id"
   
   ## list data by market id
+  if(simulation==TRUE){
+    errorterms <- with(x,listByMarket(x=data.frame(m.id,g.id,xi.i,eta.i), m.id=m.id, g.id=g.id))
+  }
   x <- listByMarket(x=x, m.id=m.id, g.id=g.id, R=R)
   
   ## create combinatorial matrices
@@ -690,7 +694,7 @@ design.matrix <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, ou
   ## create design matrix
   designmatrix(selection=selection, outcome=outcome, x=x, roommates=roommates, 
                simulation=simulation, assignment=assignment, seed=seed, spec=spec, CMATS=CMATS,
-               INDEXMAT=INDEXMAT)
+               INDEXMAT=INDEXMAT, errorterms=errorterms)
 }
 
 
@@ -1071,7 +1075,7 @@ wrap <- function(thisdata, indices, num, denom, j, names.xw){
 
 
 designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALSE, assignment, 
-                         seed, spec, CMATS, INDEXMAT){ 
+                         seed, spec, CMATS, INDEXMAT, errorterms){ 
   
   # --------------------------------------------------------------------
   # R-code (www.r-project.org) to set up the design matrix for the analysis
@@ -1192,8 +1196,11 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
       if(simulation==TRUE){
         
         ## EQUILIBRIUM PAIR SELECTION
-        xi[[i]]      <- rnorm(ncombs)
-        eta[[i]]     <- rnorm(ncombs)
+        for(j in 1:ncombs){
+          indices <- thiscmat[j,]
+          xi[[i]][j]  <- wrap(errorterms[[i]], indices, num, denom, j, "xi.i@add") #rnorm(ncombs)
+          eta[[i]][j] <- wrap(errorterms[[i]], indices, num, denom, j, "eta.i@add") #rnorm(ncombs)
+        }
         #eta[[i]] <- data.combs[[i]][,"mot.oth"] * data.combs[[i]][,"mot.sel"]
         delta        <- 0.5
         epsilon[[i]] <- delta*eta[[i]] + xi[[i]]
@@ -1320,8 +1327,11 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
         if(simulation==TRUE){
           
           ## EQUILIBRIUM GROUP SELECTION
-          xi[[i]]      <- rnorm(ncombs)
-          eta[[i]]     <- rnorm(ncombs)
+          for(j in 1:ncombs){
+            indices <- thiscmat[j,]
+            xi[[i]][j]  <- wrap(errorterms[[i]], indices, num, denom, j, "xi.i@add") #rnorm(ncombs)
+            eta[[i]][j] <- wrap(errorterms[[i]], indices, num, denom, j, "eta.i@add") #rnorm(ncombs)
+          }
           delta        <- 0.5
           epsilon[[i]] <- xi[[i]] + delta*eta[[i]]
           
@@ -1363,7 +1373,7 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
           xi[[i]]      <- xi[[i]][c(equ1,equ2)]
           epsilon[[i]] <- epsilon[[i]][c(equ1,equ2)]
           R[[i]] <- apply(data.combs[[i]][1:2,], 1, sum) + epsilon[[i]]
-          R[[i]] <- ifelse(R[[i]] > 1.736, 1, 0) # uncomment me!
+          #R[[i]] <- ifelse(R[[i]] > 1.736, 1, 0) # uncomment me!
           
           E[[i]] <- thiscmat[c(equ1,equ2),]
         }

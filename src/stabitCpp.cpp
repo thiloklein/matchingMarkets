@@ -2,8 +2,9 @@
 // Uncomment the above line if you want to disable all run-time checks.
 // This will result in faster code, but you first need to make sure that your code runs correctly!
 
+// [[Rcpp::depends(RcppArmadillo,RcppProgress)]]
 #include <RcppArmadillo.h>
-// [[Rcpp::depends(RcppArmadillo)]]
+#include <progress.hpp>
 
 using namespace Rcpp;
 arma::colvec mvrnormArma(arma::colvec mu, arma::mat sigma, int ncols);
@@ -16,8 +17,9 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
   Rcpp::List offOutr, Rcpp::List offSelr,
   arma::mat sigmabarbetainverse, arma::mat sigmabaralphainverse,
   int niter, double n, arma::colvec l, Rcpp::List Pr, arma::colvec p,
-  bool binary, bool selection, int censored, bool ntu, bool gPrior) {
-  
+  bool binary, bool selection, int censored, bool ntu, bool gPrior,
+  bool display_progress=true) {
+    
   // Enable/Disable verbose debug tracing.
   bool DEBUG = FALSE;
 
@@ -149,12 +151,18 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
   
   Rcout << "Drawing " << niter << " MCMC samples..." << std::endl;
   
+  // Initiate Progress Bar
+  Progress prog(niter, display_progress);
+
   for(int iter = 0; iter < niter; iter++){
 
-    if(iter % 1000 == 999){
-      Rcout << iter+1 << " of " << niter << std::endl;
-    }
-  
+    //if(iter % 1000 == 999){
+    //  Rcout << iter+1 << " of " << niter << std::endl;
+    //}
+
+    // update Progress Bar
+    prog.increment(); 
+
     // ---------------------------------------------
     // Simulate the latent outcomes conditional on the latent group valuations, data, and parameters.
     // ---------------------------------------------
@@ -437,8 +445,8 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
   }
   
   // print to screen
-  Rcout << "done." << std::endl;
-  Rcout << std::endl;
+  //Rcout << "done." << std::endl;
+  //Rcout << std::endl;
   
   // ---------------------------------------------  
   // The last half of all draws are used in approximating the posterior means and the posterior standard deviations.

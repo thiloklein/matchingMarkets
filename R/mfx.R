@@ -23,11 +23,11 @@
 #' @keywords summary
 #' 
 #' @examples
-#' ## 1. Read model results from Klein (2014), Table 5
-#' ## filepath <- system.file("scripts/TK_gibbsiter_ntu.mat", package="matchingMarkets")
+#' ## 1. load results from Klein (2014), Table 8
+#'  data(klein14)
 #' 
-#' ## 2. Apply mfx function and print results
-#' ## mfx(m=filepath)
+#' ## 2. apply mfx function and print results
+#'  mfx(m=klein14)
 mfx <- function(m,toLatex=FALSE){
   
   if(!is.null(m$coefs$alpha)){ ## Selectiom and Outcome Eqns

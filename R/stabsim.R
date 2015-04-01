@@ -42,12 +42,12 @@
 #' ## Coalitions [gpm := 2 !]
 #' ## Simulate one-sided matching data for 4 markets (m=4) with 2 groups
 #' ## per market (gpm=2) and 2 to 4 individuals per group (ind=2:4)
-#' idata <- stabsim(m=4, ind=2:4, seed=124, singles=2, gpm=2)  
+#'  idata <- stabsim(m=4, ind=2:4, seed=124, singles=2, gpm=2)  
 #' 
 #' ## Rommmates [ind := 2 !]
 #' ## Simulate one-sided matching data for 3 markets (m=3) with 3 groups
 #' ## per market (gpm=3) and 2 individuals per group (ind=2)
-#' idata <- stabsim(m=3, ind=2, seed=124, gpm=3)
+#'  idata <- stabsim(m=3, ind=2, seed=124, gpm=3)
 stabsim <- function(m, ind, seed=123, singles=NULL, gpm=2){
   
   # --------------------------------------------------------------------
@@ -81,12 +81,22 @@ stabsim <- function(m, ind, seed=123, singles=NULL, gpm=2){
   i.id  <- 1:Nrows
 
   pi  <- runif(n=Nrows,min=0,max=1)
-  wst <- sample(0:1,Nrows,replace=TRUE)
-  occ1 <- runif(Nrows); occ2 <- runif(Nrows,max=1-occ1); occ3 <- runif(Nrows,max=1-occ1-occ2)
+  
+  wst <- unlist(c(by(m.id, m.id, function(i){
+    l <- length(i) # market size
+    s <- 0.3 # share
+    r <- round(s*l,0) # size of smaller share
+    sample(c(rep(0,r),rep(1,l-r)),l,replace=FALSE)
+  })))
+  
+  #occ1 <- runif(Nrows); occ2 <- runif(Nrows,max=1-occ1); occ3 <- runif(Nrows,max=1-occ1-occ2)
   #sat <- rnorm(Nrows); mot <- rnorm(Nrows)
   R <- rep(NA,Nrows)
   
-  x <- data.frame(m.id, g.id, pi, wst, occ1, occ2, occ3, R)
+  xi.i  <- rnorm(n=Nrows)
+  eta.i <- rnorm(n=Nrows)
+  
+  x <- data.frame(m.id, g.id, pi, wst, R, xi.i, eta.i)
   
   if(is.null(singles)){
     return(x)
