@@ -37,7 +37,7 @@
 #' ## 3. Define foreach loop function
 #' mce.add <- function(mciter, niter, N, n, type, method){
 #'   h <- foreach(i=1:mciter) %dopar% {
-#'     #library(matchingMarkets)
+#'     library(matchingMarkets)
 #'     mce(seed=i,niter, N, n, type, method)
 #'   }
 #'   do.call(rbind, h)
