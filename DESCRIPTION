@@ -7,11 +7,11 @@ Imports:
     lpSolve (>= 5.6.6),
     partitions
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress (>= 0.2)
-Title: An R package for the analysis of stable matchings
+Title: An R Package for the Analysis of Stable Matchings
 Author: Thilo Klein
 Maintainer: Thilo Klein <thilo@klein.co.uk>
-Description: This package implements a structural estimator to correct for the
-    sample selection bias from observed outcomes in matching markets. It also
+Description: Implements a structural estimator to correct for the
+    sample selection bias from observed outcomes in matching markets. Also
     contains R code for matching algorithms such as the deferred-acceptance
     algorithm for college admissions, the top-trading-cycles algorithm for
     house allocation and a partitioning linear program for the roommates
