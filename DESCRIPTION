@@ -1,5 +1,5 @@
 Package: matchingMarkets
-Version: 0.1-3
+Version: 0.1-4
 Depends:
     R (>= 3.0.2)
 Imports:
@@ -16,5 +16,5 @@ Description: Implements a structural estimator to correct for the
     algorithm for college admissions, the top-trading-cycles algorithm for
     house allocation and a partitioning linear program for the roommates
     problem.
-URL: https://github.com/thiloklein/matchingMarkets
+URL: https://github.com/thiloklein/matchingMarkets, http://matchingmarkets.r-forge.r-project.org
 License: GPL (>= 2) | file LICENSE
