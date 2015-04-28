@@ -81,22 +81,24 @@ stabsim <- function(m, ind, seed=123, singles=NULL, gpm=2){
   i.id  <- 1:Nrows
 
   pi  <- runif(n=Nrows,min=0,max=1)
+  #pi  <- runif(n=Nrows,min=0.5,max=1)
   
-  wst <- unlist(c(by(m.id, m.id, function(i){
-    l <- length(i) # market size
-    s <- 0.3 # share
-    r <- round(s*l,0) # size of smaller share
-    sample(c(rep(0,r),rep(1,l-r)),l,replace=FALSE)
-  })))
+  #wst <- unlist(c(by(m.id, m.id, function(i){
+  #  l <- length(i) # market size
+  #  s <- 0.3 # share
+  #  r <- round(s*l,0) # size of smaller share
+  #  sample(c(rep(0,r),rep(1,l-r)),l,replace=FALSE)
+  #})))
+  wst <- sample(0:1,Nrows,replace=TRUE)
   
   #occ1 <- runif(Nrows); occ2 <- runif(Nrows,max=1-occ1); occ3 <- runif(Nrows,max=1-occ1-occ2)
   #sat <- rnorm(Nrows); mot <- rnorm(Nrows)
   R <- rep(NA,Nrows)
   
-  xi.i  <- rnorm(n=Nrows)
-  eta.i <- rnorm(n=Nrows)
+  #xi.i  <- rnorm(n=Nrows, sd=sqrt(max(ind)))
+  #eta.i <- rnorm(n=Nrows, sd=sqrt(max(ind)))
   
-  x <- data.frame(m.id, g.id, pi, wst, R, xi.i, eta.i)
+  x <- data.frame(m.id, g.id, pi, wst, R)
   
   if(is.null(singles)){
     return(x)

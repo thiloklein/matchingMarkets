@@ -1,6 +1,6 @@
 # matchingMarkets
 
-> An R package for the analysis of stable matchings.
+> Structural Estimator and Algorithms for the Analysis of Stable Matchings.
 
 # Functions
 
@@ -21,7 +21,7 @@ and three algorithms that can be used to simulate matching data:
 To get the latest *stable version* from CRAN:
 
 ```R
-install.packages("matchingMarkets", dependencies=TRUE)
+install.packages("matchingMarkets")
 library(matchingMarkets)
 ```
 

@@ -7,37 +7,33 @@
 using namespace Rcpp;
 
 // stabitCpp
-List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr, arma::colvec One, arma::colvec Two, int T, Rcpp::List offOutr, Rcpp::List offSelr, arma::mat sigmabarbetainverse, arma::mat sigmabaralphainverse, int niter, double n, arma::colvec l, Rcpp::List Pr, arma::colvec p, bool binary, bool selection, int censored, bool ntu, bool gPrior, bool display_progress = true);
+List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr, arma::colvec One, arma::colvec Two, int T, Rcpp::List offOutr, Rcpp::List offSelr, arma::mat sigmabarbetainverse, arma::mat sigmabaralphainverse, int niter, double n, arma::colvec l, Rcpp::List Pr, arma::colvec p, bool binary, bool selection, int censored, bool ntu, bool gPrior, bool display_progress);
 RcppExport SEXP matchingMarkets_stabitCpp(SEXP XrSEXP, SEXP RrSEXP, SEXP WrSEXP, SEXP OneSEXP, SEXP TwoSEXP, SEXP TSEXP, SEXP offOutrSEXP, SEXP offSelrSEXP, SEXP sigmabarbetainverseSEXP, SEXP sigmabaralphainverseSEXP, SEXP niterSEXP, SEXP nSEXP, SEXP lSEXP, SEXP PrSEXP, SEXP pSEXP, SEXP binarySEXP, SEXP selectionSEXP, SEXP censoredSEXP, SEXP ntuSEXP, SEXP gPriorSEXP, SEXP display_progressSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< Rcpp::List >::type Xr(XrSEXP );
-        Rcpp::traits::input_parameter< Rcpp::List >::type Rr(RrSEXP );
-        Rcpp::traits::input_parameter< Rcpp::List >::type Wr(WrSEXP );
-        Rcpp::traits::input_parameter< arma::colvec >::type One(OneSEXP );
-        Rcpp::traits::input_parameter< arma::colvec >::type Two(TwoSEXP );
-        Rcpp::traits::input_parameter< int >::type T(TSEXP );
-        Rcpp::traits::input_parameter< Rcpp::List >::type offOutr(offOutrSEXP );
-        Rcpp::traits::input_parameter< Rcpp::List >::type offSelr(offSelrSEXP );
-        Rcpp::traits::input_parameter< arma::mat >::type sigmabarbetainverse(sigmabarbetainverseSEXP );
-        Rcpp::traits::input_parameter< arma::mat >::type sigmabaralphainverse(sigmabaralphainverseSEXP );
-        Rcpp::traits::input_parameter< int >::type niter(niterSEXP );
-        Rcpp::traits::input_parameter< double >::type n(nSEXP );
-        Rcpp::traits::input_parameter< arma::colvec >::type l(lSEXP );
-        Rcpp::traits::input_parameter< Rcpp::List >::type Pr(PrSEXP );
-        Rcpp::traits::input_parameter< arma::colvec >::type p(pSEXP );
-        Rcpp::traits::input_parameter< bool >::type binary(binarySEXP );
-        Rcpp::traits::input_parameter< bool >::type selection(selectionSEXP );
-        Rcpp::traits::input_parameter< int >::type censored(censoredSEXP );
-        Rcpp::traits::input_parameter< bool >::type ntu(ntuSEXP );
-        Rcpp::traits::input_parameter< bool >::type gPrior(gPriorSEXP );
-        Rcpp::traits::input_parameter< bool >::type display_progress(display_progressSEXP );
-        List __result = stabitCpp(Xr, Rr, Wr, One, Two, T, offOutr, offSelr, sigmabarbetainverse, sigmabaralphainverse, niter, n, l, Pr, p, binary, selection, censored, ntu, gPrior, display_progress);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< Rcpp::List >::type Xr(XrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type Rr(RrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type Wr(WrSEXP);
+    Rcpp::traits::input_parameter< arma::colvec >::type One(OneSEXP);
+    Rcpp::traits::input_parameter< arma::colvec >::type Two(TwoSEXP);
+    Rcpp::traits::input_parameter< int >::type T(TSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type offOutr(offOutrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type offSelr(offSelrSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigmabarbetainverse(sigmabarbetainverseSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigmabaralphainverse(sigmabaralphainverseSEXP);
+    Rcpp::traits::input_parameter< int >::type niter(niterSEXP);
+    Rcpp::traits::input_parameter< double >::type n(nSEXP);
+    Rcpp::traits::input_parameter< arma::colvec >::type l(lSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type Pr(PrSEXP);
+    Rcpp::traits::input_parameter< arma::colvec >::type p(pSEXP);
+    Rcpp::traits::input_parameter< bool >::type binary(binarySEXP);
+    Rcpp::traits::input_parameter< bool >::type selection(selectionSEXP);
+    Rcpp::traits::input_parameter< int >::type censored(censoredSEXP);
+    Rcpp::traits::input_parameter< bool >::type ntu(ntuSEXP);
+    Rcpp::traits::input_parameter< bool >::type gPrior(gPriorSEXP);
+    Rcpp::traits::input_parameter< bool >::type display_progress(display_progressSEXP);
+    __result = Rcpp::wrap(stabitCpp(Xr, Rr, Wr, One, Two, T, offOutr, offSelr, sigmabarbetainverse, sigmabaralphainverse, niter, n, l, Pr, p, binary, selection, censored, ntu, gPrior, display_progress));
+    return __result;
 END_RCPP
 }

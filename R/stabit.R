@@ -104,6 +104,7 @@
 #' @param dropOnes logical: if \code{TRUE} one-group-markets are exluded from estimation.
 #' @param interOut two-colum matrix indicating the indices of columns in \code{X} that should be interacted in estimation. Use 0 for none.
 #' @param interSel two-colum matrix indicating the indices of columns in \code{W} that should be interacted in estimation. Use 0 for none.
+#' @param standardize logical: if \code{TRUE} the independent variables will be standardized by dividing by their standard deviation.
 #' @param niter number of iterations to use for the Gibbs sampler.
 #' 
 #' @export
@@ -247,10 +248,10 @@
 #'  names(fit2)
 #' }
 stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=NULL, 
-            roommates=FALSE, simulation="none", seed=123, max.combs=Inf,
-            method="NTU", binary=FALSE, offsetOut=0, offsetSel=0, 
-            marketFE=FALSE, censored=0, gPrior=FALSE, dropOnes=FALSE, interOut=0, interSel=0, 
-            niter=10){
+                   roommates=FALSE, simulation="none", seed=123, max.combs=Inf,
+                   method="NTU", binary=FALSE, offsetOut=0, offsetSel=0, 
+                   marketFE=FALSE, censored=0, gPrior=FALSE, dropOnes=FALSE, interOut=0, interSel=0, 
+                   standardize=FALSE, niter=10){
   
   if(roommates==TRUE & method%in%c("NTU","TU")){stop("structural model not implemented for roommates data!")}
   
@@ -261,7 +262,8 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
   simulation <- ifelse(simulation!="none", TRUE, FALSE)
   
   data <- design.matrix(x, m.id=m.id, g.id=g.id, R=R, selection=selection, outcome=outcome, 
-            roommates=roommates, simulation, assignment=assignment, seed=seed, max.combs=max.combs)
+                        roommates=roommates, simulation, assignment=assignment, seed=seed, max.combs=max.combs,
+                        standardize=standardize)
   
   # -----------------------------------------------------------------------------
   # Obtain parameter estimates.
@@ -272,10 +274,10 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
     return(list(model.list=data, model.frame=model.frame))
     
   } else{ # roommates == FALSE
-      
+    
     sel <- ifelse(method=="outcome", FALSE, TRUE)
     NTU <- ifelse(method=="NTU", TRUE, FALSE)
-  
+    
     # -----------------------------------------------------------------------------
     # Attach variables in 'data' object.
     # -----------------------------------------------------------------------------
@@ -325,7 +327,7 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         an = c( an, paste(an[interSel[i,1]],an[interSel[i,2]],sep=":") )
       }
     }
-  
+    
     if( !is.null(dim(interOut)) ){
       for( i in 1:dim(interOut)[1] ){
         h = dim(X[[1]])[2]
@@ -335,7 +337,7 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         bn = c( bn, paste(bn[interOut[i,1]],bn[interOut[i,2]],sep=":") )
       }
     }
-  
+    
     # -----------------------------------------------------------------------------
     # One-group-markets.
     # -----------------------------------------------------------------------------
@@ -427,7 +429,7 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         offSel[[t]] = matrix(0,nrow=dim(W[[t]])[1],ncol=1)
       } 
     }
-        
+    
     # -----------------------------------------------------------------------------
     # Size of feasible groups.
     # -----------------------------------------------------------------------------
@@ -457,7 +459,7 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         an = c(an, paste("d",count,sep=""))
       }
     }
-  
+    
     # -----------------------------------------------------------------------------
     # Preliminaries (2).
     # -----------------------------------------------------------------------------
@@ -466,7 +468,7 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
     
     W <- lapply(W,as.matrix)
     X <- lapply(X,as.matrix)
-  
+    
     if(!is.null(One) & !is.null(Two)){
       T = length(One) + length(Two) 
       One = c( One[1]-1, One[1]-1+length(One) )
@@ -478,27 +480,27 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         Two = c( 0, length(Two) )
       }
     }
-  
+    
     n <- dim(do.call(rbind,X))[1]
     N <- dim(do.call(rbind,W))[1]
-  
+    
     sigmabarbetainverse <- ( t(do.call(rbind,X)) %*% do.call(rbind,X) ) / n
     sigmabaralphainverse <- ( t(do.call(rbind,W)) %*% do.call(rbind,W) ) / N
     
     if(method != "model.frame"){
-  
+      
       # -----------------------------------------------------------------------------
       # Source C++ script
       # -----------------------------------------------------------------------------    
       #sourceCpp("/home/thilo/Documents/Packages/matchingMarkets/src/stabitCpp.cpp")
       #.Call("stabitCpp.cpp")
-  
+      
       res <- stabitCpp(Xr=X, Rr=R, Wr=W, One=One, Two=Two, T=T, 
-             offOutr=offOut, offSelr=offSel,
-             sigmabarbetainverse=sigmabarbetainverse, sigmabaralphainverse=sigmabaralphainverse,
-             niter=niter, n=n, l=matrix(unlist(l),length(l),1), Pr=P, p=matrix(unlist(p),length(p),1),
-             binary=binary, selection=sel, censored=censored, gPrior=gPrior, ntu=NTU)
-  
+                       offOutr=offOut, offSelr=offSel,
+                       sigmabarbetainverse=sigmabarbetainverse, sigmabaralphainverse=sigmabaralphainverse,
+                       niter=niter, n=n, l=matrix(unlist(l),length(l),1), Pr=P, p=matrix(unlist(p),length(p),1),
+                       binary=binary, selection=sel, censored=censored, gPrior=gPrior, ntu=NTU)
+      
       # -----------------------------------------------------------------------------
       # Add names to coefficients.
       # ----------------------------------------------------------------------------- 
@@ -517,8 +519,8 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         colnames(res$alpha) = colnames(res$beta) = colnames(res$delta)  = colnames(res$sigmasquarexi) = c("coef","s.e.")
         #
         out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,deltadraws=deltadraws)), 
-                coefs=with(res,list(eta=eta,alpha=alpha,beta=beta,delta=delta,sigmasquarexi=sigmasquarexi)))
-    
+                    coefs=with(res,list(eta=eta,alpha=alpha,beta=beta,delta=delta,sigmasquarexi=sigmasquarexi)))
+        
       } else if(binary==TRUE & sel==FALSE){
         # parameter draws
         rownames(res$betadraws) = bn
@@ -529,8 +531,8 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         colnames(res$beta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
         #
         out <- list(draws=with(res,list(betadraws=betadraws)), 
-                coefs=with(res,list(beta=beta,sigmasquarexi=sigmasquarexi)))
-    
+                    coefs=with(res,list(beta=beta,sigmasquarexi=sigmasquarexi)))
+        
       } else if(binary==FALSE & sel==TRUE){
         # parameter draws
         rownames(res$alphadraws) = an
@@ -547,8 +549,8 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         colnames(res$alpha) = colnames(res$beta) = colnames(res$delta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
         #
         out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,deltadraws=deltadraws,sigmasquarexidraws=sigmasquarexidraws)), 
-                coefs=with(res,list(eta=eta,alpha=alpha,beta=beta,delta=delta,sigmasquarexi=sigmasquarexi)))
-    
+                    coefs=with(res,list(eta=eta,alpha=alpha,beta=beta,delta=delta,sigmasquarexi=sigmasquarexi)))
+        
       } else if(binary==FALSE & sel==FALSE){
         # parameter draws
         rownames(res$betadraws) = bn
@@ -560,23 +562,23 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         colnames(res$beta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
         #
         out <- list(draws=with(res,list(betadraws=betadraws,sigmasquarexidraws=sigmasquarexidraws)), 
-                coefs=with(res,list(beta=beta,sigmasquarexi=sigmasquarexi)))
+                    coefs=with(res,list(beta=beta,sigmasquarexi=sigmasquarexi)))
       }
-    
+      
       # -----------------------------------------------------------------------------
       # Returns .
       # ----------------------------------------------------------------------------- 
       model.frame <- unlistData(x=data, roommates=roommates)
       return(list(model.list=data, model.frame=model.frame, draws=out$draws, coefs=out$coefs))
-  
+      
     } else{ ## if method == "model.frame"
-     
+      
       # -----------------------------------------------------------------------------
       # Returns .
       # ----------------------------------------------------------------------------- 
       model.frame <- unlistData(x=data, roommates=roommates)
       return(list(model.list=data, model.frame=model.frame))
-    
+      
     }
   }
 }
@@ -656,7 +658,8 @@ unlistData <- function(x, roommates=FALSE){
 
 
 design.matrix <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=NULL, 
-                          roommates=FALSE, simulation=FALSE, assignment="NTU", seed=123, max.combs=Inf){  
+                          roommates=FALSE, simulation=FALSE, assignment="NTU", seed=123, max.combs=Inf,
+                          standardize=FALSE){  
   
   # --------------------------------------------------------------------
   # R-code (www.r-project.org) to obtain a design matrix for the analysis
@@ -676,9 +679,6 @@ design.matrix <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, ou
   names(x)[names(x) == m.id] <- "m.id"
   
   ## list data by market id
-  if(simulation==TRUE){
-    errorterms <- with(x,listByMarket(x=data.frame(m.id,g.id,xi.i,eta.i), m.id=m.id, g.id=g.id))
-  }
   x <- listByMarket(x=x, m.id=m.id, g.id=g.id, R=R)
   
   ## create combinatorial matrices
@@ -694,7 +694,7 @@ design.matrix <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, ou
   ## create design matrix
   designmatrix(selection=selection, outcome=outcome, x=x, roommates=roommates, 
                simulation=simulation, assignment=assignment, seed=seed, spec=spec, CMATS=CMATS,
-               INDEXMAT=INDEXMAT, errorterms=errorterms)
+               INDEXMAT=INDEXMAT, standardize=standardize)
 }
 
 
@@ -1036,7 +1036,7 @@ wrap <- function(thisdata, indices, num, denom, j, names.xw){
       sum( thisdata[comb[,1],varq[a]] * thisdata[comb[,2],varq[a]] ) / denom[j]
     } else if(funq[a]=="inv"){
       sum( thisdata[comb[,1],varq[a]] * (1-thisdata[comb[,2],varq[a]]) +
-           thisdata[comb[,2],varq[a]] * (1-thisdata[comb[,1],varq[a]]) ) / (2*denom[j])
+             thisdata[comb[,2],varq[a]] * (1-thisdata[comb[,1],varq[a]]) ) / (2*denom[j])
     } else if(funq[a]=="dst"){
       sum( exp( -1 * abs( thisdata[comb[,1],varq[a]] - thisdata[comb[,2],varq[a]] ))) / denom[j]
     } else if(funq[a]=="iln"){
@@ -1075,7 +1075,7 @@ wrap <- function(thisdata, indices, num, denom, j, names.xw){
 
 
 designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALSE, assignment, 
-                         seed, spec, CMATS, INDEXMAT, errorterms){ 
+                         seed, spec, CMATS, INDEXMAT, standardize){ 
   
   # --------------------------------------------------------------------
   # R-code (www.r-project.org) to set up the design matrix for the analysis
@@ -1190,18 +1190,134 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
         V[[i]][j] <- wrap(thisdata, indices, num, denom, j, "V.@val")
       }
       
+      ## COMBINATION MATRICES
+      combs[[i]] <- thiscmat
+      
       ## Replace "@" by "." in variable names
       names(data.combs[[i]]) <- gsub("@",".",names(data.combs[[i]]))
+            
       
-      if(simulation==TRUE){
+    } else{ 
+      
+      ##########################
+      ## GROUP FORMATION GAME ##
+      ##########################
+      
+      if(i <= dim(spec)[1]){  ## 2-GROUP MARKETS
+        
+        ## DEFINE AUXILIARY VARIABLES
+        
+        # Note: numA <= numB
+        numA <- spec[i,1];  rangeA <- 1:numA
+        numB <- spec[i,2];  rangeB <- (numA+1):(numB+numA)
+        
+        thisdata <- x[[i]]
+        # unobs + obs groups:
+        thiscmat <- rbind( c(rangeA, rep(NA,numB-numA)), rangeB, CMATS[[INDEXMAT[numA, numB]]] )  
+        ncombs   <- dim(thiscmat)[1]  
+        data.combs[[i]]        <- data.frame(matrix(NA,ncol=length(vars),nrow=ncombs))  
+        names(data.combs[[i]]) <- vars
+        # if numA != numB, the first 1/2 contain NA:
+        num   <- c(numA, numB, rep(numA,(ncombs-2)/2), rep(numB,(ncombs-2)/2))  
+        denom <- c(choose(numA,2), choose(numB,2), rep(choose(numA,2),(ncombs-2)/2), rep(choose(numB,2),(ncombs-2)/2))
+        
+        ## OBSERVABILITY INDICATOR, 'D'
+        D[[i]] <- c(rep(1,2), rep(0,ncombs-2))
+        
+        ## OUTCOME VARIABLE, 'R'
+        #if( (abs(diff(range(thisdata[rangeA,"R"]))) > 0.1) | (abs(diff(range(thisdata[rangeB,"R"]))) > 0.1) ){
+        #  stop("dependent variable must be group-level!")
+        #}
+        R[[i]] <- c(thisdata[rangeA,"R"][1], thisdata[rangeB,"R"][1])#, rep(NA,ncombs-2))
+        
+        ## OBSERVED GROUPS
+        for(j in 1:2){
+          indices <- thiscmat[j,1:num[j]] 
+          #data.combs[[i]][j,X.names] <- wrap(thisdata, indices, num, denom, j, X.names)    
+          data.combs[[i]][j,vars] <- wrap(thisdata, indices, num, denom, j, vars)    
+        }
+        
+        ## UNOBSERVED GROUPS  
+        for(j in 3:ncombs){
+          indices <- thiscmat[j,1:num[j]] 
+          data.combs[[i]][j,W.names] <- wrap(thisdata, indices, num, denom, j, W.names)    
+        }
+        
+        ## Replace "@" by "." in variable names
+        names(data.combs[[i]]) <- gsub("@",".",names(data.combs[[i]]))
+        
+        ## PARTNER GROUP INDEX IN SAME MARKET
+        l             <- dim(thiscmat)[1]
+        P[[i]]        <- c(2, 1, ((l/2)+2):l, 3:((l/2)+1))
+        names(P[[i]]) <- NULL
+        
+        ## COMBINATION MATRICES
+        combs[[i]] <- thiscmat
+
+        
+      } else{  ## 1-GROUP MARKETS
+        
+        ## DEFINE AUXILIARY VARIABLES
+        thisdata <- x[[i]]
+        indices  <- x[[i]]$i.id
+        num      <- length(indices)
+        denom    <- choose(num,2)
+        
+        data.combs[[i]]        <- data.frame(matrix(NA,ncol=length(vars),nrow=1))  
+        names(data.combs[[i]]) <- vars
+        
+        ## SINGLE GROUP
+        j <- 1
+        data.combs[[i]][j,X.names] <- wrap(thisdata, indices, num, denom, j, X.names)
+        
+        ## Replace "@" by "." in variable names
+        names(data.combs[[i]]) <- gsub("@",".",names(data.combs[[i]]))
+        
+        ## OBSERVABILITY INDICATOR, 'D', AND OUTCOME VARIABLE, 'R'
+        D[[i]] <- 1
+        R[[i]] <- thisdata[1,"R"]
+        
+      }
+    }
+  }
+  
+  
+  #####################
+  ## STANDARDIZATION ##
+  #####################
+  
+  if(standardize == TRUE){
+    
+    ## standardize variance of exogneous variables to 1
+    std <- apply(do.call(rbind, data.combs), 2, sd)
+    data.combs <- lapply(data.combs, function(i) as.data.frame(t(apply(i,1,function(j) j/(std)) )))
+    
+  }
+  
+  #################
+  ## SIMULATIONS ##
+  #################
+  
+  if(simulation == TRUE){
+    
+    for(i in 1:numvills){
+      
+      ncombs <- dim(combs[[i]])[1]
+      thiscmat <- combs[[i]]
+      l      <- dim(thiscmat)[1]
+      
+      
+      if(roommates == TRUE){
+        
+        ####################
+        ## ROOMMATES GAME ##
+        ####################
+        
+        num <- denom <- rep(1,ncombs)
         
         ## EQUILIBRIUM PAIR SELECTION
-        for(j in 1:ncombs){
-          indices <- thiscmat[j,]
-          xi[[i]][j]  <- wrap(errorterms[[i]], indices, num, denom, j, "xi.i@add") #rnorm(ncombs)
-          eta[[i]][j] <- wrap(errorterms[[i]], indices, num, denom, j, "eta.i@add") #rnorm(ncombs)
-        }
-        #eta[[i]] <- data.combs[[i]][,"mot.oth"] * data.combs[[i]][,"mot.sel"]
+        xi[[i]]      <- rnorm(ncombs)
+        eta[[i]]     <- rnorm(ncombs)
         delta        <- 0.5
         epsilon[[i]] <- delta*eta[[i]] + xi[[i]]
         
@@ -1264,74 +1380,26 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
         eta[[i]]     <- c( eta[[i]][equ], eta[[i]][-equ])
         epsilon[[i]] <- epsilon[[i]][equ]
         
-      }
-      
-    } else{ 
-      
-      ##########################
-      ## GROUP FORMATION GAME ##
-      ##########################
-      
-      if(i <= dim(spec)[1]){  ## 2-GROUP MARKETS
         
-        ## DEFINE AUXILIARY VARIABLES
+      } else{ 
         
-        # Note: numA <= numB
-        numA <- spec[i,1];  rangeA <- 1:numA
-        numB <- spec[i,2];  rangeB <- (numA+1):(numB+numA)
+        ##########################
+        ## GROUP FORMATION GAME ##
+        ##########################
+                
+        if(i <= dim(spec)[1]){  ## 2-GROUP MARKETS
         
-        thisdata <- x[[i]]
-        # unobs + obs groups:
-        thiscmat <- rbind( c(rangeA, rep(NA,numB-numA)), rangeB, CMATS[[INDEXMAT[numA, numB]]] )  
-        ncombs   <- dim(thiscmat)[1]  
-        data.combs[[i]]        <- data.frame(matrix(NA,ncol=length(vars),nrow=ncombs))  
-        names(data.combs[[i]]) <- vars
-        # if numA != numB, the first 1/2 contain NA:
-        num   <- c(numA, numB, rep(numA,(ncombs-2)/2), rep(numB,(ncombs-2)/2))  
-        denom <- c(choose(numA,2), choose(numB,2), rep(choose(numA,2),(ncombs-2)/2), rep(choose(numB,2),(ncombs-2)/2))
-        
-        ## OBSERVABILITY INDICATOR, 'D'
-        D[[i]] <- c(rep(1,2), rep(0,ncombs-2))
-        
-        ## OUTCOME VARIABLE, 'R'
-        #if( (abs(diff(range(thisdata[rangeA,"R"]))) > 0.1) | (abs(diff(range(thisdata[rangeB,"R"]))) > 0.1) ){
-        #  stop("dependent variable must be group-level!")
-        #}
-        R[[i]] <- c(thisdata[rangeA,"R"][1], thisdata[rangeB,"R"][1])#, rep(NA,ncombs-2))
-        
-        ## OBSERVED GROUPS
-        for(j in 1:2){
-          indices <- thiscmat[j,1:num[j]] 
-          #data.combs[[i]][j,X.names] <- wrap(thisdata, indices, num, denom, j, X.names)    
-          data.combs[[i]][j,vars] <- wrap(thisdata, indices, num, denom, j, vars)    
-        }
-        
-        ## UNOBSERVED GROUPS  
-        for(j in 3:ncombs){
-          indices <- thiscmat[j,1:num[j]] 
-          data.combs[[i]][j,W.names] <- wrap(thisdata, indices, num, denom, j, W.names)    
-        }
-        
-        ## Replace "@" by "." in variable names
-        names(data.combs[[i]]) <- gsub("@",".",names(data.combs[[i]]))
-        
-        ## PARTNER GROUP INDEX IN SAME MARKET
-        l             <- dim(thiscmat)[1]
-        P[[i]]        <- c(2, 1, ((l/2)+2):l, 3:((l/2)+1))
-        names(P[[i]]) <- NULL
-        
-        ## COMBINATION MATRICES
-        combs[[i]] <- thiscmat
-        
-        
-        if(simulation==TRUE){
+          # Note: numA <= numB
+          numA <- spec[i,1];  rangeA <- 1:numA
+          numB <- spec[i,2];  rangeB <- (numA+1):(numB+numA) 
+          
+          # if numA != numB, the first 1/2 contain NA:
+          num   <- c(numA, numB, rep(numA,(ncombs-2)/2), rep(numB,(ncombs-2)/2))  
+          denom <- c(choose(numA,2), choose(numB,2), rep(choose(numA,2),(ncombs-2)/2), rep(choose(numB,2),(ncombs-2)/2))
           
           ## EQUILIBRIUM GROUP SELECTION
-          for(j in 1:ncombs){
-            indices <- thiscmat[j,]
-            xi[[i]][j]  <- wrap(errorterms[[i]], indices, num, denom, j, "xi.i@add") #rnorm(ncombs)
-            eta[[i]][j] <- wrap(errorterms[[i]], indices, num, denom, j, "eta.i@add") #rnorm(ncombs)
-          }
+          xi[[i]]      <- rnorm(ncombs)
+          eta[[i]]     <- rnorm(ncombs)
           delta        <- 0.5
           epsilon[[i]] <- xi[[i]] + delta*eta[[i]]
           
@@ -1373,45 +1441,21 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
           xi[[i]]      <- xi[[i]][c(equ1,equ2)]
           epsilon[[i]] <- epsilon[[i]][c(equ1,equ2)]
           R[[i]] <- apply(data.combs[[i]][1:2,], 1, sum) + epsilon[[i]]
-          #R[[i]] <- ifelse(R[[i]] > 1.736, 1, 0) # uncomment me!
+          #R[[i]] <- ifelse(R[[i]] > 1, 1, 0) # uncomment me!
           
           E[[i]] <- thiscmat[c(equ1,equ2),]
-        }
-        
-      } else{  ## 1-GROUP MARKETS
-        
-        ## DEFINE AUXILIARY VARIABLES
-        thisdata <- x[[i]]
-        indices  <- x[[i]]$i.id
-        num      <- length(indices)
-        denom    <- choose(num,2)
-        
-        data.combs[[i]]        <- data.frame(matrix(NA,ncol=length(vars),nrow=1))  
-        names(data.combs[[i]]) <- vars
-        
-        ## SINGLE GROUP
-        j <- 1
-        data.combs[[i]][j,X.names] <- wrap(thisdata, indices, num, denom, j, X.names)
-        
-        ## Replace "@" by "." in variable names
-        names(data.combs[[i]]) <- gsub("@",".",names(data.combs[[i]]))
-        
-        ## OBSERVABILITY INDICATOR, 'D', AND OUTCOME VARIABLE, 'R'
-        D[[i]] <- 1
-        R[[i]] <- thisdata[1,"R"]
-        
-        
-        if(simulation==TRUE){
           
-          xi[[i]]      <- rnorm(1)
-          eta[[i]]     <- rnorm(1)
+          
+        } else{  ## 1-GROUP MARKETS
+          
+          xi[[i]]  <- rnorm(1)
+          eta[[i]] <- rnorm(1)          
           delta        <- 0.5
           epsilon[[i]] <- delta*eta[[i]] + xi[[i]]
           
           R[[i]] <- apply(data.combs[[i]][1,], 1, sum) + epsilon[[i]]
           
         }
-        
       }
     }
   }
@@ -1439,7 +1483,7 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
     return(list(D=D, R=R, W=W, X=X, V=V, epsilon=epsilon, eta=eta, xi=xi))  
     
   } else{
-        
+    
     W <- lapply(1:dim(spec)[1], function(i) data.combs[[i]][,W.names])
     X <- lapply(1:length(data.combs), function(i){ 
       if(i <= dim(spec)[1]){
@@ -1451,4 +1495,3 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
     return(list(D=D, R=R, W=W, X=X, V=V, P=P, epsilon=epsilon, eta=eta, xi=xi, combs=combs, E=E))
   }
 }
-
