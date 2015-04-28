@@ -732,7 +732,7 @@ combmats.coalitions <- function(x=NULL, n1, n2, dodrop=FALSE, max.combs=Inf){
   # --------------------------------------------------------------------
   
   #library(partitions)
-  #set.seed(123)
+  set.seed(123)
   
   ## If 'x' not given, obtain it from 'n1' and 'n2'
   if(is.null(x)){
@@ -1128,7 +1128,6 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
   #   outcome = list(sel="pi", oth="pi", int="pi"), data=data)
   # --------------------------------------------------------------------
   
-  set.seed(seed)
   X.ind <- outcome
   W.ind <- selection
   
@@ -1299,6 +1298,8 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
   #################
   
   if(simulation == TRUE){
+    
+    set.seed(seed)
     
     for(i in 1:numvills){
       
