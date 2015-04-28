@@ -85,11 +85,11 @@ mce <- function(seed, niter, N, n, type, method){
       
       ## Group outcomes and equilibrium group constellation are dependent on fixed 
       ## individual variables of group members and draws -- set.seed(seed) -- of unobservables    
-      set.seed(seed) # set seed for draw of error terms
-      idata[,c("xi.i","eta.i")] <- matrix(rnorm(2*dim(idata)[1]), ncol=2) # draw new xi and eta
+      #! set.seed(seed) # set seed for draw of error terms
+      #! idata[,c("xi.i","eta.i")] <- matrix(rnorm(2*dim(idata)[1]), ncol=2) # draw new xi and eta
       mdata <- stabit(x=idata, selection = list(add="pi",ieq="wst"), 
                       outcome = list(add="pi",ieq="wst"), simulation="NTU", 
-                      method=method, niter=niter)
+                      method=method, niter=niter, seed=seed)
       
       h <- mdata$coefs[!names(mdata$coefs) %in% "eta"]
       h <- unlist(lapply(h, function(x) x[,1]))
@@ -100,11 +100,11 @@ mce <- function(seed, niter, N, n, type, method){
       
       ## Group outcomes and equilibrium group constellation are dependent on fixed 
       ## individual variables of group members and draws -- set.seed(seed) -- of unobservables    
-      set.seed(seed) # set seed for draw of error terms
-      idata[,c("xi.i","eta.i")] <- matrix(rnorm(2*dim(idata)[1]), ncol=2) # draw new xi and eta
+      #! set.seed(seed) # set seed for draw of error terms
+      #! idata[,c("xi.i","eta.i")] <- matrix(rnorm(2*dim(idata)[1]), ncol=2) # draw new xi and eta
       mdata <- stabit(x=idata, selection = list(add="pi",ieq="wst"), 
                       outcome = list(add="pi",ieq="wst"), simulation="NTU", 
-                      method="model.frame")
+                      method="model.frame", seed=seed)
       
       ####################################
       ## B-1. Define equilibrium groups ##
