@@ -89,7 +89,7 @@ mce <- function(seed, niter, N, n, type, method){
       #! idata[,c("xi.i","eta.i")] <- matrix(rnorm(2*dim(idata)[1]), ncol=2) # draw new xi and eta
       mdata <- stabit(x=idata, selection = list(add="pi",ieq="wst"), 
                       outcome = list(add="pi",ieq="wst"), simulation="NTU", 
-                      method=method, niter=niter, seed=seed)
+                      method=method, niter=niter, seed=seed, censored=1)
       
       h <- mdata$coefs[!names(mdata$coefs) %in% "eta"]
       h <- unlist(lapply(h, function(x) x[,1]))
@@ -145,7 +145,7 @@ mce <- function(seed, niter, N, n, type, method){
         ## keeping outcomes fixed (simulation="none")
         mdata <- stabit(x=idata, selection = list(add="pi",ieq="wst"), 
                         outcome = list(add="pi",ieq="wst"), simulation="none", 
-                        method=method, niter=niter)
+                        method=method, niter=niter, censored=1)
         
       } else if(type == "counterfactual.groups"){
         
@@ -154,7 +154,7 @@ mce <- function(seed, niter, N, n, type, method){
         ## Samples from counterfactual groups (max.combs)
         mdata <- stabit(x=idata, selection = list(add="pi",ieq="wst"), 
                         outcome = list(add="pi",ieq="wst"), simulation="none", 
-                        method=method, niter=niter, max.combs=250, seed=123)
+                        method=method, niter=niter, max.combs=250, seed=123, censored=1)
       }
       
       h <- mdata$coefs[!names(mdata$coefs) %in% "eta"]
