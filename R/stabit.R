@@ -104,7 +104,7 @@
 #' @param dropOnes logical: if \code{TRUE} one-group-markets are exluded from estimation.
 #' @param interOut two-colum matrix indicating the indices of columns in \code{X} that should be interacted in estimation. Use 0 for none.
 #' @param interSel two-colum matrix indicating the indices of columns in \code{W} that should be interacted in estimation. Use 0 for none.
-#' @param standardize logical: if \code{TRUE} the independent variables will be standardized by dividing by their standard deviation.
+#' @param standardize numeric: if \code{standardize>0} the independent variables will be standardized by dividing by \code{standardize} times their standard deviation. Defaults to no standardization \code{standardize=0}. 
 #' @param niter number of iterations to use for the Gibbs sampler.
 #' 
 #' @export
@@ -251,7 +251,7 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
                    roommates=FALSE, simulation="none", seed=123, max.combs=Inf,
                    method="NTU", binary=FALSE, offsetOut=0, offsetSel=0, 
                    marketFE=FALSE, censored=0, gPrior=FALSE, dropOnes=FALSE, interOut=0, interSel=0, 
-                   standardize=FALSE, niter=10){
+                   standardize=0, niter=10){
   
   if(roommates==TRUE & method%in%c("NTU","TU")){stop("structural model not implemented for roommates data!")}
   
@@ -659,7 +659,7 @@ unlistData <- function(x, roommates=FALSE){
 
 design.matrix <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=NULL, 
                           roommates=FALSE, simulation=FALSE, assignment="NTU", seed=123, max.combs=Inf,
-                          standardize=FALSE){  
+                          standardize=0){  
   
   # --------------------------------------------------------------------
   # R-code (www.r-project.org) to obtain a design matrix for the analysis
@@ -1285,11 +1285,11 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
   ## STANDARDIZATION ##
   #####################
   
-  if(standardize == TRUE){
+  if(standardize > 0){
     
     ## standardize variance of exogneous variables to 1
     std <- apply(do.call(rbind, data.combs), 2, sd)
-    data.combs <- lapply(data.combs, function(i) as.data.frame(t(apply(i,1,function(j) j/(std)) )))
+    data.combs <- lapply(data.combs, function(i) as.data.frame(t(apply(i,1,function(j) j/(standardize*std)) )))
     
   }
   

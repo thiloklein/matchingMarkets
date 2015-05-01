@@ -1,20 +1,22 @@
 # matchingMarkets
 
-> Structural Estimator and Algorithms for the Analysis of Stable Matchings.
+> R package: Structural Estimators and Algorithms for the Analysis of Stable Matchings.
 
 # Functions
 
-`matchingMarkets` currently comes with one estimator:
+`matchingMarkets` comes with two estimators:
 
-* `stabit`: Implements a Bayes estimator that corrects for sample selection in matching markets when the selection process is a one-sided matching game.
+* `stabit`: Implements a Bayes estimator that corrects for sample selection in matching markets when the selection process is a one-sided matching game (i.e. group formation).
+
+* `stabit2`: Implements the Bayes estimator for a two-sided matching game (i.e. the [college admissions](http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems) and [stable marriage](http://en.wikipedia.org/wiki/Stable_marriage_problem) problems).
 
 and three algorithms that can be used to simulate matching data:
 
-* `daa`: Gale-Shapley Deferred Acceptance Algorithm. Finds stable matchings in two-sided matching markets. Implemented for both the Stable Marriage Problem (one-to-one matching) and the College Admissions Problem (many-to-one matching).
+* `daa`: Gale-Shapley Deferred Acceptance Algorithm. Finds stable matchings in two-sided matching markets. Implemented for both the [stable marriage problem](http://en.wikipedia.org/wiki/Stable_marriage_problem) (one-to-one matching) and the [college admissions problem](http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems) (many-to-one matching).
 
-* `plp`: Partitioning Linear Programme. Finds stable matchings in the Roommates Problem (one-sided matching market) with transferable utility.
+* `plp`: Partitioning Linear Programme. Finds stable matchings in the [roommates problem](https://en.wikipedia.org/wiki/Stable_roommates_problem) (one-sided matching market) with transferable utility.
 
-* `ttc`: Top-Trading-Cycles Algorithm. Finds stable matchings in the Housing Market Probem.
+* `ttc`: Top-Trading-Cycles Algorithm. Finds stable matchings in the [housing market problem](http://en.wikipedia.org/wiki/Herbert_Scarf#8._The_Housing_Market).
 
 # Installation
 

@@ -80,8 +80,8 @@ stabsim <- function(m, ind, seed=123, singles=NULL, gpm=2){
   Ncols <- max(table(m.id))
   i.id  <- 1:Nrows
 
-  pi  <- runif(n=Nrows,min=0,max=1)
-  #pi  <- runif(n=Nrows,min=0.5,max=1)
+  #pi  <- runif(n=Nrows,min=0,max=1)
+  pi  <- runif(n=Nrows,min=0.5,max=1)
   
   #wst <- unlist(c(by(m.id, m.id, function(i){
   #  l <- length(i) # market size

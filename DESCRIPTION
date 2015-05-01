@@ -7,10 +7,10 @@ Imports:
     lpSolve (>= 5.6.6),
     partitions
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress (>= 0.2)
-Title: Structural Estimator and Algorithms for the Analysis of Stable Matchings
+Title: Structural Estimators and Algorithms for the Analysis of Stable Matchings
 Author: Thilo Klein
 Maintainer: Thilo Klein <thilo@klein.co.uk>
-Description: Implements a structural estimator to correct for the
+Description: Implements structural estimators to correct for the
     sample selection bias from observed outcomes in matching markets. Also
     contains R code for matching algorithms such as the deferred-acceptance
     algorithm for college admissions, the top-trading-cycles algorithm for

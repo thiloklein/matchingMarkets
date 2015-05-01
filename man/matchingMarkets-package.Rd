@@ -23,13 +23,13 @@
   The \code{matchingMarkets} package comprises
   \enumerate{
   \item \emph{Bayes estimators}. The estimators implemented in function \code{\link{stabit}} 
-  correct for the selection bias from endogenous matching. 
+  and \code{stabit2} correct for the selection bias from endogenous matching. 
 
   The current package version provides solutions for two commonly observed matching 
   processes: 
-  (i) the \emph{group formation problem} with fixed group sizes and 
-  (ii) the \emph{roommates problem} with transferable utility. 
-  Work on (iii) the college admissions problem is still in progress.
+  (i) the \emph{group formation problem} with fixed group sizes, 
+  (ii) the \emph{roommates problem} with transferable utility, and
+  (iii) the college admissions problem.
   These processes determine which matches are observed -- 
   and which are not -- and this is a sample selection problem.
   

@@ -9,7 +9,7 @@ stabit(x, m.id = "m.id", g.id = "g.id", R = "R", selection = NULL,
   outcome = NULL, roommates = FALSE, simulation = "none", seed = 123,
   max.combs = Inf, method = "NTU", binary = FALSE, offsetOut = 0,
   offsetSel = 0, marketFE = FALSE, censored = 0, gPrior = FALSE,
-  dropOnes = FALSE, interOut = 0, interSel = 0, standardize = FALSE,
+  dropOnes = FALSE, interOut = 0, interSel = 0, standardize = 0,
   niter = 10)
 }
 \arguments{
@@ -67,7 +67,7 @@ are 0:not censored, 1:censored from below, 2:censored from above.}
 
 \item{interSel}{two-colum matrix indicating the indices of columns in \code{W} that should be interacted in estimation. Use 0 for none.}
 
-\item{standardize}{logical: if \code{TRUE} the independent variables will be standardized by dividing by their standard deviation.}
+\item{standardize}{numeric: if \code{standardize>0} the independent variables will be standardized by dividing by \code{standardize} times their standard deviation. Defaults to no standardization \code{standardize=0}.}
 
 \item{niter}{number of iterations to use for the Gibbs sampler.}
 }
