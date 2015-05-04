@@ -87,9 +87,9 @@ mce <- function(seed, niter, N, n, type, method){
       ## individual variables of group members and draws -- set.seed(seed) -- of unobservables    
       #! set.seed(seed) # set seed for draw of error terms
       #! idata[,c("xi.i","eta.i")] <- matrix(rnorm(2*dim(idata)[1]), ncol=2) # draw new xi and eta
-      mdata <- stabit(x=idata, selection = list(inv="pi",ieq="wst"), 
-                      outcome = list(inv="pi",ieq="wst"), simulation="NTU", 
-                      method=method, niter=niter, seed=seed, censored=1, standardize=3)
+      mdata <- stabit(x=idata, selection = list(ieq="wst"), 
+                      outcome = list(ieq="wst"), simulation="NTU", 
+                      method=method, niter=niter, seed=seed, censored=1)
       
       h <- mdata$coefs[!names(mdata$coefs) %in% "eta"]
       h <- unlist(lapply(h, function(x) x[,1]))
@@ -102,9 +102,9 @@ mce <- function(seed, niter, N, n, type, method){
       ## individual variables of group members and draws -- set.seed(seed) -- of unobservables    
       #! set.seed(seed) # set seed for draw of error terms
       #! idata[,c("xi.i","eta.i")] <- matrix(rnorm(2*dim(idata)[1]), ncol=2) # draw new xi and eta
-      mdata <- stabit(x=idata, selection = list(inv="pi",ieq="wst"), 
-                      outcome = list(inv="pi",ieq="wst"), simulation="NTU", 
-                      method="model.frame", seed=seed, standardize=3)
+      mdata <- stabit(x=idata, selection = list(ieq="wst"), 
+                      outcome = list(ieq="wst"), simulation="NTU", 
+                      method="model.frame", seed=seed)
       
       ####################################
       ## B-1. Define equilibrium groups ##
@@ -143,18 +143,18 @@ mce <- function(seed, niter, N, n, type, method){
         
         ## Generates independent variables for sampled group members, 
         ## keeping outcomes fixed (simulation="none")
-        mdata <- stabit(x=idata, selection = list(inv="pi",ieq="wst"), 
-                        outcome = list(inv="pi",ieq="wst"), simulation="none", 
-                        method=method, niter=niter, censored=1, standardize=3)
+        mdata <- stabit(x=idata, selection = list(ieq="wst"), 
+                        outcome = list(ieq="wst"), simulation="none", 
+                        method=method, niter=niter, censored=1)
         
       } else if(type == "counterfactual.groups"){
         
         ## Generates independent variables for sampled group members, 
         ## keeping outcomes fixed (simulation="none"). 
         ## Samples from counterfactual groups (max.combs)
-        mdata <- stabit(x=idata, selection = list(inv="pi",ieq="wst"), 
-                        outcome = list(inv="pi",ieq="wst"), simulation="none", 
-                        method=method, niter=niter, max.combs=250, seed=123, censored=1, standardize=3)
+        mdata <- stabit(x=idata, selection = list(ieq="wst"), 
+                        outcome = list(ieq="wst"), simulation="none", 
+                        method=method, niter=niter, max.combs=250, seed=123, censored=1)
       }
       
       h <- mdata$coefs[!names(mdata$coefs) %in% "eta"]

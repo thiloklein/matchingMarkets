@@ -1289,7 +1289,9 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
     
     ## standardize variance of exogneous variables to 1
     std <- apply(do.call(rbind, data.combs), 2, sd)
-    data.combs <- lapply(data.combs, function(i) as.data.frame(t(apply(i,1,function(j) j/(standardize*std)) )))
+    for(i in 1:numvills){
+      data.combs[[i]] <- data.combs[[i]] / (standardize*std)
+    }
     
   }
   
@@ -1429,19 +1431,29 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
           
           ## Swap groups at position 1 and 2 with equilibrium groups equ1 and equ2
           if(sum(equ1,equ2)!=3){ ## otherwise (equ1, equ2) are already in position (1,2)
-            data.combs[[i]] <- rbind( data.combs[[i]][c(equ1,equ2),], 
-                                      data.combs[[i]][1,], data.combs[[i]][(3:(l/2+1))[-(min(equ1,equ2)-2)],], 
-                                      data.combs[[i]][2,], data.combs[[i]][((l/2+2):l)[-(min(equ1,equ2)-2)],] )
+            #data.combs[[i]] <- rbind( data.combs[[i]][c(equ1,equ2),], 
+            #                          data.combs[[i]][1,], data.combs[[i]][(3:(l/2+1))[-(min(equ1,equ2)-2)],], 
+            #                          data.combs[[i]][2,], data.combs[[i]][((l/2+2):l)[-(min(equ1,equ2)-2)],] )
+            nvars <- length(vars)
+            data.combs[[i]][1:dim(data.combs[[i]])[1],] <- rbind( as.matrix( data.combs[[i]][c(equ1,equ2),], ncol=nvars), 
+                                      data.combs[[i]][1,], 
+                                      as.matrix( data.combs[[i]][(3:(l/2+1))[-(min(equ1,equ2)-2)],], ncol=nvars), 
+                                      data.combs[[i]][2,], 
+                                      as.matrix( data.combs[[i]][((l/2+2):l)[-(min(equ1,equ2)-2)],], ncol=nvars) )
+            #colnames(data.combs[[i]]) <- vars
+            #colnames(data.combs[[i]]) <- gsub("@",".",names(data.combs[[i]]))
+            
             V[[i]]          <- c( V[[i]][c(equ1,equ2)], 
                                   V[[i]][1], V[[i]][(3:(l/2+1))[-(min(equ1,equ2)-2)]], 
                                   V[[i]][2], V[[i]][((l/2+2):l)[-(min(equ1,equ2)-2)]] )
+            
             eta[[i]]        <- c( eta[[i]][c(equ1,equ2)], 
                                   eta[[i]][1], eta[[i]][(3:(l/2+1))[-(min(equ1,equ2)-2)]], 
                                   eta[[i]][1], eta[[i]][((l/2+2):l)[-(min(equ1,equ2)-2)]] )
           }
           xi[[i]]      <- xi[[i]][c(equ1,equ2)]
           epsilon[[i]] <- epsilon[[i]][c(equ1,equ2)]
-          R[[i]] <- apply(data.combs[[i]][1:2,], 1, sum) + epsilon[[i]]
+          R[[i]] <- -1*apply(as.matrix( data.combs[[i]][1:2,], nrow=2), 1, sum) + epsilon[[i]]
           #R[[i]] <- ifelse(R[[i]] > 1, 1, 0) # uncomment me!
           
           E[[i]] <- thiscmat[c(equ1,equ2),]
@@ -1454,7 +1466,7 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
           delta        <- 0.5
           epsilon[[i]] <- delta*eta[[i]] + xi[[i]]
           
-          R[[i]] <- apply(data.combs[[i]][1,], 1, sum) + epsilon[[i]]
+          R[[i]] <- sum(data.combs[[i]]) + epsilon[[i]]
           
         }
       }
@@ -1485,12 +1497,16 @@ designmatrix <- function(selection, outcome, x, roommates=FALSE, simulation=FALS
     
   } else{
     
-    W <- lapply(1:dim(spec)[1], function(i) data.combs[[i]][,W.names])
+    #W <- lapply(1:dim(spec)[1], function(i) data.combs[[i]][,W.names])
+    W <- lapply(1:dim(spec)[1], function(i) subset(data.combs[[i]], names(data.combs[[i]]) %in% W.names))
     X <- lapply(1:length(data.combs), function(i){ 
       if(i <= dim(spec)[1]){
-        data.combs[[i]][1:2,X.names]
+        #data.combs[[i]][1:2,X.names]
+        subset(data.combs[[i]], names(data.combs[[i]]) %in% X.names & 
+                 rownames(data.combs[[i]]) == rownames(data.combs[[i]])[1:2])
       } else{
-        data.combs[[i]][,X.names]
+        #data.combs[[i]][,X.names]
+        subset(data.combs[[i]], names(data.combs[[i]]) %in% X.names)
       }
     })
     return(list(D=D, R=R, W=W, X=X, V=V, P=P, epsilon=epsilon, eta=eta, xi=xi, combs=combs, E=E))
