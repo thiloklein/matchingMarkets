@@ -23,12 +23,14 @@
 #' or women (in the stable marriage problem) in the market. Defaults to \code{ncol(c.prefs)}.
 #' @param nSlots vector of length \code{nColleges} indicating the number of places (i.e. 
 #' quota) of each college. Defaults to \code{rep(1,nColleges)} for the marriage problem.
-#' @param s.prefs matrix of dimension \code{nColleges} \code{x} \code{nStudents} with the \code{i}th 
-#' column containing student \code{i}'s ranking over colleges in decreasing order of 
-#' preference (i.e. most preferred first).
-#' @param c.prefs matrix of dimension \code{nStudents} \code{x} \code{nColleges} with the \code{j}th 
-#' column containing college \code{j}'s ranking over students in decreasing order of 
-#' preference (i.e. most preferred first).
+#' @param s.prefs matrix of dimension \code{nColleges} \code{x} \code{nStudents}. The \code{j}th 
+#' column contains student \code{j}'s ranking over colleges in decreasing order of preference; 
+#' i.e. with '1' being the most preferred. Specifically, cell \code{[i,j]} gives the position of 
+#' college \code{i} in student \code{j}'s preference ranking.
+#' @param c.prefs matrix of dimension \code{nStudents} \code{x} \code{nColleges} with the \code{i}th 
+#' column containing college \code{i}'s ranking over students in decreasing order of preference; 
+#' i.e. with '1' being the most preferred. Specifically, cell \code{[j,i]} gives the position of 
+#' student \code{j} in college \code{i}'s preference ranking.
 #' @export
 #' @section Minimum required arguments:
 #' \code{daa} requires the following combination of arguments, subject to the matching problem.
