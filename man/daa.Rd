@@ -17,12 +17,12 @@ or women (in the stable marriage problem) in the market. Defaults to \code{ncol(
 \item{nSlots}{vector of length \code{nColleges} indicating the number of places (i.e.
 quota) of each college. Defaults to \code{rep(1,nColleges)} for the marriage problem.}
 
-\item{s.prefs}{matrix of dimension \code{nColleges} \code{x} \code{nStudents} with the \code{i}th
-column containing student \code{i}'s ranking over colleges in decreasing order of
+\item{s.prefs}{matrix of dimension \code{nColleges} \code{x} \code{nStudents} with the \code{j}th
+column containing student \code{j}'s ranking over colleges in decreasing order of
 preference (i.e. most preferred first).}
 
-\item{c.prefs}{matrix of dimension \code{nStudents} \code{x} \code{nColleges} with the \code{j}th
-column containing college \code{j}'s ranking over students in decreasing order of
+\item{c.prefs}{matrix of dimension \code{nStudents} \code{x} \code{nColleges} with the \code{i}th
+column containing college \code{i}'s ranking over students in decreasing order of
 preference (i.e. most preferred first).}
 }
 \value{
