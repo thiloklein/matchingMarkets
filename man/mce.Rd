@@ -4,7 +4,7 @@
 \alias{mce}
 \title{MC Experiments}
 \usage{
-mce(seed, niter, N, n, type, method)
+mce(seed, niter, N, n, m, type, method)
 }
 \arguments{
 \item{seed}{seed value for Monte Carlo Experiment}
@@ -14,6 +14,8 @@ mce(seed, niter, N, n, type, method)
 \item{N}{group size (population)}
 
 \item{n}{group size (sample)}
+
+\item{m}{number of markets}
 
 \item{type}{type of the MC Experiment. Either \code{group.members} for randomly sampled group members or \code{counterfactual.groups} for randomly sampled number of counterfactual (or feasible) groups in selection equation (capped at limit max.combs=250)}
 
@@ -34,10 +36,10 @@ library(foreach); library(doSNOW)
 cl <- makeCluster(4); registerDoSNOW(cl)
 
 ## 3. Define foreach loop function
-mce.add <- function(mciter, niter, N, n, type, method){
+mce.add <- function(mciter, niter, N, n, m, type, method){
   h <- foreach(i=1:mciter) \%dopar\% {
     library(matchingMarkets)
-    mce(seed=i,niter, N, n, type, method)
+    mce(seed=i,niter, N, n, m, type, method)
   }
   do.call(rbind, h)
 }
@@ -45,21 +47,21 @@ mce.add <- function(mciter, niter, N, n, type, method){
 ## 4. Run siumlations:
 
 ## 4-a. Benchmark study
-exp.5.5.ols <- mce.add(mciter=mciter, niter=niter, N=5, n=5,
+exp.5.5.ols <- mce.add(mciter=mciter, niter=niter, N=5, n=5, m=40,
                        type="group.members", method="outcome")
-exp.5.5.ntu <- mce.add(mciter=mciter, niter=niter, N=5, n=5,
+exp.5.5.ntu <- mce.add(mciter=mciter, niter=niter, N=5, n=5, m=40,
                        type="group.members", method="NTU")
 
 ## 4-b. Experiment 1: randomly sampled group members
-exp.6.5.ols <- mce.add(mciter=mciter, niter=niter, N=6, n=5,
+exp.6.5.ols <- mce.add(mciter=mciter, niter=niter, N=6, n=5, m=40,
                        type="group.members", method="outcome")
-exp.6.5.ntu <- mce.add(mciter=mciter, niter=niter, N=6, n=5,
+exp.6.5.ntu <- mce.add(mciter=mciter, niter=niter, N=6, n=5, m=40,
                        type="group.members", method="NTU")
 
 ## 4-c. Experiment 2: randomly sampled counterfactual groups
-exp.6.6.ols <- mce.add(mciter=mciter, niter=niter, N=6, n=6,
+exp.6.6.ols <- mce.add(mciter=mciter, niter=niter, N=6, n=6, m=40,
                        type="counterfactual.groups", method="outcome")
-exp.6.6.ntu <- mce.add(mciter=mciter, niter=niter, N=6, n=6,
+exp.6.6.ntu <- mce.add(mciter=mciter, niter=niter, N=6, n=6, m=40,
                        type="counterfactual.groups", method="NTU")
 
 ## 5. Stop parallel backend

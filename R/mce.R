@@ -16,6 +16,7 @@
 #' @param niter number of draws in estimation
 #' @param N group size (population)
 #' @param n group size (sample)
+#' @param m number of markets
 #' @param type type of the MC Experiment. Either \code{group.members} for randomly sampled group members or \code{counterfactual.groups} for randomly sampled number of counterfactual (or feasible) groups in selection equation (capped at limit max.combs=250)
 #' @param method either \code{group.members} or \code{counterfactual.groups}
 #' 
@@ -35,10 +36,10 @@
 #' cl <- makeCluster(4); registerDoSNOW(cl)
 #' 
 #' ## 3. Define foreach loop function
-#' mce.add <- function(mciter, niter, N, n, type, method){
+#' mce.add <- function(mciter, niter, N, n, m, type, method){
 #'   h <- foreach(i=1:mciter) %dopar% {
 #'     library(matchingMarkets)
-#'     mce(seed=i,niter, N, n, type, method)
+#'     mce(seed=i,niter, N, n, m, type, method)
 #'   }
 #'   do.call(rbind, h)
 #' }
@@ -46,27 +47,27 @@
 #' ## 4. Run siumlations:
 #' 
 #' ## 4-a. Benchmark study
-#' exp.5.5.ols <- mce.add(mciter=mciter, niter=niter, N=5, n=5, 
+#' exp.5.5.ols <- mce.add(mciter=mciter, niter=niter, N=5, n=5, m=40,
 #'                        type="group.members", method="outcome")
-#' exp.5.5.ntu <- mce.add(mciter=mciter, niter=niter, N=5, n=5, 
+#' exp.5.5.ntu <- mce.add(mciter=mciter, niter=niter, N=5, n=5, m=40, 
 #'                        type="group.members", method="NTU")
 #' 
 #' ## 4-b. Experiment 1: randomly sampled group members
-#' exp.6.5.ols <- mce.add(mciter=mciter, niter=niter, N=6, n=5, 
+#' exp.6.5.ols <- mce.add(mciter=mciter, niter=niter, N=6, n=5, m=40,
 #'                        type="group.members", method="outcome")
-#' exp.6.5.ntu <- mce.add(mciter=mciter, niter=niter, N=6, n=5, 
+#' exp.6.5.ntu <- mce.add(mciter=mciter, niter=niter, N=6, n=5, m=40,
 #'                        type="group.members", method="NTU")
 #' 
 #' ## 4-c. Experiment 2: randomly sampled counterfactual groups
-#' exp.6.6.ols <- mce.add(mciter=mciter, niter=niter, N=6, n=6, 
+#' exp.6.6.ols <- mce.add(mciter=mciter, niter=niter, N=6, n=6, m=40, 
 #'                        type="counterfactual.groups", method="outcome")
-#' exp.6.6.ntu <- mce.add(mciter=mciter, niter=niter, N=6, n=6, 
+#' exp.6.6.ntu <- mce.add(mciter=mciter, niter=niter, N=6, n=6, m=40, 
 #'                        type="counterfactual.groups", method="NTU")
 #' 
 #' ## 5. Stop parallel backend
 #' stopCluster(cl)
 #' }
-mce <- function(seed, niter, N, n, type, method){
+mce <- function(seed, niter, N, n, m, type, method){
     
     ######################
     ## A. Generate data ##
@@ -76,7 +77,7 @@ mce <- function(seed, niter, N, n, type, method){
     l <- N-n # number of individuals excluded by random sampling of 'n' of 'N' members
     
     ## Individual-level independent variables are fixed (seed=123) in repeated samples
-    idata <- stabsim(m=40, ind=N, seed=123, gpm=2)
+    idata <- stabsim(m=m, ind=N, seed=123, gpm=2)
     
     if(l == 0 & type != "counterfactual.groups"){ 
       ## If sample group size 'n' equals population group size 'N'
