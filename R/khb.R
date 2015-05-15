@@ -27,13 +27,13 @@
 #' @references Karlson, K.B., A. Holm and R. Breen (2012). Comparing regression coefficients between same-sample nested models using logit and probit: A new method, \emph{Sociological Methodology}, 42(1):286--313.
 #' 
 #' @examples
-#' ## 1. load results from Klein (2014), Table 8
-#'  data(klein14)
-#'  M <- klein14$model.list
+#' ## 1. load results from Klein (2015a)
+#'  data(klein15a)
+#'  M <- klein15a$model.list
 #' 
 #' ## 2. extract variables
-#'  X <- do.call(rbind.data.frame, M$X); X <- X[,!names(X)=="0"]
-#'  eta <- c(klein14$coefs$eta, rep(0, length(M$X)-length(M$W)))
+#'  X <- do.call(rbind.data.frame, M$X)
+#'  eta <- c(klein15a$coefs$eta, rep(0, length(M$X)-length(M$W)))
 #'  X <- cbind(X,eta)
 #'  y <- unlist(M$R)
 #' 

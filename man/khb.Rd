@@ -19,13 +19,13 @@ coefficients from same-sample nested logit and probit models. The test procedure
 Karlson et al (2012), Section 3.4.
 }
 \examples{
-## 1. load results from Klein (2014), Table 8
- data(klein14)
- M <- klein14$model.list
+## 1. load results from Klein (2015a)
+ data(klein15a)
+ M <- klein15a$model.list
 
 ## 2. extract variables
- X <- do.call(rbind.data.frame, M$X); X <- X[,!names(X)=="0"]
- eta <- c(klein14$coefs$eta, rep(0, length(M$X)-length(M$W)))
+ X <- do.call(rbind.data.frame, M$X)
+ eta <- c(klein15a$coefs$eta, rep(0, length(M$X)-length(M$W)))
  X <- cbind(X,eta)
  y <- unlist(M$R)
 

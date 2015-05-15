@@ -23,11 +23,11 @@
 #' @keywords summary
 #' 
 #' @examples
-#' ## 1. load results from Klein (2014), Table 8
-#'  data(klein14)
+#' ## 1. load results from Klein (2015a)
+#'  data(klein15a)
 #' 
 #' ## 2. apply mfx function and print results
-#'  mfx(m=klein14)
+#'  mfx(m=klein15a)
 mfx <- function(m,toLatex=FALSE){
   
   if(!is.null(m$coefs$alpha)){ ## Selectiom and Outcome Eqns

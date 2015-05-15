@@ -111,7 +111,7 @@ determines which matches are observed (\eqn{D=1}) and which are not (\eqn{D=0}).
 Here, \eqn{V} is a vector of latent valuations of \emph{all feasible} matches, ie observed and
 unobserved, and \eqn{1[.]} is the Iverson bracket.
 A match is observed if its match valuation is in the set of valuations \eqn{\Gamma}
-that satisfy the equilibrium condition (see Klein, 2014). This condition differs for matching
+that satisfy the equilibrium condition (see Klein, 2015a). This condition differs for matching
 games with transferable and non-transferable utility and can be specified using the \code{method}
 argument.
 The match valuation \eqn{V} is a linear function of \eqn{W}, a matrix of characteristics for
@@ -252,23 +252,28 @@ number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
 ## 3. Get results
  names(fit1)
 
-## --- REPLICATION, Klein (2014), Table 8 ---
+## --- REPLICATION, Klein (2015a) ---
 ## 1. Load data
- data(baac00)
-## 2. Run Gibbs sampler
- fit2 <- stabit(x=baac00, selection = list(add="pi",int="pi",ive="occ",ieq="wst"),
-        outcome = list(add="pi",int="pi",ive="occ",ieq="wst",
-        add=c("loan_size","loan_size2","lngroup_agei")),
-        method="NTU", binary=TRUE, gPrior=TRUE, marketFE=TRUE, niter=2000)
-## 3. Get results
- names(fit2)
+ data(baac00); head(baac00)
+## 2. standardise variables
+ baac00$pi <- baac00$pi + (1-baac00$pi)*0.5
+ baac00$loan_size <- baac00$loan_size/sd(baac00$loan_size)
+ baac00$loan_size2 <- baac00$loan_size^2
+ baac00$lngroup_agei <- baac00$lngroup_agei/sd(baac00$lngroup_agei)
+## 3. Run Gibbs sampler
+ klein15a <- stabit(x=baac00, selection = list(inv="pi",ieq="wst"),
+        outcome = list(add="pi",inv="pi",ieq="wst",
+        add=c("loan_size","loan_size2","lngroup_agei")), offsetOut=1,
+        method="NTU", binary=TRUE, gPrior=TRUE, marketFE=TRUE, niter=800000)
+## 4. Get results
+ mfx(klein15a)
 }
 }
 \author{
 Thilo Klein
 }
 \references{
-Klein, T. (2014). Stable matching in microcredit: Implications for market design & econometric analysis, PhD thesis,
+Klein, T. (2015a). Stable matching in microcredit: Implications for market design & econometric analysis, PhD thesis,
 \emph{University of Cambridge}.
 
 Zellner, A. (1986). \emph{On assessing prior distributions and Bayesian regression analysis with g-prior distributions},

@@ -13,7 +13,7 @@
    The 292 borrowers are nested within 68 groups and 39 markets. This nestedness
    makes the dataset particularly relevant for matching applications.
    A more complete discussion of the data is
-   found in Ahlin (2009), Section 3, and Klein (2014), Section 6.
+   found in Ahlin (2009), Section 3, and Klein (2015a).
 }
 
 \usage{data(baac00)}
@@ -52,7 +52,7 @@ Agricultural Cooperatives (BAAC) Annual Resurvey, 2000. Available at
 Ahlin, C. (2009). Matching for credit: Risk and diversification in Thai microcredit groups.
 Working Paper 251, \emph{Bureau for Research and Economic Analysis of Development}.
 
-Klein, T. (2014). Stable matching in microcredit: Implications for market design & econometric analysis, PhD thesis, \emph{University of Cambridge}.
+Klein, T. (2015a). Stable matching in microcredit: Implications for market design & econometric analysis, PhD thesis, \emph{University of Cambridge}.
 }
 
 \keyword{datasets}
