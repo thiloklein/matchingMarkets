@@ -18,6 +18,8 @@
 #' 
 #' @export
 #' 
+#' @import stats
+#' 
 #' @author Thilo Klein 
 #' 
 #' @keywords summary

@@ -80,7 +80,7 @@
   \itemize{
   \item \emph{Why can I not use the classic Heckman correction?}
 
-        Estimators such as the Heckman (1979) correction (in package \href{http://cran.r-project.org/web/packages/sampleSelection/index.html}{\code{sampleSelection}}) or double selection models are 
+        Estimators such as the Heckman (1979) correction (in package \href{http://cran.r-project.org/package=sampleSelection}{\code{sampleSelection}}) or double selection models are 
         inappropriate for this class of selection problems. To see this, note that 
         a simple first stage discrete choice model assumes that an observed match 
         reveals match partners' preferences over each other. In a matching market, 
@@ -119,14 +119,14 @@
 \section{How to cite this package}{
   Whenever using this package, please cite as
 
-  Klein, T. (2015). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.1-4.
+  Klein, T. (2015). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.1-5.
 }
 
 
 
 
 \seealso{
-  \href{http://cran.r-project.org/web/packages/sampleSelection/index.html}{sampleSelection}
+  \href{http://cran.r-project.org/package=sampleSelection}{sampleSelection}
 }
 
 

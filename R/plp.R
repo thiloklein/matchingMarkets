@@ -25,7 +25,7 @@
 #' \item{Equilibrium.groups}{matrix that gives the \code{N/2} equilibrium pairs and equilibrium partners' mutual valuations.}
 #' @author Thilo Klein 
 #' @keywords algorithms
-#' @import lpSolve
+#' @import lpSolve stats
 #' @references Quint, T. (1991). Necessary and sufficient conditions for balancedness 
 #' in partitioning games. \emph{Mathematical Social Sciences}, 22(1):87--91.
 #' @examples

@@ -21,6 +21,8 @@
 #' 
 #' @export
 #' 
+#' @import stats
+#' 
 #' @return
 #' \code{stabsim} returns a data frame with the randomly generated variables 
 #' mimicking those in dataset \code{\link{baac00}}.

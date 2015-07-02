@@ -111,7 +111,7 @@
 #' 
 #' @useDynLib matchingMarkets
 #' 
-#' @import partitions lpSolve
+#' @import partitions lpSolve stats
 #' @importFrom Rcpp evalCpp
 #' 
 #' @aliases stabitCpp

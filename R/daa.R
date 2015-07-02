@@ -30,6 +30,7 @@
 #' column containing college \code{i}'s ranking over students in decreasing order of 
 #' preference (i.e. most preferred first).
 #' @export
+#' @import stats
 #' @section Minimum required arguments:
 #' \code{daa} requires the following combination of arguments, subject to the matching problem.
 #' \describe{
