@@ -55,12 +55,12 @@ khb <- function(X,y,z){
   ## -------------------------------------------------------
   
   ## --- Reduced and Full model, Equations (1) and (2) on page 289 ---
-  glmR <- glm(y ~ -1 + ., family=binomial(link=probit),data=X[,-which(names(X)==z)])
-  glmF <- glm(y ~ -1 + ., family=binomial(link=probit),data=X)
+  glmR <- glm(y ~ -1 + ., family=binomial(link="probit"),data=X[,-which(names(X)==z)])
+  glmF <- glm(y ~ -1 + ., family=binomial(link="probit"),data=X)
 
   ## --- Auxiliary regression, Equation (8) on page 292 ---
   lmA <- lm(X$eta ~ -1 + ., data=X)
-  glmFs <- glm(y ~ -1 + . + lmA$resid, family=binomial(link=probit),data=X[,-which(names(X)==z)])
+  glmFs <- glm(y ~ -1 + . + lmA$resid, family=binomial(link="probit"),data=X[,-which(names(X)==z)])
 
   ## --- Recovery of parameters from Full model and Auxiliary regression ---
   b.yx.zt <- glmFs$coef[!names(glmFs$coef)%in%c("(Intercept)","lmA$resid")]
