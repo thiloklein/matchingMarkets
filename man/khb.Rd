@@ -36,7 +36,7 @@ khb(X=X, y=y, z="eta")
 Thilo Klein
 }
 \references{
-Karlson, K.B., A. Holm and R. Breen (2012). Comparing regression coefficients between same-sample nested models using logit and probit: A new method, \emph{Sociological Methodology}, 42(1):286--313.
+Karlson, K.B., A. Holm and R. Breen (2012). Comparing regression coefficients between same-sample nested models using logit and probit: A new method. \emph{Sociological Methodology}, 42(1):286--313.
 }
 \keyword{summary}
 

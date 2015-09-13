@@ -1,13 +1,16 @@
 Package: matchingMarkets
-Version: 0.1-5
-Depends:
+Version: 0.1-6
+Depends: 
     R (>= 3.0.2)
-Imports:
+Imports: 
     Rcpp (>= 0.11.2),
     lpSolve (>= 5.6.6),
     partitions,
     stats
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress (>= 0.2)
+Suggests: knitr,
+    testthat
+VignetteBuilder: knitr
 Title: Structural Estimators and Algorithms for the Analysis of Stable Matchings
 Author: Thilo Klein
 Maintainer: Thilo Klein <thilo@klein.co.uk>

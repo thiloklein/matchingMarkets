@@ -24,6 +24,9 @@
 #' 
 #' @keywords summary
 #' 
+#' @references Klein, T. (2015a). \href{https://ideas.repec.org/p/cam/camdae/1521.html}{Does Anti-Diversification Pay? A One-Sided Matching Model of Microcredit}.
+#' \emph{Cambridge Working Papers in Economics}, #1521.
+#' 
 #' @examples
 #' ## 1. load results from Klein (2015a)
 #'  data(klein15a)

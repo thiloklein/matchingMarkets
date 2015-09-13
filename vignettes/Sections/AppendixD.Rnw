@@ -1,0 +1,41 @@
+\section{Measurement error in group-level analysis} \label{Appendix:MeasurementError}
+
+The 1997 baseline survey used in \citet{Ahlin2007} restricts their measures of project covariation to the village level rather than the group level variable studied in this paper. Their $worst\_year$ measure therefore gives the probability that two randomly chosen agents from the same \textit{village} are of the same exposure type. This measure is subject to a measurement error that results in an upward bias of the coefficient pertaining to project covariation, which could explain the rather surprising finding that covariation improves repayment in \citet{Ahlin2007}. The endogeneity problem of village-level project covariation measure is stated and derived formally in Proposition \ref{Prop:Digression}.
+
+
+\begin{myprop} \label{Prop:Digression}
+The village-level measure in \citet{Ahlin2007} leads to an upward bias in the regression coefficient unless the matching into groups is random w.r.t.\ exposure type.
+\end{myprop}
+
+
+\begin{proof} % Measurement error in village-level covariation
+I illustrate the bias using two exposure types $A$ and $B$ with proportion $\theta_A$ and $\theta_B:=1-\theta_A$ respectively, \citep[see][]{Ahlin2009}. The probability of drawing two agents of the same type $s=A,B$ is $\theta_s^2$. The measure used in \citet{Ahlin2007} for village or market $t$ is then simply given by 
+\begin{eqnarray}
+\tilde X_t &=& \sum_{s\in \{A,B\}} \theta_{st}^2. \label{Eqn:WSTrandomMatching}
+\end{eqnarray}
+If agents \textit{do match} on exposure type, i.e.\ they anti-diversify, the true village-level average of this measure will always be higher than the measure used by the authors. For example, under assortative matching on exposure type, one group will be homogeneous in the leading exposure type, say $A$. The probability of drawing two group members of the same type in this group is 1. The residual group has proportion $2\theta_B$ of $B$-types and proportion $2(\theta_A-\frac{1}{2})$ of $A$-types, and the average village-level project covariation is
+\begin{eqnarray}
+ X_t &=& \frac{1}{2}\left[ 1 + \left(2\left[\theta_{At}-\frac{1}{2}\right]\right)^2 + \left(2\theta_{Bt}\right)^2 \right]. \label{Eqn:WSTassortativeMatching}
+\end{eqnarray}
+The values for $X_t$ (assortative matching on exposure type) and $\tilde X_t$ (random matching) are plotted for different levels of $\theta_A$ in Figure \ref{Fig:MeasurementError}. It is clear from the figure and fairly intuitive that anti-diversification results in a higher village-level project covariation; that is, the dotted line is always above the solid line. What is interesting about this figure is that the \textit{measurement error} (shaded area in Figure \ref{Fig:MeasurementError}a) from using $\tilde X_t$, when matching is assortative and the true measure should be $X_t$, is negatively related to the erroneous measure $\tilde X_t$ (see Figure \ref{Fig:MeasurementError}b). Following a standard argument\footnote{Let the true specification be $Y_{Gt} = \beta_0 + \beta_1X_t + \varepsilon_{Gt}$. For this specification it holds that $\mathbb E[\varepsilon_{Gt}|X_t]=0$. Furthermore, let $X_t$ be the true value of $X$ and $\tilde X_t$, the covariation measure that falsely assumes random matching on risk exposure type. We estimate $Y_{Gt}=\beta_0' + \beta_1'\tilde X_t + \varepsilon_{Gt}'$ with $\varepsilon_{Gt}'=\beta_1(X_t-\tilde X_t)+\varepsilon_{Gt}$. If $(X_t-\tilde X_t)$ is negatively correlated with $\tilde X_t$ (see Figure \ref{Fig:MeasurementError}), then $\tilde X_t$ is negatively correlated with the error term $\varepsilon_{Gt}'$ and $\hat\beta_1$ is biased and inconsistent. Because $\beta_1<0$, the bias is upwards.}, this results in an upward bias of the coefficient pertaining to project covariation.
+
+\begin{figure}[htbp!]
+  \caption{Measurement error in group-level variables}
+  \label{Fig:MeasurementError}
+  \centering
+  \begin{subfigure}{.46\textwidth}
+    \caption{Erroneous measure $\tilde X_t$ and correct measure $X_t$ against share of leading exposure type $A$}
+    <<figure-measurement-error-panel-1, echo=FALSE, cache=TRUE, results="hide", fig.height=5.5>>= %
+    @
+  \end{subfigure}
+  \quad
+  \begin{subfigure}{.46\textwidth}
+    \caption{Measurement error $\tilde X_t-X_t$ against erroneous measure $\tilde X_t$}
+    <<figure-measurement-error-panel-2, echo=FALSE, cache=TRUE, results="hide", fig.height=5.5>>=
+    @
+  \end{subfigure}
+\end{figure}
+
+\end{proof}
+
+

@@ -1,0 +1,56 @@
+% \section{Replication code and R package documentation} \label{Section:AppendixE} %studies
+\section{Application in microfinance} \label{Section:Application} %studies
+
+This section contains \proglang{R} code to replicate the results of the structural model in Table III of \citet{Klein2015a}. To begin with, load the individual-level data contained in the \code{matchingMarkets} package \citep{Klein2015b} and standardise the variables. The 292 borrowers, are nested within 68 groups and 39 markets.
+
+<<5a>>=
+## 1. Load individual-level data
+library("matchingMarkets")
+data(baac00)
+baac00$pi           <- baac00$pi + (1-baac00$pi)*0.5
+baac00$loan_size    <- baac00$loan_size/sd(baac00$loan_size)
+baac00$loan_size2   <- baac00$loan_size^2
+baac00$lngroup_agei <- baac00$lngroup_agei/sd(baac00$lngroup_agei)
+@
+\noindent In the next step, specify variables and variable transformations for selection and outcome equation. The function \code{stabit} generates the group-level design matrix and runs the Gibbs sampler with 800,000 iterations to obtain the results of the structural model.
+
+<<5b,eval=FALSE>>=
+## 2-a. Run Gibbs sampler
+klein15a <- stabit(x=baac00, method="NTU", 
+    selection = list(inv="pi",ieq="wst"),
+    outcome   = list(add="pi",inv="pi",ieq="wst",
+                     add=c("loan_size","loan_size2","lngroup_agei")), 
+    offsetOut=1, binary=TRUE, gPrior=TRUE, marketFE=TRUE, niter=800000
+  )
+@
+\noindent Alternatively, the results can be loaded directly from the package.
+<<5c>>=
+## 2-b. Load data and get marginal effects
+data(klein15a)
+mfx(m=klein15a)$mfx.selection[1:2,]
+mfx(m=klein15a)$mfx.outcome[c(1:5,20),]
+@
+The results on the attenuation bias in Experiment 1, Section \ref{Section:MonteCarloResults}, suggests that the difference in the parameter estimates of the Probit and the structural model underestimate the true confounding effect of endogenous matching. 
+Specifically, the selection problem arising from endogenous group formation -- while already strongly significant -- is still likely to be underrated because attenuation results in an \textit{underestimation} of the positive Probit coefficient and, at the same time, an \textit{overestimation} of the negative coefficient from the structural model.
+
+
+\noindent The function \code{khb} implements the statistical test for confounding in Probit models proposed in \citet{Karlson2012}. The function takes as arguments the data frame of independent variables \code{X=X}, the dependent variable \code{y=R}, and the name of the confounding variable \code{z="eta"}.
+
+<<5d,warning=FALSE>>=
+## 3. Test for confounding from sample selection
+## model matrix
+M   <- klein15a$model.list
+X   <- do.call(rbind.data.frame, M$X)
+eta <- c(klein15a$coefs$eta, rep(0, length(M$X)-length(M$W)))
+X   <- cbind(X,eta)
+## outcome
+y <- unlist(M$R)
+## KHB test
+head(khb(X=X, y=y, z="eta"),5)
+@
+\noindent The procedure tests for differences in probit and structural model coefficients. It confirms that the probit estimates for variables \code{wst.ieq}, \code{loan_size2.add} and \code{lngroup_agei} are significantly confounded as a result of endogenous matching.
+%The test rejects the null that the differences in coefficients from probit and structural model in Table \ref{Tab:FixedEffectsModels}, columns 1 and 3, are not attributable to confounding from endogenous matching for variables \code{wst.ieq}, \code{loan_size2.add} and \code{lngroup_agei}.
+
+%% R package documentation
+% \includepdf[pages=-, pagecommand=\thispagestyle{fancy},scale=1]{./inputs/Rd2.pdf}
+

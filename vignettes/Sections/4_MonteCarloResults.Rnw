@@ -1,0 +1,169 @@
+\section{Monte Carlo experiments} \label{Section:MonteCarloResults}
+
+This section presents the \proglang{R}\footnote{The \proglang{R} project for statistical computing \citep{RCoreTeam2014} at http://www.r-project.org/.} software package \pkg{matchingMarkets} \citep{Klein2015b} that implements the estimator developed in Section \ref{Section:Multi-indexSS} and presents results of Monte Carlo experiments.
+%A detailed manual of the package and the code to replicate the results from the structural model in Table \ref{Tab:FixedEffectsModels} are found in Appendix \ref{Section:AppendixE}.
+
+
+\subsection{A simple example}
+
+I first provide a brief overview of the basic functionality of the \pkg{matchingMarkets} package and introduce the model specification used in the Monte Carlo experiments. The required \proglang{R} packages are installed from the CRAN archive. In a first step, \code{stabsim} simulates individual-level, independent variables. The code below generates data for 1,000 markets with two groups of size five each.
+
+<<4a>>=
+## Simulate individual-level, independent variables
+library(matchingMarkets)
+idata <- stabsim(m=1000, ind=5, seed=123, gpm=2)
+head(idata)
+@
+\noindent The resulting data frame contains market and (tentative) group identifiers, two independent variables $pi$ and $wst$ and a vector of NAs for the dependent variable. Next we apply the function \code{stabit} that serves three purposes. First, it specifies the list of variables to be included in selection and outcome equations. Second, it generates group-level variables based on group members' individual characteristics. For example, the operation \code{add="pi"} generates the group average for variable \code{pi}. The operation \code{ieq="wst"} produces the probability that two randomly drawn group members have the same value of \code{wst}. Third, it draws group-level unobservables that enter selection and outcome equation.
+
+<<4b,cache=TRUE,results='hide'>>=
+## Simulate group-level variables (takes a minute to complete...)
+mdata <- stabit(x=idata, selection=list(ieq="wst"), 
+outcome=list(ieq="wst"), simulation="NTU", method="model.frame")
+@
+<<4c>>=
+mdata <- mdata$model.frame
+head(mdata$OUT, 4)
+head(mdata$SEL, 4)
+@
+\noindent It is seen that the data frame for the selection equation \code{mdata$SEL} stacks the two equilibrium groups from the outcome equation \code{mdata$OUT} at the top (with \code{D=1}) and all counterfactual groups (with \code{D=0}) below, for each market. 
+In the \code{stabit} function, the argument \code{simulation="NTU"} indicates that the function draws random errors \code{eta} and \code{xi} to determine the dependent variables $V$ and $R$ in selection and outcome equation, respectively. Here, the equilibrium selection is based on the conditions for the group formation game with non-transferable utility in \citet{Klein2015a}. The selection equation determines which groups are observed $D=1$ and which are not $D=0$.
+\begin{eqnarray}
+D &=& 1[V \text{ satisfies equilibrium condition}]\\
+V &=& \alpha\cdot\text{wst.ieq } + \eta, \text{ with } \eta \sim N(0,1)
+\end{eqnarray}
+The outcome equation determines the group outcome $R$.
+\begin{eqnarray}
+R &=& \beta\cdot\text{wst.ieq } + \varepsilon, \text{ with } \varepsilon = \delta\eta + \xi \text{ and } \xi \sim N(0,1) \label{Eqn:outcomeSimulation}
+\end{eqnarray}
+In the \code{matchingMarkets} package, the true parameters are hardcoded as $\alpha = 1; \ \beta = -1; \ \delta = 0.5$. Now, estimating the outcome equation of this model with OLS yields upward biased estimates of the slope coefficient $\beta$.
+
+<<4d>>=
+## Naive OLS estimation
+lm(R ~ wst.ieq, data=mdata$OUT)$coefficients
+@
+\noindent The source of this bias is the positive correlation between $\varepsilon$ and the exogenous variable wst.ieq.
+
+<<4e>>=
+## epsilon is correlated with independent variables
+with(mdata$OUT, cor(epsilon, wst.ieq))
+@
+\noindent The intuition behind this bias is given in the example in Section \ref{Section:Example}. %A formal treatement is available in \citet{Klein2015a}.
+From Eqn \ref{Eqn:outcomeSimulation}, we know that $\varepsilon = \delta\eta + \xi$. Thus, conditional on $\eta$, the unobservables in the outcome equation are independent of the exogenous variables (because $\xi$ does not enter the selection equation). 
+
+<<4f>>=
+## xi is uncorrelated with independent variables
+with(mdata$OUT, cor(xi, wst.ieq))
+@
+\noindent The selection problem is resolved when the residual from the selection equation, $\hat\eta$, is controlled for in the outcome equation.
+
+<<4g>>=
+## 1st stage: obtain fitted value for eta
+lm.sel <- lm(V ~ -1 + wst.ieq, data=mdata$SEL); lm.sel$coefficients
+eta <- lm.sel$resid[mdata$SEL$D==1]
+## 2nd stage: control for eta
+lm(R ~ wst.ieq + eta, data=mdata$OUT)$coefficients
+@
+\noindent In most real-world applications, however, the match valuations in \code{V} are not observed. The solution is to estimate the selection equation by imposing equilibrium bounds (as derived in Proposition \ref{Prop:EquConditionTU}) on the latent match valuations and this is the procedure I follow in the Monte Carlo experiments below. .
+
+
+
+
+\subsection{Simulation results}
+
+The Monte Carlo experiments are designed to test for the validity of the estimator. I continue to use the variable \code{wst.ieq} from the original model. The true parameters are defined as seen in the first row of Table \ref{Tab:MCresults}. The table is composed of three blocks, each representing a different market setting and sampling strategy. The first block gives the results of a benchmark experiment that aims to see whether the structural model 
+can reduce the bias of standard OLS estimates. Experiment 1 tests the robustness of the estimator when applied to a random sample of the groups' members. Experiment 2 works with the full population of group members but uses random samples from the counterfactual groups to reduce the computational burden arising from the combinatorics of large groups. I discuss motivation, set-up, implementation and results of each experiment in turn. 
+
+
+\subsubsection{Benchmark study}
+
+The following steps replicate the results of the benchmark experiment in Table \ref{Tab:MCresults}. The \proglang{R} code for replication is available in the documentation of function \code{mce}.
+
+\textit{Implementation:}
+\begin{enumerate}
+\item Following the nature of the data in the BAAC 2000 survey, I simulate individual-level, independent variables for 40 two-group markets with groups of size five.
+%## 1. Individual-level independent variables
+<<4h,eval=FALSE>>=
+idata <- stabsim(m=40, ind=5, seed=123, gpm=2)
+@
+\item Repeat the following steps for \code{i=1} to \code{1000}.
+\begin{enumerate}
+\item[a)] Draw group-level unobservables $\xi$ and $\eta$ that determine both (i) which groups are observed in equilibrium and (ii) the equilibrium group outcomes.
+%## 2.a. Simulate group-level data for ith iteration
+<<4i,eval=FALSE>>=
+mdata <- stabit(x=idata, selection=list(ieq="wst"), outcome=
+list(ieq="wst"), simulation="NTU", method="model.frame", seed=i)
+@
+\item[b)] Obtain parameter estimates using (i) OLS and (ii) the structural model. %using the \code{smm} function.
+%## 2.b. Run Gibbs sampler for OLS and structural model
+<<4j,eval=FALSE>>=
+ols <- stabit(x=mdata, method="outcome", niter=400000)
+fit <- stabit(x=mdata, method="NTU", niter=400000)
+@
+\end{enumerate}
+\end{enumerate}
+
+
+\textit{Interpretation:}
+The results for the benchmark study in Table \ref{Tab:MCresults} confirm the upward bias in the OLS estimates of the slope coefficient $\beta$. It is seen that the structural model successfully reduces the bias resulting from endogenous matching into groups. Note that the modes of the simulated posterior distributions in the first row of Figure \ref{Fig:coefsDensities} correspond to the true values in the first row of Table \ref{Tab:MCresults}. %The posterior of parameter $\alpha$ has a long tail to the left which drives the mean of the distribution downwards. This results from some draws that did not converge within the short burn-in phase of 100,000 iterations.
+
+The benchmark study works with the full population of borrowers. The two experiments below investigate the robustness of the estimator for the practically more relevant case of working with random samples from the population of interest.
+
+
+%% TABLE: MC results
+<<mc-tab, child='../inputs/tables/4_MC.Rnw'>>=
+@
+
+%% FIGURE: MC results
+<<mc-fig, child='../inputs/figures/4_MC.Rnw'>>=
+@
+
+
+\subsubsection{Experiment 1: randomly sampled group members}
+
+While group sizes at Grameen Bank, for example, have evolved to five members, self-help group and village lending schemes operate with up to 30 members. Surveys, such as the BAAC 2000 survey \citep{Townsend2000} studied here, are therefore often restricted to a random sample of the groups' members. 
+
+\textit{Set-up:}
+I continue to work with a sample of five borrowers per group but take original group sizes to be six borrowers. This means that one group member is dropped at random.
+
+\textit{Implementation:}
+\begin{enumerate}
+\item Simulate group-level, independent variables for all ${2n \choose n}$ feasible groups of size $n=6$ in two-group markets. %that are held fixed in repeated samples.
+\item Repeat the following steps 1,000 times.
+\begin{enumerate}
+\item[a)] Draw group-level unobservables $\xi$ and $\eta$ that determine both (i) which groups are observed in equilibrium and (ii) the equilibrium group outcomes.
+\item[b)] Randomly drop one member per equilibrium group.
+\item[c)] Generate new group-level, independent variables from the reduced sample of group members (leaving the equilibrium group indicator, $D$, and group outcomes, $R$, unchanged).
+\item[d)] Obtain parameter estimates using (i) OLS and (ii) the structural model.
+\end{enumerate}
+\end{enumerate}
+
+\textit{Interpretation:}
+The results for Experiment 1 in Table \ref{Tab:MCresults} display clear evidence of attenuation bias \citep[see][Chapter 4.4.2]{Wooldridge2002} in both the OLS and structural estimates. The random sampling of group members induces measurement error in the group-level, independent variables that biases the slope estimates towards zero. 
+
+
+\subsubsection{Experiment 2: randomly sampled counterfactual groups}
+
+While data on the full population of group members solves the attenuation problem encountered in Experiment 1, it creates another problem for statistical analysis. The BAAC 1997 survey \citep{Townsend1997}, for example, comprises data from two-group markets with up to 20 members resulting in ${40 \choose 20} \approx 137.85$ billion feasible groups per market which renders the analysis computationally intractable.
+
+\textit{Set-up:} As in Experiment 1, the original group size is taken to be six members. In two-group markets, this results in ${12 \choose 6} - 2 = 922$ counterfactual groups, from which 250 groups are sampled at random for the analysis. 
+
+\newpage 
+
+\textit{Implementation:}
+\begin{enumerate}
+\item Simulate group-level, independent variables for all ${2n \choose n}$ feasible groups of size $n=6$ in two-group markets.
+\item Repeat the following steps 1,000 times.
+\begin{enumerate}
+\item[a)] Draw group-level unobservables $\xi$ and $\eta$ that determine both (i) which groups are observed in equilibrium and (ii) the equilibrium group outcomes.
+\item[b)] Randomly draw 250 groups from the set of counterfactual groups.
+\item[c)] Obtain paramter estimates using (i) OLS and (ii) the structural model.
+\end{enumerate}
+\end{enumerate}
+
+<<mc-text, echo=FALSE>>=
+@
+
+\textit{Interpretation:}
+The results for Experiment 2 in Table \ref{Tab:MCresults} suggest that working with a random sample of counterfactual groups does not affect the mode of the posterior distribution of the coefficients. However, the standard deviation of the posterior distribution of $\beta$ increases from $\hat\sigma_{\hat\beta}=\Sexpr{sd.b.ntu}$ to \Sexpr{sd.e2.ntu} (not reported in Table \ref{Tab:MCresults}). A possible explanation is that the random sampling relaxes the equilibrium bounds which results in increased uncertainty in the parameter estimates.
+

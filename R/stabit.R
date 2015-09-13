@@ -171,6 +171,8 @@
 #' @section Values of coefs:
 #' \describe{
 #' \item{\code{eta}}{vector containing the mean of all \code{eta} draws for each observed group.}
+#' \item{\code{alphavcov}}{variance-covariance matrix of draws in alphadraws.}
+#' \item{\code{betavcov}}{variance-covariance matrix of draws in betadraws.}
 #' \item{\code{alpha}}{matrix comprising the coefficient estimates of alpha and their standard errors.}
 #' \item{\code{beta}}{matrix comprising the coefficient estimates of beta and their standard errors.}
 #' \item{\code{delta}}{coefficient estimate of delta and its standard error.}
@@ -181,8 +183,8 @@
 #' 
 #' @keywords regression
 #' 
-#' @references Klein, T. (2015a). Stable matching in microcredit: Implications for market design & econometric analysis, PhD thesis, 
-#' \emph{University of Cambridge}.
+#' @references Klein, T. (2015a). \href{https://ideas.repec.org/p/cam/camdae/1521.html}{Does Anti-Diversification Pay? A One-Sided Matching Model of Microcredit}.
+#' \emph{Cambridge Working Papers in Economics}, #1521.
 #' @references Zellner, A. (1986). \emph{On assessing prior distributions and Bayesian regression analysis with g-prior distributions}, 
 #' volume 6, pages 233--243. North-Holland, Amsterdam.
 #' 
@@ -520,11 +522,15 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         rownames(res$delta) = "delta"
         rownames(res$sigmasquarexi) = "sigma"
         colnames(res$eta) = "eta"
+        # vcov
+        rownames(res$alphavcov) = colnames(res$alphavcov) = an
+        rownames(res$betavcov) = colnames(res$betavcov) = bn
         #
         colnames(res$alpha) = colnames(res$beta) = colnames(res$delta)  = colnames(res$sigmasquarexi) = c("coef","s.e.")
         #
         out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,deltadraws=deltadraws)), 
-                    coefs=with(res,list(eta=eta,alpha=alpha,beta=beta,delta=delta,sigmasquarexi=sigmasquarexi)))
+                    coefs=with(res,list(eta=eta,alphavcov=alphavcov,betavcov=betavcov,alpha=alpha,beta=beta,
+                                        delta=delta,sigmasquarexi=sigmasquarexi)))
         
       } else if(binary==TRUE & sel==FALSE){
         # parameter draws
@@ -532,11 +538,13 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         # posterior means
         rownames(res$beta) = bn
         rownames(res$sigmasquarexi) = "sigma"
+        # vcov
+        rownames(res$betavcov) = colnames(res$betavcov) = bn
         #
         colnames(res$beta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
         #
         out <- list(draws=with(res,list(betadraws=betadraws)), 
-                    coefs=with(res,list(beta=beta,sigmasquarexi=sigmasquarexi)))
+                    coefs=with(res,list(betavcov=betavcov,beta=beta,sigmasquarexi=sigmasquarexi)))
         
       } else if(binary==FALSE & sel==TRUE){
         # parameter draws
@@ -550,11 +558,15 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         rownames(res$delta) = "delta"
         rownames(res$sigmasquarexi) = "sigma"
         colnames(res$eta) = "eta"
+        # vcov
+        rownames(res$alphavcov) = colnames(res$alphavcov) = an
+        rownames(res$betavcov) = colnames(res$betavcov) = bn
         #
         colnames(res$alpha) = colnames(res$beta) = colnames(res$delta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
         #
         out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,deltadraws=deltadraws,sigmasquarexidraws=sigmasquarexidraws)), 
-                    coefs=with(res,list(eta=eta,alpha=alpha,beta=beta,delta=delta,sigmasquarexi=sigmasquarexi)))
+                    coefs=with(res,list(eta=eta,alphavcov=alphavcov,betavcov=betavcov,alpha=alpha,beta=beta,
+                                        delta=delta,sigmasquarexi=sigmasquarexi)))
         
       } else if(binary==FALSE & sel==FALSE){
         # parameter draws
@@ -563,11 +575,13 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
         # posterior means
         rownames(res$beta) = bn
         rownames(res$sigmasquarexi) = "sigma"
+        # vcov
+        rownames(res$betavcov) = colnames(res$betavcov) = bn
         #
         colnames(res$beta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
         #
         out <- list(draws=with(res,list(betadraws=betadraws,sigmasquarexidraws=sigmasquarexidraws)), 
-                    coefs=with(res,list(beta=beta,sigmasquarexi=sigmasquarexi)))
+                    coefs=with(res,list(betavcov=betavcov,beta=beta,sigmasquarexi=sigmasquarexi)))
       }
       
       # -----------------------------------------------------------------------------
@@ -1072,6 +1086,10 @@ wrap <- function(thisdata, indices, num, denom, j, names.xw){
       n <- nchar(names(thisdata))
       posis <- which( names(thisdata) %in% paste(varq[a],1:1000,sep="") )
       thisdata[indices[1], posis[indices[2]]] + thisdata[indices[2], posis[indices[1]]]
+    } else if(funq[a]=="ieg"){
+      n <- nrow(thisdata)
+      ( sum( ( table(c(1,1,2)) / n )^2 ) - 1/n ) / (1 - 1/n)
+      ( sum( ( table(thisdata[,varq[a]]) / n )^2 ) - 1/n ) / (1 - 1/n)
     } else(stop("function must be either of 'add', 'int', 'ieq', 'ive' or 'iem'!"))
   })
 }

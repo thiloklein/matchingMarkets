@@ -196,6 +196,8 @@ number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
 
 \describe{
 \item{\code{eta}}{vector containing the mean of all \code{eta} draws for each observed group.}
+\item{\code{alphavcov}}{variance-covariance matrix of draws in alphadraws.}
+\item{\code{betavcov}}{variance-covariance matrix of draws in betadraws.}
 \item{\code{alpha}}{matrix comprising the coefficient estimates of alpha and their standard errors.}
 \item{\code{beta}}{matrix comprising the coefficient estimates of beta and their standard errors.}
 \item{\code{delta}}{coefficient estimate of delta and its standard error.}
@@ -273,8 +275,8 @@ number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
 Thilo Klein
 }
 \references{
-Klein, T. (2015a). Stable matching in microcredit: Implications for market design & econometric analysis, PhD thesis,
-\emph{University of Cambridge}.
+Klein, T. (2015a). \href{https://ideas.repec.org/p/cam/camdae/1521.html}{Does Anti-Diversification Pay? A One-Sided Matching Model of Microcredit}.
+\emph{Cambridge Working Papers in Economics}, #1521.
 
 Zellner, A. (1986). \emph{On assessing prior distributions and Bayesian regression analysis with g-prior distributions},
 volume 6, pages 233--243. North-Holland, Amsterdam.

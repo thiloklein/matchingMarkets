@@ -1,0 +1,108 @@
+\documentclass[article,nojss]{jss} %
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,bbm}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing,calc,decorations.text,plotmarks,topaths}
+\usepackage{enumitem}
+\usepackage{hvfloat}
+\usepackage{subcaption}
+
+\newtheorem{myprop}{Proposition}[section]
+\newtheorem{proof}{Proof}[section]
+
+
+
+\author{Thilo Klein\thanks{All views and errors are mine.}\\OECD}
+\Plainauthor{Thilo Klein}
+
+\title{Analysis of Stable Matchings in \proglang{R}: Package~\pkg{matchingMarkets}}
+\Plaintitle{Analysis of Stable Matchings in R: Package matchingMarkets}
+
+\Abstract{
+\noindent \proglang{R} package \pkg{matchingMarkets} implements structural estimators to correct for the sample selection bias from observed outcomes in matching markets. It also contains R code for matching algorithms such as the deferred-acceptance algorithm for college admissions, the top-trading-cycles algorithm for house allocation and a partitioning linear program for the roommates problem.
+}
+
+\Keywords{market design, stable matching, endogeneity, selection models, Bayesian methods, econometrics, \proglang{R}}
+\Plainkeywords{market design, stable matching, endogeneity, selection models, Bayesian methods, econometrics, R}
+
+\Address{
+  Thilo Klein\\
+  Organisation for Economic Co-operation and Development\\
+  2 rue Andre Pascal\\
+  75775 Paris, France\\
+  E-mail: \email{thilo.klein@oecd.org}\\
+  URL: \url{http://klein.uk}
+}
+
+\begin{document}
+
+% Initialisation
+%\VignetteIndexEntry{Structural Estimators and Algorithms for the Analysis of Stable Matchings}
+%\VignetteDepends{matchingMarkets,knitr}
+%\VignetteKeywords{market design, stable matching, endogeneity, selection models, Bayesian methods, econometrics, R}
+%\VignettePackage{matchingMarkets}
+%\VignetteEngine{knitr::knitr_notangle}
+
+<<setup, include=FALSE, cache=FALSE>>=
+library(knitr)
+# set global chunk options
+opts_chunk$set(
+concordance=TRUE,
+highlight=FALSE,
+comment=NA,
+prompt=TRUE
+)
+options(replace.assign=TRUE, width=90, prompt="R> ")
+@
+
+<<external-code, cache=FALSE, echo=FALSE>>=
+knitr::read_chunk('./inputs/script.R')
+@
+
+<<Introduction, child='./Sections/1_Introduction.Rnw'>>=
+@
+
+<<Example, child='./Sections/2_Example.Rnw'>>=
+@
+
+<<Model, child='./Sections/3_StructuralModel.Rnw'>>=
+@
+
+<<MC, child='./Sections/4_MonteCarloResults.Rnw'>>=
+@
+
+<<Application, child='./Sections/5_Application.Rnw'>>=
+@
+
+%\newpage
+
+\bibliography{matching}
+
+\newpage
+
+\appendix
+
+<<AppendixA, child='./Sections/AppendixA.Rnw'>>=
+@
+
+\newpage
+
+<<AppendixB, child='./Sections/AppendixB.Rnw'>>=
+@
+
+\newpage
+
+<<AppendixC, child='./Sections/AppendixC.Rnw'>>=
+@
+
+\newpage
+
+<<AppendixD, child='./Sections/AppendixD.Rnw'>>=
+@
+
+\newpage
+
+
+\end{document}
+
+

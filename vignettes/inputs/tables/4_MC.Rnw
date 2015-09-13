@@ -1,0 +1,33 @@
+
+<<mc-table, echo=FALSE>>=
+@
+
+\begin{table}[htbp!]
+\centering
+\small
+\caption{Monte Carlo results for 40 two-group markets (based on 512 draws)}
+\label{Tab:MCresults}
+\begin{tabular}{llccccc}
+\hline\hline
+& Parameters & $\alpha$ & (Intercept) & $\beta$ & $\delta$ & $\sigma^2_{\xi}$ \\
+\hline
+& True values & 1 & 0 & -1 & 0.5 & 1 \\
+&&&&& \\
+\multicolumn{7}{l}{\textbf{Benchmark:} All group members (5/5); all counterfactual groups (250/250)} \\
+\hline
+5/5; 250/250&OLS & -- & \ \Sexpr{b.ols[1]}  &  \Sexpr{b.ols[2]} & -- & \Sexpr{b.ols[3]} \\
+  &Structural & \Sexpr{b.ntu[1]} &  \Sexpr{b.ntu[2]}   &  \Sexpr{b.ntu[3]}  &   \Sexpr{b.ntu[4]} &  \Sexpr{b.ntu[5]} \\
+&&&&& \\
+\multicolumn{7}{l}{\textbf{Experiment 1:} 5 randomly sampled group members; all counterfactual groups} \\
+\hline
+5/6; 250/250&OLS & --  & \ \Sexpr{e1.ols[1]}  &  \Sexpr{e1.ols[2]} & -- &  \Sexpr{e1.ols[3]} \\
+  &Structural & \Sexpr{e1.ntu[1]} & \Sexpr{e1.ntu[2]}  &  \Sexpr{e1.ntu[3]} &  \Sexpr{e1.ntu[4]} & \Sexpr{e1.ntu[5]} \\
+&&&&&& \\
+\multicolumn{7}{l}{\textbf{Experiment 2:} All group members; 250 randomly sampled counterfactual groups} \\
+\hline
+6/6; 250/922&OLS & -- & \ \Sexpr{e2.ols[1]}   &  \Sexpr{e2.ols[2]} & -- & \Sexpr{e2.ols[3]}   \\
+  &Structural & \Sexpr{e2.ntu[1]} & \ \Sexpr{e2.ntu[2]}  &  \Sexpr{e2.ntu[3]}  &  \Sexpr{e2.ntu[4]} &  \Sexpr{e2.ntu[5]}  \\
+\hline\hline
+\end{tabular}
+\end{table}
+

@@ -34,7 +34,7 @@ data(klein15b)
 ## define function to obtain the mode
 mode <- function(x){
   d <- density(x,bw="SJ")
-  d$x[which.max(d$y)]
+  formatC(round(d$x[which.max(d$y)], 3), format='f', digits=3)
 }
 
 ## Benchmark study
@@ -46,8 +46,8 @@ apply(klein15b$exp.6.5.ntu, 2, mode)
 apply(klein15b$exp.6.5.ols, 2, mode)
 
 ## Experiment 2
-apply(klein15b$exp.6.5.ntu, 2, mode)
-apply(klein15b$exp.6.5.ols, 2, mode)
+apply(klein15b$exp.6.6.ntu, 2, mode)
+apply(klein15b$exp.6.6.ols, 2, mode)
 
 #####################################
 ## Plot of posterior distributions ##
@@ -58,39 +58,40 @@ data(klein15b)
 
 par(mfrow=c(3,3))
 tpe <- c(rep("Benchmark",2), rep("Experiment 1",2), rep("Experiment 2",2))
+par(mar=c(5.1,4.6,0.8,2.1))
 
 for(i in seq(1,length(klein15b)-1,2)){
   ntu <- klein15b[[i]]
   ols <- klein15b[[i+1]]
-  
+
   ntu <- ntu[,colnames(ntu) %in% c("alpha","beta.wst.ieq","delta")]
   ols <- ols[,colnames(ols) == "beta.wst.ieq"]
-  
-  plot(density(ntu[,1],bw="SJ"), xlab=expression(hat(alpha)), 
+
+  plot(density(ntu[,1]), xlab=expression(hat(alpha)), 
     ylab="density", main="", axes=FALSE, xlim=c(-1,2))
   axis(2,lwd=2,cex.axis=0.8); axis(1,lwd=2,cex.axis=0.8)
   legend("topleft","Struct.",lty=1,bty="n")
   abline(v=1, lty=3)
-  
-  plot(density(ntu[,2],bw="SJ"), xlab=expression(hat(beta)), 
+
+  plot(density(ntu[,2]), xlab=expression(hat(beta)), 
     ylab="density", main=tpe[i], axes=FALSE)
   axis(2,lwd=2,cex.axis=0.8); axis(1,lwd=2,cex.axis=0.8)
-  points(density(ols,bw="SJ"), type="l", lty=2)
+  points(density(ols), type="l", lty=2)
   legend("topright",c("Struct.","OLS"),lty=c(1,2),bty="n")
   abline(v=-1, lty=3)
-  
-  plot(density(ntu[,3],bw="SJ"), xlab=expression(hat(delta)), 
+
+  plot(density(ntu[,3]), xlab=expression(hat(delta)), 
     ylab="density", main="", axes=FALSE)
   axis(2,lwd=2,cex.axis=0.8); axis(1,lwd=2,cex.axis=0.8)
   legend("topleft","Struct.",lty=1,bty="n")
   abline(v=0.5, lty=3)
-} 
+}
 }}
 
 \references{
-Klein, T. (2015a). Stable matching in microcredit: Implications for market design & econometric analysis, PhD thesis, \emph{University of Cambridge}.
+Klein, T. (2015a). \href{https://ideas.repec.org/p/cam/camdae/1521.html}{Does Anti-Diversification Pay? A One-Sided Matching Model of Microcredit}. \emph{Cambridge Working Papers in Economics}, #1521.
 
-Klein, T. (2015b). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.1-4.
+Klein, T. (2015b). \href{http://cran.r-project.org/package=matchingMarkets}{Analysis of stable matchings in R: Package matchingMarkets}. \emph{Vignette to R package matchingMarkets}, The Comprehensive R Archive Network.
 }
 
 \keyword{datasets}

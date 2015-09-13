@@ -1,0 +1,242 @@
+\section{Example of sorting bias: measurement error} \label{Appendix:Example}
+% sample selection from matching
+
+The following example illustrates the bias arising when variables influencing peer selection are measured with error. %To simplify the exposition, 
+The analysis below is based on the \citet{Ghatak1999} model of group formation with match valuations given by
+\begin{eqnarray} \label{Eqn:IntroExampleValuationEquationTheoryP}
+V_{ij} %&=& -q(d_i+d_j) + \eta_{ij}\\
+       &=& \alpha_1(d_i + d_j) + \eta_{ij}.
+\end{eqnarray} 
+%Note that Eqn \ref{Eqn:IntroExampleValuationEquationTheoryP} corresponds to Eqn \ref{Eqn:ExampleSelectionEqn2} with the correlation between  $\epsilon_{ij}$ fixed at zero. 
+Here, $d_i$ and $d_j$ give the risk type (probability of default) of borrower $i$ and $j$ and $\alpha_1$ is a coefficient. The unobserved match valuation is captured by the match-specific error term $\eta_{ij}$. Now let $A$ and $B$ be safe types, denoted $d_A=d_B=5\%$, and $C$ and $D$ risky types ($d_C=d_D=15\%$). Further, let the interest payment be $r=120$ and the joint liability payment $q=20$. The six valuations, $V_{ij}$, are then given in Table \ref{Tab:Match Valuations}.
+
+\begin{table}[htbp!]
+\small
+  \begin{center}
+    \begin{minipage}[c]{0.35\linewidth}
+%\centering
+      \caption{Match valuations$^*$ of all feasible groups} \label{Tab:Match Valuations}
+    \end{minipage} \hfill
+    \begin{minipage}[c]{0.6\linewidth}
+\centering 
+\begin{tabular}{l||cccc}
+	& \multicolumn{1}{|c|}{A} & \multicolumn{1}{|c|}{B} & \multicolumn{1}{|c|}{C} & \multicolumn{1}{|c|}{D} \\
+\hline \hline
+A ($d_A$=$5\%$) && \multicolumn{1}{|c|}{$-2+\eta_{AB}$} & \multicolumn{1}{|c|}{$-4+\eta_{AC}$} & \multicolumn{1}{|c|}{$-4+\eta_{AD}$} \\
+\cline{3-5} \cline{1-1}
+B ($d_B$=$5\%$) & && \multicolumn{1}{|c|}{$-4+\eta_{BC}$} & \multicolumn{1}{|c|}{$-4+\eta_{BD}$} \\
+\cline{4-5} \cline{1-1}
+C ($d_C$=$15\%$) && & & \multicolumn{1}{|c|}{$-6+\eta_{CD}$}\\
+\cline{5-5} \cline{1-1}
+D ($d_D$=$15\%$) && & & \\
+\cline{1-1}
+\multicolumn{5}{l}{\footnotesize $^*$parameters: $d_i=1-p_i$; \ $r=120$; \ $q=20$; \ $\alpha_1=-q=-20$}
+\end{tabular}
+    \end{minipage} 
+  \end{center}
+\end{table}
+
+The outcome $Y^*_{ij}$, is a latent variable that gives the expected loan repayment for a group comprising borrower $i$ and $j$ as
+\begin{eqnarray} 
+Y^*_{ij} &=& 2r + (q-r)(d_i+d_j) + \varepsilon_{ij}\\
+         &=& \beta_0 + \beta_1(d_i + d_j) + \varepsilon_{ij}, \label{Eqn:IntroExampleOutcomeEquationTheoryP}
+\end{eqnarray}
+where $Y^*_{ij}$ determines the binary variable $Y_{ij}$ that indicates successful repayment of group $ij$ by the following threshold rule $Y_{ij}=1[Y^*_{ij}>0]$. Which outcomes are observed is determined by the equilibrium matching. Now consider estimating the parameter $\beta_1$. The selection problem arises when the equilibrium is not independent of the outcome, i.e., when the distribution of $\varepsilon$ is not independent of the distribution of $\eta$. %In the above example, the match $AC$ is more likely to be the better of the two observed matches. The error terms $\varepsilon$ and $\eta$ are therefore likely to have a positive correlation.
+To investigate the nature of the selection bias that arises in this example, note the true value of $\beta_1=(q-r)=-100$, and $\beta_0=2r=240$. The observed match outcomes are given in Table \ref{Tab:Match outcomes with systematic matching partially unobservable characteristics} according to Eqn \ref{Eqn:IntroExampleOutcomeEquationTheoryP}.
+
+
+\begin{table}[htbp!]
+\small
+  \begin{center}
+    \begin{minipage}[c]{0.35\linewidth}
+%\centering 
+      \caption{Match outcomes with systematic matching (partially unobservable characteristics).$^*$\\ \\ $\mathbb E[Y^*_{ij}]=260-200(d_i+d_j)$} \label{Tab:Match outcomes with systematic matching partially unobservable characteristics}
+    \end{minipage} \hfill
+    \begin{minipage}[c]{0.6\linewidth}
+\centering 
+\begin{tabular}{l||cccc}
+	& \multicolumn{1}{|c|}{A} & \multicolumn{1}{|c|}{B ($\bar d$=$10\%$)} & \multicolumn{1}{|c|}{C} & \multicolumn{1}{|c|}{D ($\bar d$=$10\%$)} \\
+\hline \hline
+A ($d_A$=$5\%$) && \multicolumn{1}{|c|}{230} & \multicolumn{1}{|c|}{} & \multicolumn{1}{|c|}{} \\
+\cline{3-5} \cline{1-1}
+B & && \multicolumn{1}{|c|}{} & \multicolumn{1}{|c|}{} \\
+\cline{4-5} \cline{1-1}
+C ($d_C$=$15\%$) && & & \multicolumn{1}{|c|}{210}\\
+\cline{5-5} \cline{1-1}
+D && & &\\
+\cline{1-1}
+\multicolumn{5}{l}{\footnotesize $^*$true parameters: $\beta_0=240$; \ $\beta_1=-100$; \ $r=120$; \ $q=20$}
+\end{tabular}
+    \end{minipage}
+  \end{center}
+\end{table}
+
+
+Assume first that the researcher observes the characteristics of one borrower for every matched group with an error.\footnote{For example, interviews were conducted with one randomly selected group member who was also interviewed on some of the characteristics of her fellow group member. Such a sampling strategy is used by \citet{Carpenter2000}, \citet{Lensink2003}, and \citet{Ahlin2007}. Assume, for example, that the characteristics of the second group member are reported as the sample average, $\bar d=10\%$.} Thus part of the borrowers outcome-relevant quality is unobserved and therefore captured by the error term. Let the reported characteristics of borrowers $B$ and $D$ be the sample mean of $\bar d=10\%$ and the characteristics of borrowers $A$ and $C$ be $d_A=5\%$ and $d_C=15\%$ as above.
+
+The outcome for group $AB$ is 230, and group $CD$ has an outcome of 210, and a natural estimate of $\beta_1$ is $-200 \  (=[230-210]/[0.15-0.25])$. However, given the nature of the matching in this example, the estimate is severely downward biased.
+To see this, recall the omitted characteristics of borrowers $B$ and $D$ that lead to measurement error in our explanatory variable.
+The true model is $Y^*_{ij} = \beta_0 + (d_i + d_j)\beta_1 + \varepsilon_{ij}$. However, we estimate $Y^*_{ij} = \beta_0 + (d_i+\bar d)\beta_1 + \varepsilon'_{ij}$ with  $\varepsilon'_{ij}=(d_j-\bar d)\beta_1 + \varepsilon_{ij}$. Now, if $d_j$ is correlated with $d_i$, then $d_i$ is correlated with $\varepsilon'_{ij}$ and the estimate of $\beta_1$ is biased. 
+Specifically, because of assortative matching in the market we have $cov(\varepsilon'_{ij}, d_i)<0$ and the estimate is downward biased.\footnote{
+Assortative matching on risk-type implies that $cov[d_j,d_i]>0$ in the last argument of the straightforward algebra:
+$cov(\varepsilon'_{ij}, \ d_i) = cov[(d_j - \bar d)\beta_1 + \varepsilon_{ij}, \ d_i]
+= cov[d_j\beta_1 - \bar d\beta_1 + \varepsilon_{ij}, \ d_i]
+= \beta_1 \cdot cov[d_j , \ d_i]
+= -100 \cdot cov[d_j , \ d_i] <0$.
+If we observed the group constellations at random, i.e., a random sample with $cov[d_j,d_i]=0$, the bias resolves.}
+
+If we observed the omitted borrower characteristics $d_B=5\%$ and $d_D=15\%$ the measurement error resolves. The natural and unbiased estimate of $\beta_1$ is $-100 \ (=[230-210]/[0.1-0.3])$.
+The bias is a consequence of the systematic selection of the observed sample of outcomes. Table \ref{Tab:Match outcomes with random assignment partially unobservable characteristics} shows that we can obtain unbiased estimates -- even if the quality of $B$ and $D$ is unobserved -- when we observe the outcomes at random. 
+
+\begin{table}[htbp!]
+\small
+  \begin{center}
+    \begin{minipage}[c]{0.35\linewidth}
+      \caption{Match outcomes with random assignment (partially unobservable characteristics)$^*$\\ \\ $\mathbb E[Y^*_{ij}]=240-100(d_i+d_j)$} \label{Tab:Match outcomes with random assignment partially unobservable characteristics}
+    \end{minipage} \hfill
+    \begin{minipage}[c]{0.6\linewidth}
+\centering
+\begin{tabular}{l||cccc}
+	& \multicolumn{1}{|c|}{A} & \multicolumn{1}{|c|}{B ($\bar d$=$10\%$)} & \multicolumn{1}{|c|}{C} & \multicolumn{1}{|c|}{D ($\bar d$=$10\%$)} \\
+\hline \hline
+A ($d_A$=$5\%$) && \multicolumn{1}{|c|}{230} & \multicolumn{1}{|c|}{220} & \multicolumn{1}{|c|}{220} \\
+\cline{3-5} \cline{1-1}
+B & && \multicolumn{1}{|c|}{220} & \multicolumn{1}{|c|}{220} \\
+\cline{4-5} \cline{1-1}
+C ($d_C$=$15\%$) && & & \multicolumn{1}{|c|}{210}\\
+\cline{5-5} \cline{1-1}
+D  && & & \\
+\cline{1-1}
+\multicolumn{5}{l}{\footnotesize $^*$true parameters: $\beta_0=240$; \ $\beta_1=-100$}
+\end{tabular}
+    \end{minipage}
+  \end{center}
+\end{table}
+
+The above is essentially the outcome of the experiment outlined in the introductory section. A comparison of the coefficient estimate for the endogenously formed groups ($\hat \beta_1$=$-200$) and the random assignment ($\hat \beta_1^*$=$-100$) separates the direct effect of risk type from selection bias (Figure \ref{Fig:Decomposition of ex-ante and ex-post}).
+
+%http://www.texample.net/tikz/examples/line-plot-example/
+%http://www.faqoverflow.com/tex/1175.html
+\begin{figure}[hbtp!]
+  \begin{center}
+    \begin{minipage}[c]{0.35\linewidth}
+      \caption{Decomposition of direct effect of risk-type on lending outcomes and selection effect.} 
+      \label{Fig:Decomposition of ex-ante and ex-post}
+    \end{minipage} \hfill
+    \begin{minipage}[c]{0.6\linewidth}
+\centering
+\begin{tikzpicture}[domain=0:4, scale=1.2]
+%axis
+	\draw[->] (-0.2,0) -- (4.5,0) node[below right] {$X_G=\sum_{i \in G} d_i$};
+	\draw[->] (0,-.2) -- (0,4.2) node[above left] {$Y^*_G = Y^*_{ij}$}; %\shortstack{ $Y_G$\\[-0.22ex] $\textcolor{white}{a}$ } 
+%lines
+\draw[dashed,color=black] plot (\x, 3 - 0.5*\x); % node[right] { \shortstack{ \ \ random\\[-0.25ex] \ \ assignment} };
+\draw[dotted,color=black] plot (\x, 2);
+\draw[dotted,color=black] plot (2,0) -- (2,2);
+\draw[color=black] plot (\x,4-1*\x); %node[right] { \shortstack{ \ \ endogenous\\[-0.25ex] \ \ matching} };
+%ticks
+%     	\foreach \x in {0,...,4}
+%      		\draw (\x,1pt) -- (\x,-3pt)
+% 			node[anchor=north] {\x};
+\draw (1pt, 1) -- (-3pt,1) node[anchor=east] {210}; 
+\draw (1pt, 2) -- (-3pt,2) node[anchor=east] {220}; 
+\draw (1pt, 3) -- (-3pt,3) node[anchor=east] {230}; 
+\draw (1pt, 4) -- (-3pt,4) node[anchor=east] {240}; 
+%     	\foreach \y in {-20,-10,0,10,20}
+%      		\draw (1pt,2 + \y/10) -- (-3pt,2 + \y/10) 
+%      			node[anchor=east] {\y}; 
+\draw (0, 1pt) -- (0,-3pt) node[anchor=north] {10\%}; 
+\draw (1, 1pt) -- (1,-3pt) node[anchor=north] {15\%}; 
+\draw (2, 1pt) -- (2,-3pt) node[anchor=north] {20\%}; 
+\draw (3, 1pt) -- (3,-3pt) node[anchor=north] {25\%}; 
+\draw (4, 1pt) -- (4,-3pt) node[anchor=north] {30\%}; 
+%arrows
+	\draw [dotted] (3.25,2) arc (0:360:1.25cm);
+% 	\draw [->, color=black] (2+1.12, 2+0.56) arc (26.565:43:1.25cm);
+% 	\draw [->, color=black] (2-1.5+0.38, 2-1.5+0.94) arc (180+26.565:180+43:1.25cm);
+% 	\draw [->, color=black] (1.12, 2.89) arc (26.565+109:43+105:1.25cm);
+% 	\draw [->, color=black] (2.89, 1.12) arc (180+26.565+109:180+43+105:1.25cm);
+	\draw [->, color=black] (0.9, 2.61) arc (43+105:26.565+109:1.25cm);
+	\draw [->, color=black] (3.1, 1.39) arc (180+43+105:180+26.565+109:1.25cm);
+%points
+	\draw plot[mark=*, mark options={fill=white}] (4,1);
+	\draw plot[mark=*, mark options={fill=white}] (0,3);
+
+	\draw plot[mark=square*, mark options={fill=white}] (1,2)  node[fill=white, left]{$p_{AD}$};
+	\draw plot[mark=square*, mark options={fill=white}] (1,2);
+	\draw plot[mark=square*, mark options={fill=white}] (3,2) node[fill=white,right]{$p_{BC}$};
+	\draw plot[mark=square*, mark options={fill=white}] (3,2);
+	\draw plot[mark=square*, mark options={fill=white}] (1,3) node[right]{$p_{AB}$};
+	\draw plot[mark=square*, mark options={fill=white}] (3,1) node[left]{$p_{CD}$};
+	\draw plot[mark=square*, mark options={fill=white}] (2,2) node[below left]{$p_{AC}$};
+	\draw plot[mark=square*, mark options={fill=white}] (2,2) node[above right]{$p_{BD}$};
+
+	\draw plot[mark=x] (1,3);
+	\draw plot[mark=x] (3,1);
+%text along path
+        \draw[decorate, decoration={text along path, text={${\ \ \ \ \ \ \ \ \hat \beta_1^*}$=-100}}] (2,2.05) -- (4,1.05);
+        \draw[decorate, decoration={text along path, text={${\ \ \hat \beta_1}$=-200}}] (3,1.05) -- (4,0.05);
+%legend
+	\begin{scope}[shift={(0.85,3.55)}] 
+	\draw (0,0) -- 
+		plot[mark=*, mark options={fill=white}] (0.15,0) -- (0.3,0) 
+		node[right]{true observations}; 
+	\draw[yshift=0.6\baselineskip] (0,0) -- 
+		plot[mark=x] (0.15,0) -- (0.3,0)
+		node[right]{systematic matching};
+	\draw[yshift=1.2\baselineskip] (0,0) -- 
+		plot[mark=square*, mark options={fill=white}] (0.15,0) -- (0.3,0)
+		node[right]{random assignment};
+	\end{scope}
+%braces
+	\draw plot (4.12,0.5) node[right]{ \shortstack{ selection\\[-0.25ex] bias} };
+        \draw[decorate, decoration={brace, mirror}] (4.12,0) -- (4.12,0.95);
+	\draw plot (4.12,1.5) node[right]{ \shortstack{ direct effect\\[-0.25ex] of risk-type} }; 
+        \draw[decorate, decoration={brace, mirror}] (4.12,1.05) -- (4.12,2);
+\end{tikzpicture}
+    \end{minipage}
+  \end{center}
+\end{figure}
+
+
+Figure \ref{Fig:Decomposition of ex-ante and ex-post} illustrates the decomposition of ex-ante (sorting) and ex-post effects on lending outcomes. The latent outcome variable, $Y^*_G$, gives group $G$'s outcome. Following \citet{Ghatak1999}, the risk type of group $G$ is given by the sum of its observed borrower risk types $X_G=\sum_{i \in G} d_i$. 
+The dashed line gives the estimated relationship between group risk and lending outcome for a random assignment of borrowers into groups. This estimate coincides with the true underlying relationship, and an increase in group risk by 10\% lowers the outcome by 10 units.
+The solid line gives the estimated relationship for the observed equilibrium $\mu_1=\{ AB, CD \}$. Here, the equilibrium matching is the result of an assortative matching of borrowers based on their risk type. This systematic matching leads to a downward bias in the linear probability model.
+If there was random assignment of borrowers to groups, the two lines would overlap completely.
+
+
+To see how this experimental result can be obtained from non-experimental data, I adapt an example from \citet{Sorensen2007}. Consider observing a second market with similar borrowers but with two additional borrowers $A'$ and $D'$ of risk-types $d_{A'}=0\%$ and $d_{D'}=20\%$ (Table \ref{Tab:ExogenousVariation}). 
+The presence of $A'$ and $D'$ changes the relative rankings in the market.\footnote{Suppose $B$ breaks up her match with $A$ to match with the safer $A'$. This in turn may lead $D$ to break up her current match with $C$ to match with the safer single $A$. $C$ then matches with the remaining high risk $D'$.} Again, we only observe the risk-type of one borrower per match and again the estimate of $\beta$ is biased downwards, $-192.9$ in this case. However, a direct comparison of the two markets shows that the expected group repayment of borrower $B$ and $D$ increases by 5 and 10 units when their match partners' default risk reduces by 5\% and 10\% respectively. A natural estimate of $\beta$ is $-100$.
+
+
+\begin{table}[htbp!]
+\small
+   \begin{center}
+     \begin{minipage}[c]{0.35\linewidth}
+       \caption{Match outcomes with exogenous variation (partially unobservable characteristics)} 
+             \label{Tab:ExogenousVariation}
+     \end{minipage} \hfill
+     \begin{minipage}[c]{0.6\linewidth}
+ \centering
+ \begin{tabular}{l||cccccc}
+ 	& \multicolumn{1}{|c|}{A'} & \multicolumn{1}{|c|}{A} & \multicolumn{1}{|c|}{B} & \multicolumn{1}{|c|}{C} & \multicolumn{1}{|c|}{D} & \multicolumn{1}{|c|}{D'} \\
+ \hline \hline
+ A' ($d_{A'}=0\%$)& &\multicolumn{1}{|c|}{}& \multicolumn{1}{|c|}{\textbf{235}} & \multicolumn{1}{|c|}{} & \multicolumn{1}{|c|}{} & \multicolumn{1}{|c|}{}\\
+ \cline{3-7} \cline{1-1}
+ A\textcolor{white}{'} ($d_A=5\%$) &&& \multicolumn{1}{|c|}{230} & \multicolumn{1}{|c|}{} & \multicolumn{1}{|c|}{\textbf{220}} & \multicolumn{1}{|c|}{}\\
+ \cline{4-7} \cline{1-1}
+ B && && \multicolumn{1}{|c|}{} & \multicolumn{1}{|c|}{} & \multicolumn{1}{|c|}{}\\
+ \cline{5-7} \cline{1-1}
+ C\textcolor{white}{'} ($d_C=15\%$) && & && \multicolumn{1}{|c|}{210} & \multicolumn{1}{|c|}{\textbf{205}}\\
+ \cline{6-7} \cline{1-1}
+ D  && & && &\multicolumn{1}{|c|}{}\\
+ \cline{7-7} \cline{1-1}
+ D'  && & && & \\
+ \cline{1-1}
+ \end{tabular}
+     \end{minipage}
+   \end{center}
+\end{table}
+
+
+
