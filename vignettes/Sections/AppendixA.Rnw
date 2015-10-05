@@ -50,7 +50,9 @@ To investigate the nature of the selection bias that arises in this example, not
   \begin{center}
     \begin{minipage}[c]{0.35\linewidth}
 %\centering 
-      \caption{Match outcomes with systematic matching (partially unobservable characteristics).$^*$\\ \\ $\mathbb E[Y^*_{ij}]=260-200(d_i+d_j)$} \label{Tab:Match outcomes with systematic matching partially unobservable characteristics}
+      \caption{Match outcomes with systematic matching (partially unobservable characteristics).$^*$}
+      %\\ \\ $\mathbb E[Y^*_{ij}]=260-200(d_i+d_j)$ 
+      \label{Tab:Match outcomes with systematic matching partially unobservable characteristics}
     \end{minipage} \hfill
     \begin{minipage}[c]{0.6\linewidth}
 \centering 
@@ -92,7 +94,9 @@ The bias is a consequence of the systematic selection of the observed sample of 
 \small
   \begin{center}
     \begin{minipage}[c]{0.35\linewidth}
-      \caption{Match outcomes with random assignment (partially unobservable characteristics)$^*$\\ \\ $\mathbb E[Y^*_{ij}]=240-100(d_i+d_j)$} \label{Tab:Match outcomes with random assignment partially unobservable characteristics}
+      \caption{Match outcomes with random assignment (partially unobservable characteristics)$^*$}
+      %\\ \\ $\mathbb E[Y^*_{ij}]=240-100(d_i+d_j)$ 
+      \label{Tab:Match outcomes with random assignment partially unobservable characteristics}
     \end{minipage} \hfill
     \begin{minipage}[c]{0.6\linewidth}
 \centering
