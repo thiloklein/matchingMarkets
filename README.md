@@ -20,7 +20,7 @@ and three algorithms that can be used to simulate matching data:
 
 # Installation
 
-To get the latest *stable version* from [CRAN](http://cran.at.r-project.org/web/packages/matchingMarkets/index.html):
+To get the latest *stable version* from [CRAN](http://cran.r-project.org/package=matchingMarkets):
 
 ```R
 install.packages("matchingMarkets")
@@ -43,5 +43,5 @@ install.packages("matchingMarkets", repos="http://R-Forge.R-project.org")
 library(matchingMarkets)
 ```
 
-For the *package documentation*, see [here!](http://cran.r-project.org/web/packages/matchingMarkets/matchingMarkets.pdf)
+Package [documentation](http://cran.r-project.org/web/packages/matchingMarkets/matchingMarkets.pdf) and [vignette](https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf) are available from the [CRAN page](http://cran.r-project.org/package=matchingMarkets).
 
