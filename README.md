@@ -1,6 +1,6 @@
 # matchingMarkets
 
-> R package: Structural Estimators and Algorithms for the Analysis of Stable Matchings.
+> Analysis of Stable Matchings in R
 
 ***
 
@@ -51,5 +51,5 @@ library(matchingMarkets)
 
 # Documentation
 
-Package [documentation](http://cran.r-project.org/web/packages/matchingMarkets/matchingMarkets.pdf) and [vignette](https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf) are available from the [CRAN page](http://cran.r-project.org/package=matchingMarkets).
+Package [documentation](http://cran.r-project.org/web/packages/matchingMarkets/matchingMarkets.pdf) and [vignette](https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf) are available from the [CRAN page](http://cran.r-project.org/package=matchingMarkets). An application of the estimator in function `stabit` is in [Klein (2015)](https://ideas.repec.org/p/cam/camdae/1521.html).
 
