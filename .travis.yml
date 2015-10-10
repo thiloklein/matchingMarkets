@@ -1,4 +1,4 @@
-# .travis.yml for matchingR using container-based infrastructure
+# .travis.yml for matchingMarkets using container-based infrastructure
 
 # use c as catch-all language
 language: c
@@ -61,7 +61,7 @@ script:
   - PKG_FILE_NAME=$(ls -1t *.tar.gz | head -n 1)
   - R CMD check "${PKG_FILE_NAME}" --as-cran --no-manual --no-build-vignettes --use-valgrind
   - R CMD INSTALL "${PKG_FILE_NAME}"
-  - R -d valgrind --no-save < matchingR.Rcheck/matchingR-Ex.R
+  - R -d valgrind --no-save < matchingMarkets.Rcheck/matchingMarkets-Ex.R
 
 # report coverage rate to coveralls
 after_success:

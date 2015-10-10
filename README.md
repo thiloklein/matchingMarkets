@@ -2,9 +2,11 @@
 
 > Analysis of Stable Matchings in R
 
-***
+[![Build Status](https://travis-ci.org/thiloklein/matchingMarkets.png)](https://travis-ci.org/thiloklein/matchingMarkets) 
+[![Coverage Status](https://coveralls.io/repos/thiloklein/matchingMarkets/badge.svg?branch=master)](https://coveralls.io/r/thiloklein/matchingMarkets?branch=master)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/matchingMarkets)](http://cran.r-project.org/web/packages/matchingMarkets)
 
-# Functions
+## Functions
 
 `matchingMarkets` comes with two estimators:
 
@@ -20,9 +22,8 @@ and three algorithms that can be used to simulate matching data:
 
 * `ttc`: Top-Trading-Cycles Algorithm. Finds stable matchings in the [housing market problem](http://en.wikipedia.org/wiki/Herbert_Scarf#8._The_Housing_Market).
 
-***
 
-# Installation
+## Installation
 
 To get the latest *stable version* from [CRAN](http://cran.r-project.org/package=matchingMarkets):
 
@@ -47,9 +48,8 @@ install.packages("matchingMarkets", repos="http://R-Forge.R-project.org")
 library(matchingMarkets)
 ```
 
-***
 
-# Documentation
+## Documentation
 
 Package [documentation](http://cran.r-project.org/web/packages/matchingMarkets/matchingMarkets.pdf) and [vignette](https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf) are available from the [CRAN page](http://cran.r-project.org/package=matchingMarkets). An application of the estimator in function `stabit` is in [Klein (2015)](https://ideas.repec.org/p/cam/camdae/1521.html).
 
