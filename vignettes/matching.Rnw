@@ -19,7 +19,7 @@
 \Plaintitle{Analysis of Stable Matchings in R: Package matchingMarkets}
 
 \Abstract{
-\noindent \proglang{R} package \pkg{matchingMarkets} implements structural estimators to correct for the sample selection bias from observed outcomes in matching markets. These include the one-sided matching of agents into groups as well the two-sided matching of students to schools. The package also contains \proglang{R} code for three matching algorithms: the deferred-acceptance (or Gale-Shapley) algorithm for stable marriage and college admissions problems, the top-trading-cycles algorithm for house allocation and a partitioning linear program for the roommates problem.
+\noindent \proglang{R} package \pkg{matchingMarkets} implements structural estimators to correct for the sample selection bias from observed outcomes in matching markets. This includes one-sided matching of agents into groups as well as two-sided matching of students to schools. The package also comes with \proglang{R} code for three matching algorithms: the deferred-acceptance (or Gale-Shapley) algorithm for stable marriage and college admissions problems, the top-trading-cycles algorithm for house allocation and a partitioning linear program for the roommates problem.
 }
 
 \Keywords{market design, stable matching, endogeneity, selection models, Bayesian methods, econometrics, \proglang{R}}
