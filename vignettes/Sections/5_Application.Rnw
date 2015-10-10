@@ -1,7 +1,7 @@
 % \section{Replication code and R package documentation} \label{Section:AppendixE} %studies
 \section{Application in microfinance} \label{Section:Application} %studies
 
-This section contains \proglang{R} code to replicate the results of the structural model in Table III of \citet{Klein2015a}. To begin with, load the individual-level data contained in the \code{matchingMarkets} package \citep{Klein2015b} and standardise the variables. The 292 borrowers, are nested within 68 groups and 39 markets.
+This section contains \proglang{R} code to replicate the results of the structural model in Table 3 of \citet{Klein2015a}. To begin with, load the individual-level data contained in the \code{matchingMarkets} package \citep{Klein2015b} and standardise the variables. The 292 borrowers, are nested within 68 groups and 39 markets.
 
 <<5a>>=
 ## 1. Load individual-level data
@@ -53,4 +53,8 @@ head(khb(X=X, y=y, z="eta"),5)
 
 %% R package documentation
 % \includepdf[pages=-, pagecommand=\thispagestyle{fancy},scale=1]{./inputs/Rd2.pdf}
+
+
+
+
 

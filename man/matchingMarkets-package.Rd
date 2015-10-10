@@ -119,7 +119,7 @@
 \section{How to cite this package}{
   Whenever using this package, please cite as
 
-  Klein, T. (2015). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.1-6.
+  Klein, T. (2015). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.1-7.
 }
 
 
@@ -136,7 +136,6 @@
   \item Extension of the estimator in \code{\link{stabit}} to allow for \eqn{n \ge 2} groups per market for the group formation problem. Currently, it supports \eqn{n \ge 2} groups per market for the roommates problem only.
   \item Extension of the estimator in the \code{\link{stabit}} function to allow for two-sided matching data from the college admissions problem. Currently, only one-sided matching data from the group formation and stable roommates problem is supported.
 %  \item S3 methods for functions \code{stabit} and \code{mfx}. At least \code{print} and \code{summary}.
-%  \item In \code{stabit} function the arguments "simulation" and "NTU" are redundant. Replace with \code{simulation} options \code{"TU"; "NTU"; "random"; "none"}.
 %  \item Add more consistency checks.
   }
 }

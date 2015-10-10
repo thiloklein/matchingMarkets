@@ -1,0 +1,52 @@
+\section{Introduction}
+
+Social scientists are often interested in understanding the outcomes of interactions. Applications range from the success of entrepreneurial teams or management boards \citep{Hoogendoorn2013} to the performance of bank mergers or credit groups \citep{Klein2015a}. More generally, these questions are at the core of  diversity debates on race and gender composition in the workplace \citep{Herring2009}.
+
+In the economics literature, the markets that describe these interactions are referred to as matching markets. Matching is concerned with who transacts with whom, and how. For example, who works at which job, which students go to which school, who forms a workgroup with whom, and so on. The empirical analysis of matching markets is naturally subject to sample selection problems. If agents match on characteristics unobserved to the analyst but correlated with both the exogenous variable and the outcome of interest, regression estimates will generally be biased.
+
+The aim of this paper is to describe the \proglang{R}\footnote{The \proglang{R} project for statistical computing \citep{RCoreTeam2014} at http://www.r-project.org/.} package \code{matchingMarkets} \citep{Klein2015b} that contains \proglang{C++} code for the estimation of structural models that correct for the sample selection bias of observed outcomes in matching markets. 
+Specifically, the \code{matchingMarkets} package contains
+\begin{enumerate}
+\item \textit{Bayes estimators}. The estimators implemented in function \code{stabit} and \code{stabit2} correct for the selection bias from endogenous matching. The current package version provides solutions for three commonly observed matching processes: 
+(i) the \textit{group formation problem} with fixed group sizes, 
+(ii) the \textit{roommates problem} with transferable utility, and
+(iii) the \textit{college admissions problem}.
+These processes determine which matches are observed -- and which are not -- and this is a sample selection problem.
+
+\item \textit{Post-estimation tools}. Function \code{mfx} computes marginal effects from coefficients in binary outcome and selection equations and \code{khb} implements the Karlson-Holm-Breen test for confounding due to sample selection \citep{Karlson2012}.
+
+\item \textit{Design matrix generation}. The estimators are based on characteristics of all feasible -- i.e.\ observed and counterfactual -- matches in the market. Generating the characteristics of all feasible matches from individual-level data is a combinatorial problem. The \code{stabit} function has an argument \code{method="model.frame"} that returns a design matrix based on pre-specified transformations to generate counterfactual matches. 
+
+\item \textit{Algorithms}. The package also contains three matching algorithms: the deferred acceptance algorithm (\code{daa}) for \href{http://en.wikipedia.org/wiki/Stable_matching}{stable marriages} and \href{http://en.wikipedia.org/wiki/Hospital_resident}{college admissions}, the top-trading-cycles algorithm (\code{ttc}) for \href{http://en.wikipedia.org/wiki/Herbert_Scarf#8._The_Housing_Market}{house allocation} and a partioning linear program (\code{plp}) for the \href{http://en.wikipedia.org/wiki/Stable_roommates_problem}{stable roommates problem}. These can be used to obtain stable matchings from simulated or real preference data. 
+
+\item \textit{Data}. In addition to the \code{baac00} dataset from borrowing groups in Thailands largest agricultural lending program, the package provides functions to simulate one's own data from matching markets. \code{stabsim} generates individual-level data and the \code{stabit} function has an argument \code{simulation} which generates group-level data and determines which groups are observed in equilibrium based on equilibrium conditions derived in Appendix \ref{Appendix:Equilibrium} and in \citet{Klein2015a}.
+\end{enumerate}
+
+
+\noindent Frequently Asked Questions
+\begin{itemize}
+\item \textit{Why can I not use the classic Heckman correction?}
+
+Estimators such as the \citet{Heckman1979} correction (in package \href{http://cran.r-project.org/web/packages/sampleSelection/index.html}{sampleSelection}) or double selection models are inappropriate for this class of selection problems. To see this, note that a simple first stage discrete choice model assumes that an observed match reveals match partners' preferences over each other. In a matching market, however, agents can only choose from the set of partners who would be willing to form a match with them and we do not observe the players' relevant choice sets. 
+
+\item \textit{Do I need an instrumental variable to estimate the model?}
+
+Short answer: No. Long answer: The characteristics of other agents in the market serve as the source of exogenous variation necessary to identify the model. The identifying exclusion restriction is that characteristics of all agents in the market affect the matching, i.e., who matches with whom, but it is only the characteristics of the match partners that affect the outcome of a particular match once it is formed. No additional instruments are required for identification \citep{Sorensen2007}. 
+
+\item \textit{What are the main assumptions underlying the estimator?}
+
+The approach has certain limitations rooted in its restrictive economic assumptions. 
+\begin{enumerate}
+\item The matching models are \textit{complete information} models. That is, agents are assumed to have a perfect knowledge of the qualities of other market participants.
+\item The models are \textit{static equilibrium} models. This implies that (i) the observed matching must be an equilibrium, i.e., no two agents would prefer to leave their current partners in order to form a new match (definition of pairwise stability), and (ii) the equilibrium must be unique for the likelihood function of the model to be well defined \citep{Bresnahan1991}.
+\item Uniqueness results can be obtained in two ways. First, as is common in the industrial organization literature, by imposing suitable \textit{preference restrictions}. A necessary and sufficient condition for agents' preferences to guarantee a unique equilibrium is alignment \citep{Pycia2010}. In a group formation model, pairwise preference alignment requires that any two agents who belong to the same groups must prefer the same group over the other. A second means to guarantee uniqueness is by assigning matches based on matching algorithms that produce a unique stable matching, such as the well-studied \citet{Gale1962} deferred acceptance algorithm.
+\item Finally, the models assume \textit{bivariate normality} of the errors in selection and outcome equation. If that assumption fails, the estimator is generally inconsistent and can provide misleading inference in small samples \citep{Goldberger1983}.
+\end{enumerate}
+\end{itemize}
+
+\noindent The remainder of the paper is structured as follows. Section \ref{Section:Example} clearly motivates the importance of correcting for sorting bias that arises from endogenous matching in group formation. Section \ref{Section:Multi-indexSS} outlines the multi-index sample selection problem, develops the structural model and discusses the identification strategy. Section \ref{Section:MonteCarloResults} presents Monte-Carlo evidence of the robustness of the estimator in small samples. Section \ref{Section:Application} provides replication code and data for an application of the method in microfinance group formation \citep[see][]{Klein2015a}. Section \ref{Section:Conclusion} concludes.
+
+
+
+
+

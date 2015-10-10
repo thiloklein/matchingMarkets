@@ -1,12 +1,12 @@
 \section{Monte Carlo experiments} \label{Section:MonteCarloResults}
 
-This section presents the \proglang{R}\footnote{The \proglang{R} project for statistical computing \citep{RCoreTeam2014} at http://www.r-project.org/.} software package \pkg{matchingMarkets} \citep{Klein2015b} that implements the estimator developed in Section \ref{Section:Multi-indexSS} and presents results of Monte Carlo experiments.
-%A detailed manual of the package and the code to replicate the results from the structural model in Table \ref{Tab:FixedEffectsModels} are found in Appendix \ref{Section:AppendixE}.
-
+The first part of this section presents a simple simulation study of sorting bias. The second part presents Monte Carlo evidence of the correction method proposed in \citet{Klein2015a} (see Section \ref{Section:Multi-indexSS}) and implemented in \proglang{R} package \pkg{matchingMarkets}. It further provides Monte Carlo studies on the robustness of the proposed estimator in small samples.
 
 \subsection{A simple example}
 
-I first provide a brief overview of the basic functionality of the \pkg{matchingMarkets} package and introduce the model specification used in the Monte Carlo experiments. The required \proglang{R} packages are installed from the CRAN archive. In a first step, \code{stabsim} simulates individual-level, independent variables. The code below generates data for 1,000 markets with two groups of size five each.
+I first provide a brief overview of the basic functionality of the \pkg{matchingMarkets} package and introduce the model specification used in the Monte Carlo experiments. 
+%The required \proglang{R} packages are installed from the CRAN archive. 
+In a first step, \code{stabsim} simulates individual-level, independent variables. The code below generates data for \code{m=1,000} markets with \code{gpm=2} groups per market and group size \code{ind=5}.
 
 <<4a>>=
 ## Simulate individual-level, independent variables
@@ -14,27 +14,30 @@ library(matchingMarkets)
 idata <- stabsim(m=1000, ind=5, seed=123, gpm=2)
 head(idata)
 @
-\noindent The resulting data frame contains market and (tentative) group identifiers, two independent variables $pi$ and $wst$ and a vector of NAs for the dependent variable. Next we apply the function \code{stabit} that serves three purposes. First, it specifies the list of variables to be included in selection and outcome equations. Second, it generates group-level variables based on group members' individual characteristics. For example, the operation \code{add="pi"} generates the group average for variable \code{pi}. The operation \code{ieq="wst"} produces the probability that two randomly drawn group members have the same value of \code{wst}. Third, it draws group-level unobservables that enter selection and outcome equation.
+\noindent The resulting data frame contains a market identifier $m.id$ and two independent variables $pi\sim U(0.5,1)$ and $wst\sim B(1,0.5)$. The group identifier $g.id$ and the dependent variable $R$ are still undefined at this stage. 
+
+Next we apply the function \code{stabit} that serves three purposes. First, it specifies the list of variables to be included in selection and outcome equations. Second, it generates group-level variables based on group members' individual characteristics. For example, the operation \code{add="pi"} generates the group average for variable \code{pi}. The operation \code{ieq="wst"} produces the probability that two randomly drawn group members have the same value of \code{wst}. Third, it draws group-level unobservables that enter selection and outcome equation.
 
 <<4b,cache=TRUE,results='hide'>>=
 ## Simulate group-level variables (takes a minute to complete...)
-mdata <- stabit(x=idata, selection=list(ieq="wst"), 
-outcome=list(ieq="wst"), simulation="NTU", method="model.frame")
+mdata <- stabit(x=idata, simulation="NTU", method="model.frame",
+                selection = list(ieq="wst"), 
+                outcome   = list(ieq="wst"))
 @
 <<4c>>=
 mdata <- mdata$model.frame
 head(mdata$OUT, 4)
 head(mdata$SEL, 4)
 @
-\noindent It is seen that the data frame for the selection equation \code{mdata$SEL} stacks the two equilibrium groups from the outcome equation \code{mdata$OUT} at the top (with \code{D=1}) and all counterfactual groups (with \code{D=0}) below, for each market. 
-In the \code{stabit} function, the argument \code{simulation="NTU"} indicates that the function draws random errors \code{eta} and \code{xi} to determine the dependent variables $V$ and $R$ in selection and outcome equation, respectively. Here, the equilibrium selection is based on the conditions for the group formation game with non-transferable utility in \citet{Klein2015a}. The selection equation determines which groups are observed $D=1$ and which are not $D=0$.
+\noindent The data frame for the selection equation \code{mdata$SEL} stacks the two equilibrium groups from the outcome equation \code{mdata$OUT} at the top (with $D=1$) and all counterfactual groups (with $D=0$) below, for each market. 
+In the \code{stabit} function, the argument \code{simulation="NTU"} indicates that the function draws errors \code{eta} and \code{xi} from a standard normal distribution to determine the dependent variables $V$ and $R$ in selection and outcome equation, respectively. The equilibrium selection is based on the conditions for the group formation game with non-transferable utility in \citet{Klein2015a}. The selection equation determines which groups are observed $D=1$ and which are not $D=0$.
 \begin{eqnarray}
-D &=& 1[V \text{ satisfies equilibrium condition}]\\
-V &=& \alpha\cdot\text{wst.ieq } + \eta, \text{ with } \eta \sim N(0,1)
+V &=& \alpha\cdot\text{wst.ieq } + \eta \\ %\text{ with } \eta \sim N(0,1)
+D &=& 1[V \text{ satisfies equilibrium condition}],
 \end{eqnarray}
 The outcome equation determines the group outcome $R$.
 \begin{eqnarray}
-R &=& \beta\cdot\text{wst.ieq } + \varepsilon, \text{ with } \varepsilon = \delta\eta + \xi \text{ and } \xi \sim N(0,1) \label{Eqn:outcomeSimulation}
+R &=& \beta\cdot\text{wst.ieq } + \varepsilon, \text{ with } \varepsilon = \delta\eta + \xi \label{Eqn:outcomeSimulation} %\text{ and } \xi \sim N(0,1) 
 \end{eqnarray}
 In the \code{matchingMarkets} package, the true parameters are hardcoded as $\alpha = 1; \ \beta = -1; \ \delta = 0.5$. Now, estimating the outcome equation of this model with OLS yields upward biased estimates of the slope coefficient $\beta$.
 
@@ -64,7 +67,7 @@ eta <- lm.sel$resid[mdata$SEL$D==1]
 ## 2nd stage: control for eta
 lm(R ~ wst.ieq + eta, data=mdata$OUT)$coefficients
 @
-\noindent In most real-world applications, however, the match valuations in \code{V} are not observed. The solution is to estimate the selection equation by imposing equilibrium bounds (as derived in Proposition \ref{Prop:EquConditionTU}) on the latent match valuations and this is the procedure I follow in the Monte Carlo experiments below. .
+\noindent In most real-world applications, however, the match valuations $V$ are unobserved. The solution is to estimate the selection equation by imposing equilibrium bounds (as derived in Proposition \ref{Prop:EquConditionTU}) on the latent match valuations and this is the procedure I follow in the Monte Carlo experiments below.
 
 
 
@@ -121,7 +124,8 @@ The benchmark study works with the full population of borrowers. The two experim
 
 \subsubsection{Experiment 1: randomly sampled group members}
 
-While group sizes at Grameen Bank, for example, have evolved to five members, self-help group and village lending schemes operate with up to 30 members. Surveys, such as the BAAC 2000 survey \citep{Townsend2000} studied here, are therefore often restricted to a random sample of the groups' members. 
+While group sizes at Grameen Bank, for example, have evolved to five members, self-help group and village lending schemes operate with up to 30 members. Surveys, such as the BAAC survey \citep{Townsend2000}, 
+are often restricted to a random sample of the groups' members. 
 
 \textit{Set-up:}
 I continue to work with a sample of five borrowers per group but take original group sizes to be six borrowers. This means that one group member is dropped at random.
@@ -148,8 +152,6 @@ While data on the full population of group members solves the attenuation proble
 
 \textit{Set-up:} As in Experiment 1, the original group size is taken to be six members. In two-group markets, this results in ${12 \choose 6} - 2 = 922$ counterfactual groups, from which 250 groups are sampled at random for the analysis. 
 
-\newpage 
-
 \textit{Implementation:}
 \begin{enumerate}
 \item Simulate group-level, independent variables for all ${2n \choose n}$ feasible groups of size $n=6$ in two-group markets.
@@ -166,4 +168,5 @@ While data on the full population of group members solves the attenuation proble
 
 \textit{Interpretation:}
 The results for Experiment 2 in Table \ref{Tab:MCresults} suggest that working with a random sample of counterfactual groups does not affect the mode of the posterior distribution of the coefficients. However, the standard deviation of the posterior distribution of $\beta$ increases from $\hat\sigma_{\hat\beta}=\Sexpr{sd.b.ntu}$ to \Sexpr{sd.e2.ntu} (not reported in Table \ref{Tab:MCresults}). A possible explanation is that the random sampling relaxes the equilibrium bounds which results in increased uncertainty in the parameter estimates.
+
 

@@ -1,11 +1,13 @@
 \section{Example of sorting bias: omitted variables} \label{Section:Example} 
 
-This section clearly motivates the importance of sorting bias in this setup. The basic idea starts with the result in \citet{Klein2015a} that project correlation and risk type positively co-move across groups due to endogenous matching. If we just look at the effect of group correlatedness on repayment, we get an upward-biased coefficient, since high within-group correlatedness is also proxying for safer risk levels.
+This section clearly motivates the importance of the bias that arises from sorting into groups and thereby complicates the analysis of group-level data. The focus in the following example is on the bias that results when variables influencing peer selection are not observed in the data. Appendix \ref{Appendix:Example} continues this example by illustrating the bias arising when variables influencing peer selection are measured with error. Appendix \ref{Appendix:MeasurementError} shows that sorting bias persists -- even in the absence of omitted variables and measurement error -- when the analysis is based on market-level, rather than group-level variables.
 
-The sorting bias that arises by systematic matching into groups in one-sided matching market is best illustrated with an example. The focus here is on the bias that results when variables influencing peer selection are not observed in the data. Appendix \ref{Appendix:Example} continues this example by illustrating the bias arising when variables influencing peer selection are measured with error.
 
-Consider a market for group loans with four borrowers $A$, $B$, $C$ and $D$, who have no pledgeable collateral, and one lender, who offers a pooling contract. Assume that the borrowers prefer to take loans in groups of two over the outside option of remaining unmatched.
-There are three feasible group constellations or matchings. One possibility is that borrower $A$ matches with borrower $B$ and borrower $C$ matches with borrower $D$. Denote this matching $\mu_1=\{ AB, CD \}$. The other two possible matchings are $\mu_2=\{ AC, BD \}$ and $\mu_3=\{ AD, BC \}$. I will refer to $M=\{ \mu_1, \mu_2, \mu_3\}$ as the set of feasible matchings. 
+
+\subsection{Matching}
+
+To begin with, consider a credit market with four entrepreneurs $A$, $B$, $C$ and $D$, who have no pledgeable collateral, and one lender, who offers a group-lending contract. In this contract, loans are given to groups of two and borrowers repay an interest rate $r$ if their project succeeds plus a joint-liability payment $q\leq r$ when they succeed and their partner defaults. Assume that the entrepreneurs prefer to take loans in groups over the outside option of remaining unmatched.
+There are three feasible group constellations or matchings. One possibility is that borrower $A$ forms a match with borrower $B$ and borrower $C$ matches with borrower $D$. Denote this matching $\mu_1=\{ AB, CD \}$. The other two possible matchings are $\mu_2=\{ AC, BD \}$ and $\mu_3=\{ AD, BC \}$. I will refer to $M=\{ \mu_1, \mu_2, \mu_3\}$ as the set of feasible matchings. 
 
 
 Which of these matchings is observed depends on all four borrowers' preferences over feasible matches. Each of the six potential matches between any two borrowers $i$ and $j$ has an associated match valuation, $V_{ij}$. %Assume, for illustrative convenience, preferences to be aligned. Then, 
@@ -16,15 +18,20 @@ max\{ V_{AB}, V_{CD} \} &>& max\{ V_{AC}, V_{BD}, V_{AD}, V_{BC} \}.
 The inequality states that the equilibrium matching contains the match with the largest of the six match valuations. The intuition is that those two borrowers who form the match with the highest valuation have no incentive to deviate. In this simple example, the second equilibrium group is formed by the two residual borrowers. Put differently, the valuation of every non-equilibrium group must be smaller than the opportunity costs of its members to leave their equilibrium groups $AB$ and $CD$ and form a new group.
 
 
-The equilibrium condition is based on the six match valuation equations. These equations are taken from the model in \citet{Ghatak1999}, with %but only include the interaction terms $u_{i,j}=-q[p_i(1-p_j)-\epsilon_{ij}]$ that are relevant for the borrowers' group formation decision. 
-two modifications. 
-First, I denote the probability of default as $d_i:=1-p_i$ and assume that $d_id_j$ is close to zero and therefore negligible. Second, I assume all borrowers are of the same exposure type but differ in exposure intensity $\gamma$. This allows for a clearer exposition of the match valuations as below:
+
+\subsection{Match valuation}
+
+The equilibrium condition is based on the six match valuation equations. These equations are taken from the model in \citet{Ghatak1999} with %but only include the interaction terms $u_{i,j}=-q[p_i(1-p_j)-\epsilon_{ij}]$ that are relevant for the borrowers' group formation decision. 
+two modifications. First, I denote the borrowers' inherent probability of default as $d_i:=1-p_i$ and assume -- for clearer exposition -- that $d_id_j$ is close to zero and therefore negligible. Second, I assume that all borrowers are exposed to the same external shocks but differ in the intensity $\gamma$ with which external shocks affect their probability of default. 
+This results in linear match valuations as follows:
 \begin{eqnarray}
 V_{ij} = u_{i,j} + u_{j,i} &=& -q(p_i+p_j) + 2qp_ip_j + 2q\gamma_i\gamma_j \\
        &\stackrel{d_id_j=0}{=}& -q(d_i+d_j) + 2q\epsilon_{ij} \label{Eqn:ExampleSelectionEqn2}\\ 
        &=& \alpha_1 \epsilon_{ij} + \eta_{ij}. \label{Eqn:ExampleSelectionEqn}
 \end{eqnarray}
-Here, $d_i$ and $d_j$ give the risk type (probability of default) of borrower $i$ and $j$. The parameter $\alpha_1$ in Eqn \ref{Eqn:ExampleSelectionEqn} equals $2q$. When borrowers' risk types are unobservable, the term $-q(d_i+d_j)$ is captured in the match-specific error term $\eta_{ij}$. 
+Here, $d_i$ and $d_j$ give the risk type (probability of default) of borrower $i$ and $j$. 
+%The parameter $\alpha_1$ in Eqn \ref{Eqn:ExampleSelectionEqn} equals $2q$. 
+When risk type is unobserved, the term $-q(d_i+d_j)$ is captured in the match-specific error term $\eta_{ij}$. 
 
 For this example, let the characteristics of the four borrowers be as given in Table \ref{Tab:BiasExampleSimple1}. Furthermore, let the interest payment be $r=2$ and set the joint liability payment to $q=1$. The six valuations, $V_{ij}$, are then given in Table \ref{Tab:BiasExampleSimple2}.
 
@@ -32,25 +39,26 @@ For this example, let the characteristics of the four borrowers be as given in T
   \begin{center}
     \begin{minipage}[c]{0.3\linewidth}
 \centering %\hfill
-      \caption{Borrower-level characteristics. \\ - $p_i$: success prob. \\ - $d_i$: failure prob. \\ - $\gamma_i$: risk exposure} \label{Tab:BiasExampleSimple1}
+      \caption{Borrower-level characteristics. \\ - $d_i$: failure prob. \\ - $\gamma_i$: risk exposure} \label{Tab:BiasExampleSimple1}
     \end{minipage}
     \begin{minipage}[c]{0.6\linewidth}
 \centering
 \small
-\begin{tabular}{c||ccc}
-& $p_i$ & $d_i$ & $\gamma_i$ \\
+\begin{tabular}{c||cc}
+& $d_i$ & $\gamma_i$ \\
 \hline\hline
-\multicolumn{1}{|c||}{$A$} & 0.8 & 0.2 & \multicolumn{1}{c|}{0.3}\\
-\multicolumn{1}{|c||}{$B$} & 0.7 & 0.3 & \multicolumn{1}{c|}{0.4} \\
+\multicolumn{1}{|c||}{$A$} & 0.2 & \multicolumn{1}{c|}{0.3}\\
+\multicolumn{1}{|c||}{$B$} & 0.3 & \multicolumn{1}{c|}{0.4} \\
 \hline\hline
-\multicolumn{1}{|c||}{$C$} & 0.7 & 0.3 & \multicolumn{1}{c|}{0.2} \\
-\multicolumn{1}{|c||}{$D$} & 0.6 & 0.4 & \multicolumn{1}{c|}{0.3} \\
+\multicolumn{1}{|c||}{$C$} & 0.3 & \multicolumn{1}{c|}{0.2} \\
+\multicolumn{1}{|c||}{$D$} & 0.4 & \multicolumn{1}{c|}{0.3} \\
 \hline\hline
 \end{tabular}
     \end{minipage}
   \end{center}
 \end{table}
 
+\noindent Which groups are observed in equilibrium is determined by the condition in Eqn \ref{Eqn:IntroExampleEquilibriumCondition}. In this example, the values in Table \ref{Tab:BiasExampleSimple1} were chosen such that the observed component $\gamma_i$ and the unobserved component $d_i$ are uncorrelated, i.e.\ $cor(\gamma_i,d_i)=0$. Table \ref{Tab:BiasExampleSimple2} illustrates how, for observed equilibrium groups, the independent variable $\epsilon_{ij}$ will be correlated with the error term $\eta_{ij}$ when matching is on both these variables, i.e.\ when $\alpha_1\neq 0$. Simple algebra confirms that for the set of feasible groups in Table \ref{Tab:BiasExampleSimple2}, the correlation between $\epsilon_{ij}$ and $\eta_{ij}$ is zero. For the equilibrium groups in $\mu=\{ AB,CD \}$, however, we find $cov(\epsilon_{ij}, \eta_{ij})=+0.06$.
 
 \begin{table}[htbp!]
   \begin{center}
@@ -81,10 +89,10 @@ For this example, let the characteristics of the four borrowers be as given in T
 \end{table}
 
 
-\noindent Which groups are observed in equilibrium is determined by the condition in Eqn \ref{Eqn:IntroExampleEquilibriumCondition}. In this example, the values in Table \ref{Tab:BiasExampleSimple1} were chosen such that the observed component $\gamma_i$ and the unobserved component $p_i$ are uncorrelated, i.e.\ $cor(\gamma_i,p_i)=0$. Table \ref{Tab:BiasExampleSimple2} illustrates how, for observed equilibrium groups, the independent variable $\epsilon_{ij}$ will be correlated with the error term $\eta_{ij}$ when matching is on both these variables, i.e.\ when $\alpha_1\neq 0$. Simple algebra confirms that for the set of feasible groups in Table \ref{Tab:BiasExampleSimple2}, the correlation between $\epsilon_{ij}$ and $\eta_{ij}$ is zero. For the equilibrium groups in $\mu=\{ AB,CD \}$, however, we find $cov(\epsilon_{ij}, \eta_{ij})=+0.06$.
 
+\subsection{Match outcome}
 
-\noindent Let the group outcome, $Y^*_{ij}$, be given by the expected repayment: %from the two-borrower equivalent of Eqn \ref{Eqn:GrpOutcome} as below:
+\noindent Let us now turn to the group outcome, $Y^*_{ij}$, which is given by the expected repayment: %from the two-borrower equivalent of Eqn \ref{Eqn:GrpOutcome} as below:
 \begin{eqnarray}
 Y^*_{ij} &=& (r+q)(p_i+p_j) - 2qp_ip_j - 2q\epsilon_{ij} \\
          &\stackrel{d_id_j=0}{=}& 2r - (r-q)(d_i+d_j) - 2q\epsilon_{ij}\\
@@ -163,8 +171,7 @@ A comparison of the coefficient estimate for the endogenously formed groups ($\h
   \end{center}
 \end{figure}
 
-%\noindent 
-The matching model in the econometric analysis below tries to control for the bias by estimating both the matching and outcome equations simultaneously. The variation in borrower types across markets will serve the role of an instrumental variable and help to identify the coefficients in the outcome equation.
+\noindent The matching model in the econometric analysis below controls for this bias by estimating both the matching and outcome equations simultaneously. The variation in borrower types across markets serves the role of an instrumental variable and helps to identify the coefficients in the outcome equation.
 
-\newpage
+
 

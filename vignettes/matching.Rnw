@@ -19,7 +19,7 @@
 \Plaintitle{Analysis of Stable Matchings in R: Package matchingMarkets}
 
 \Abstract{
-\noindent \proglang{R} package \pkg{matchingMarkets} implements structural estimators to correct for the sample selection bias from observed outcomes in matching markets. It also contains R code for matching algorithms such as the deferred-acceptance algorithm for college admissions, the top-trading-cycles algorithm for house allocation and a partitioning linear program for the roommates problem.
+\noindent \proglang{R} package \pkg{matchingMarkets} implements structural estimators to correct for the sample selection bias from observed outcomes in matching markets. These include the one-sided matching of agents into groups as well the two-sided matching of students to schools. The package also contains \proglang{R} code for three matching algorithms: the deferred-acceptance (or Gale-Shapley) algorithm for stable marriage and college admissions problems, the top-trading-cycles algorithm for house allocation and a partitioning linear program for the roommates problem.
 }
 
 \Keywords{market design, stable matching, endogeneity, selection models, Bayesian methods, econometrics, \proglang{R}}
@@ -59,20 +59,14 @@ options(replace.assign=TRUE, width=90, prompt="R> ")
 knitr::read_chunk('./inputs/script.R')
 @
 
-<<Introduction, child='./Sections/1_Introduction.Rnw'>>=
-@
-
-<<Example, child='./Sections/2_Example.Rnw'>>=
-@
-
-<<Model, child='./Sections/3_StructuralModel.Rnw'>>=
-@
-
+\input{./Sections/1_Introduction.tex}
+\input{./Sections/2_Example.tex}
+\input{./Sections/3_StructuralModel.tex}
 <<MC, child='./Sections/4_MonteCarloResults.Rnw'>>=
 @
-
 <<Application, child='./Sections/5_Application.Rnw'>>=
 @
+\input{./Sections/6_Conclusion.tex}
 
 %\newpage
 
@@ -82,26 +76,15 @@ knitr::read_chunk('./inputs/script.R')
 
 \appendix
 
-<<AppendixA, child='./Sections/AppendixA.Rnw'>>=
-@
-
-\newpage
-
+\input{./Sections/AppendixA.tex}
+\clearpage
 <<AppendixB, child='./Sections/AppendixB.Rnw'>>=
 @
-
-\newpage
-
-<<AppendixC, child='./Sections/AppendixC.Rnw'>>=
-@
-
-\newpage
-
-<<AppendixD, child='./Sections/AppendixD.Rnw'>>=
-@
-
-\newpage
-
+\clearpage
+\input{./Sections/AppendixC.tex}
+\clearpage
+\input{./Sections/AppendixD.tex}
+\clearpage
 
 \end{document}
 

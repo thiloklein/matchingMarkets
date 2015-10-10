@@ -2,6 +2,8 @@
 
 > R package: Structural Estimators and Algorithms for the Analysis of Stable Matchings.
 
+***
+
 # Functions
 
 `matchingMarkets` comes with two estimators:
@@ -17,6 +19,8 @@ and three algorithms that can be used to simulate matching data:
 * `plp`: Partitioning Linear Programme. Finds stable matchings in the [roommates problem](https://en.wikipedia.org/wiki/Stable_roommates_problem) (one-sided matching market) with transferable utility.
 
 * `ttc`: Top-Trading-Cycles Algorithm. Finds stable matchings in the [housing market problem](http://en.wikipedia.org/wiki/Herbert_Scarf#8._The_Housing_Market).
+
+***
 
 # Installation
 
@@ -42,6 +46,10 @@ or from [R-Forge](https://r-forge.r-project.org/R/?group_id=1906):
 install.packages("matchingMarkets", repos="http://R-Forge.R-project.org")
 library(matchingMarkets)
 ```
+
+***
+
+# Documentation
 
 Package [documentation](http://cran.r-project.org/web/packages/matchingMarkets/matchingMarkets.pdf) and [vignette](https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf) are available from the [CRAN page](http://cran.r-project.org/package=matchingMarkets).
 
