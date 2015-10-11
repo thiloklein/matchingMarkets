@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/thiloklein/matchingMarkets.png)](https://travis-ci.org/thiloklein/matchingMarkets) 
 [![Coverage Status](https://coveralls.io/repos/thiloklein/matchingMarkets/badge.svg?branch=master)](https://coveralls.io/r/thiloklein/matchingMarkets?branch=master)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/matchingMarkets)](http://cran.r-project.org/web/packages/matchingMarkets)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/matchingMarkets)](http://cran.r-project.org/package=matchingMarkets)
 
 ## Functions
 
