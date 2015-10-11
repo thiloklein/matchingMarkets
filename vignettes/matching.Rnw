@@ -12,7 +12,7 @@
 
 
 
-\author{Thilo Klein\thanks{All views and errors are mine.}\\OECD}
+\author{Thilo Klein\thanks{I thank Christian Ahlin, Jiawei Chen and Morten S{\o}rensen for their guidance and helpful discussions. All views and errors are mine.}\\OECD}
 \Plainauthor{Thilo Klein}
 
 \title{Analysis of Stable Matchings in \proglang{R}: Package~\pkg{matchingMarkets}}
