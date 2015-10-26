@@ -36,6 +36,7 @@ addons:
     - r-recommended
     - pandoc
     - valgrind
+    - partitions
 
 # cache local R libraries directory:
 cache:
