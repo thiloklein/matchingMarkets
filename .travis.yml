@@ -1,75 +1,10 @@
-# .travis.yml for matchingMarkets using container-based infrastructure
+# Sample .travis.yml for R projects
 
-# use c as catch-all language
-language: c
+language: r
+warnings_are_errors: true
+sudo: required
 
-# use containers
-sudo: false
-
-# define environmental variables for R CMD check
-env:
-  global:
-   - _R_CHECK_CRAN_INCOMING_USE_ASPELL_=TRUE
-   - _R_CHECK_CRAN_INCOMING_=FALSE
-   - _R_CHECK_FORCE_SUGGESTS_=FALSE
-
-# only run for pushes to master branch
-branches:
-  only:
-   - master
-
-# install r-base-dev:
-# use r-packages-precise (https://cran.r-project.org/bin/linux/ubuntu/precise/) as source
-# which is white listed (https://github.com/travis-ci/apt-source-whitelist/)
 addons:
   apt:
     sources:
-    - r-packages-precise
-    packages:
-    - r-base-dev
-    - r-recommended
-    - pandoc
-    - valgrind
-
-# cache local R libraries directory:
-cache:
-  directories:
-    - ~/Rlib
-
-# install the package and dependencies:
-# - create directory for R libraries (if not already exists)
-# - create .Renviron with location of R libraries
-# - define R repository in .Rprofile
-# - add .travis.yml to .Rbuildignore
-# - install devtools if not already installed
-# - install covr if not already installed
-# - install dependencies
-install:
-  - mkdir -p ~/Rlib
-  - echo 'R_LIBS=~/Rlib' > .Renviron
-  - echo 'options(repos = "http://cran.rstudio.com")' > .Rprofile
-  - echo '.travis.yml' > .Rbuildignore
-  - Rscript -e 'if(!"devtools" %in% rownames(installed.packages())) { install.packages("devtools", dependencies=TRUE, repos="http://cran.rstudio.com/", lib="~/Rlib") }'
-  - Rscript -e 'if(!"covr" %in% rownames(installed.packages())) { install.packages("covr", dependencies=TRUE, repos="http://cran.rstudio.com/", lib="~/Rlib") }'
-  - Rscript -e 'if(!"testthat" %in% rownames(installed.packages())) { install.packages("testthat", dependencies=TRUE, repos="http://cran.rstudio.com/", lib="~/Rlib") }'
-  - Rscript -e 'update.packages(ask = FALSE, instlib = "~/Rlib")'
-  - Rscript -e 'devtools::install_deps(pkg = ".", dependencies = TRUE)'
-
-# build and check package
-script:
-  - R CMD build . --no-manual --no-build-vignettes
-  - PKG_FILE_NAME=$(ls -1t *.tar.gz | head -n 1)
-  - R CMD check "${PKG_FILE_NAME}" --as-cran --no-manual --no-build-vignettes --use-valgrind
-  - R CMD INSTALL "${PKG_FILE_NAME}"
-  - R -d valgrind --no-save < matchingMarkets.Rcheck/matchingMarkets-Ex.R
-
-# report coverage rate to coveralls
-after_success:
-  - Rscript -e 'covr::coveralls(exclusions = list("src/RcppExports.cpp", "R/deprecated.R"))'
-
-# send e-mails if stuff changes
-notifications:
-  email:
-    on_success: change
-    on_failure: change
-
+    - debian-sid

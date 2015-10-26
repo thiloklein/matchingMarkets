@@ -37,7 +37,7 @@
 \begin{document}
 
 % Initialisation
-%\VignetteIndexEntry{Structural Estimators and Algorithms for the Analysis of Stable Matchings}
+%\VignetteIndexEntry{Analysis of Stable Matchings in R: Package matchingMarkets}
 %\VignetteDepends{matchingMarkets,knitr}
 %\VignetteKeywords{market design, stable matching, endogeneity, selection models, Bayesian methods, econometrics, R}
 %\VignettePackage{matchingMarkets}

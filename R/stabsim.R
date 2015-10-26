@@ -28,11 +28,7 @@
 #' mimicking those in dataset \code{\link{baac00}}.
 #' \item{m.id}{categorical: market identifier.}
 #' \item{g.id}{categorical: group identifier.}
-#' \item{pi}{continuous: uniformly distributed project success probability in [0,1].}
 #' \item{wst}{binary: indicator taking the value 1 if last year was worse than the year before; 0 otherwise.}
-#' \item{occ1}{continuous: percentage of revenue from income group 1.}
-#' \item{occ2}{continuous: percentage of revenue from income group 2.}
-#' \item{occ3}{continuous: percentage of revenue from income group 3.}
 #' \item{R}{NA: group outcome is not simulated. It can be obtained using the  \code{simulation} argument 
 #' in function \code{stabit}.}
 #' 
@@ -82,8 +78,7 @@ stabsim <- function(m, ind, seed=123, singles=NULL, gpm=2){
   Ncols <- max(table(m.id))
   i.id  <- 1:Nrows
 
-  #pi  <- runif(n=Nrows,min=0,max=1)
-  pi  <- runif(n=Nrows,min=0.5,max=1)
+  #pi  <- runif(n=Nrows,min=0.5,max=1)
   
   #wst <- unlist(c(by(m.id, m.id, function(i){
   #  l <- length(i) # market size
@@ -100,7 +95,7 @@ stabsim <- function(m, ind, seed=123, singles=NULL, gpm=2){
   #xi.i  <- rnorm(n=Nrows, sd=sqrt(max(ind)))
   #eta.i <- rnorm(n=Nrows, sd=sqrt(max(ind)))
   
-  x <- data.frame(m.id, g.id, pi, wst, R)
+  x <- data.frame(m.id, g.id, wst, R)
   
   if(is.null(singles)){
     return(x)
