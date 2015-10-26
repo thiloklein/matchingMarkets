@@ -10,7 +10,7 @@ addons:
     - debian-sid
 
 # use containers
-sudo: false
+sudo: required
 
 # define environmental variables for R CMD check
 env:
@@ -36,7 +36,6 @@ addons:
     - r-recommended
     - pandoc
     - valgrind
-    - partitions
 
 # cache local R libraries directory:
 cache:
