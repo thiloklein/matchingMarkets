@@ -8,3 +8,10 @@ addons:
   apt:
     sources:
     - debian-sid
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get -f install libc6
+  - sudo apt-get -f install qpdf
+  - sudo apt-get -f install r-base-dev
+  - sudo apt-get -f install r-recommended
