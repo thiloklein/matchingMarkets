@@ -88,14 +88,14 @@
 #' @keywords regression
 #' 
 #' @references Sorensen, M. (2007). How Smart is Smart Money? A Two-Sided Matching Model of Venture Capital.
-#' \emph{Journal of Finance}, .
+#' \emph{Journal of Finance}, 62 (6): 2725-2762.
 #' 
 #' @examples
 #' ## --- SIMULATED EXAMPLE ---
 #' \dontrun{
-#' ## 1. Simulate two-sided matching data for 20 markets \code{m=20} with 100 students
-#' ##    \code{nStudents=100} per market and 20 colleges with quotas of 5 students, each
-#' ##    \code{nSlots=rep(5,20)}.
+#' ## 1. Simulate two-sided matching data for 20 markets (m=20) with 100 students
+#' ##    (nStudents=100) per market and 20 colleges with quotas of 5 students, each
+#' ##    (nSlots=rep(5,20)).
 #' 
 #' xdata <- stabsim2(m=20, nStudents=100, nSlots=rep(5,20), 
 #'   colleges = "c1",
@@ -123,7 +123,7 @@
 #' 
 #' ## 3. Correction for sorting bias when match valuation V is unobserved
 #' 
-#' ## 3-a. Run Gibbs sampler (when \code{SEL} is given)
+#' ## 3-a. Run Gibbs sampler (when SEL is given)
 #'  fit2 <- stabit2(OUT = xdata$OUT, 
 #'            SEL = xdata$SEL,
 #'            outcome = y ~ c1:s1, 
@@ -131,7 +131,7 @@
 #'            niter=1000
 #'  )
 #'
-#' ## 3-b. Run Gibbs sampler (when \code{SEL} is not given)
+#' ## 3-b. Run Gibbs sampler (when SEL is not given)
 #'  fit2 <- stabit2(OUT = xdata$OUT, 
 #'            colleges = "c1",
 #'            students = "s1",
