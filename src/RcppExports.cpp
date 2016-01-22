@@ -6,6 +6,38 @@
 
 using namespace Rcpp;
 
+// stabitCpp2
+List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Dr, Rcpp::List dr, Rcpp::List Mr, Rcpp::List Hr, arma::colvec nCollegesr, arma::colvec nStudentsr, Rcpp::List XXmatchr, Rcpp::List CCr, Rcpp::List CCmatchr, Rcpp::List Lr, Rcpp::List studentIdsr, Rcpp::List collegeIdr, int n, int N, bool binary, int niter, int T, bool display_progress);
+RcppExport SEXP matchingMarkets_stabitCpp2(SEXP YrSEXP, SEXP XmatchrSEXP, SEXP CrSEXP, SEXP CmatchrSEXP, SEXP DrSEXP, SEXP drSEXP, SEXP MrSEXP, SEXP HrSEXP, SEXP nCollegesrSEXP, SEXP nStudentsrSEXP, SEXP XXmatchrSEXP, SEXP CCrSEXP, SEXP CCmatchrSEXP, SEXP LrSEXP, SEXP studentIdsrSEXP, SEXP collegeIdrSEXP, SEXP nSEXP, SEXP NSEXP, SEXP binarySEXP, SEXP niterSEXP, SEXP TSEXP, SEXP display_progressSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< Rcpp::List >::type Yr(YrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type Xmatchr(XmatchrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type Cr(CrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type Cmatchr(CmatchrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type Dr(DrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type dr(drSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type Mr(MrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type Hr(HrSEXP);
+    Rcpp::traits::input_parameter< arma::colvec >::type nCollegesr(nCollegesrSEXP);
+    Rcpp::traits::input_parameter< arma::colvec >::type nStudentsr(nStudentsrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type XXmatchr(XXmatchrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type CCr(CCrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type CCmatchr(CCmatchrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type Lr(LrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type studentIdsr(studentIdsrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type collegeIdr(collegeIdrSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< bool >::type binary(binarySEXP);
+    Rcpp::traits::input_parameter< int >::type niter(niterSEXP);
+    Rcpp::traits::input_parameter< int >::type T(TSEXP);
+    Rcpp::traits::input_parameter< bool >::type display_progress(display_progressSEXP);
+    __result = Rcpp::wrap(stabitCpp2(Yr, Xmatchr, Cr, Cmatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, CCmatchr, Lr, studentIdsr, collegeIdr, n, N, binary, niter, T, display_progress));
+    return __result;
+END_RCPP
+}
 // stabitCpp
 List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr, arma::colvec One, arma::colvec Two, int T, Rcpp::List offOutr, Rcpp::List offSelr, arma::mat sigmabarbetainverse, arma::mat sigmabaralphainverse, int niter, double n, arma::colvec l, Rcpp::List Pr, arma::colvec p, bool binary, bool selection, int censored, bool ntu, bool gPrior, bool display_progress);
 RcppExport SEXP matchingMarkets_stabitCpp(SEXP XrSEXP, SEXP RrSEXP, SEXP WrSEXP, SEXP OneSEXP, SEXP TwoSEXP, SEXP TSEXP, SEXP offOutrSEXP, SEXP offSelrSEXP, SEXP sigmabarbetainverseSEXP, SEXP sigmabaralphainverseSEXP, SEXP niterSEXP, SEXP nSEXP, SEXP lSEXP, SEXP PrSEXP, SEXP pSEXP, SEXP binarySEXP, SEXP selectionSEXP, SEXP censoredSEXP, SEXP ntuSEXP, SEXP gPriorSEXP, SEXP display_progressSEXP) {

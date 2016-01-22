@@ -23,13 +23,12 @@
   The \code{matchingMarkets} package comprises
   \enumerate{
   \item \emph{Bayes estimators}. The estimators implemented in function \code{\link{stabit}} 
-  and \code{stabit2} correct for the selection bias from endogenous matching. 
+  and \code{\link{stabit2}} correct for the selection bias from endogenous matching. 
 
   The current package version provides solutions for two commonly observed matching 
   processes: 
-  (i) the \emph{group formation problem} with fixed group sizes, 
-  (ii) the \emph{roommates problem} with transferable utility, and
-  (iii) the college admissions problem.
+  (i) the \emph{group formation problem} with fixed group sizes and
+  (ii) the \emph{college admissions problem}.
   These processes determine which matches are observed -- 
   and which are not -- and this is a sample selection problem.
   
@@ -119,7 +118,7 @@
 \section{How to cite this package}{
   Whenever using this package, please cite as
 
-  Klein, T. (2015). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.1-7.
+  Klein, T. (2015). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.1-8.
 }
 
 
@@ -129,16 +128,6 @@
   \href{http://cran.r-project.org/package=sampleSelection}{sampleSelection}
 }
 
-
-
-\section{Work in progress}{
-  \enumerate{
-  \item Extension of the estimator in \code{\link{stabit}} to allow for \eqn{n \ge 2} groups per market for the group formation problem. Currently, it supports \eqn{n \ge 2} groups per market for the roommates problem only.
-  \item Extension of the estimator in the \code{\link{stabit}} function to allow for two-sided matching data from the college admissions problem. Currently, only one-sided matching data from the group formation and stable roommates problem is supported.
-%  \item S3 methods for functions \code{stabit} and \code{mfx}. At least \code{print} and \code{summary}.
-%  \item Add more consistency checks.
-  }
-}
 
 \keyword{package}
 

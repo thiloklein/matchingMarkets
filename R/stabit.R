@@ -8,28 +8,17 @@
 #
 # ----------------------------------------------------------------------------
 
-#' @title Structural Matching Model to correct for sample selection bias
+#' @title Structural Matching Model to correct for sample selection bias in one-sided matching markets
 #'
-#' @description The function provides a Gibbs sampler for a structural matching model that corrects 
-#' for sample selection bias when the selection process is a one-sided matching game; that is, 
-#' group/coalition formation.
+#' @description The function provides a Gibbs sampler for a structural matching model that corrects for sample selection bias when the selection process is a one-sided matching game; that is, group/coalition formation.
 #'
-#' The input is individual-level data of all group members from one-sided matching marktes; that is, 
-#' from group/coalition formation games. 
+#' The input is individual-level data of all group members from one-sided matching marktes; that is, from group/coalition formation games. 
 #' 
-#' In a first step, the function generates a model matrix with characteristics of \emph{all feasible} groups
-#' of the same size as the observed groups in the market. 
+#' In a first step, the function generates a model matrix with characteristics of \emph{all feasible} groups of the same size as the observed groups in the market. 
 #' 
-#' For example, in the stable roommates problem with \eqn{n=4} students 
-#' \eqn{\{1,2,3,4\}}{{1,2,3,4}} sorting into groups of 2, 
-#' we have \eqn{{4 \choose 2}=6}{"4 choose 2" = 6} feasible groups: (1,2)(3,4) (1,3)(2,4) 
-#' (1,4)(2,3).
+#' For example, in the stable roommates problem with \eqn{n=4} students \eqn{\{1,2,3,4\}}{{1,2,3,4}} sorting into groups of 2, we have \eqn{{4 \choose 2}=6}{"4 choose 2" = 6} feasible groups: (1,2)(3,4) (1,3)(2,4) (1,4)(2,3).
 #' 
-#' In the group formation problem with \eqn{n=6} students 
-#' \eqn{\{1,2,3,4,5,6\}}{{1,2,3,4,5,6}} sorting into groups of 3, 
-#' we have \eqn{{6 \choose 3}=20}{"6 choose 3" = 20} feasible groups. 
-#' For the same students sorting into groups of sizes 2 and 4, 
-#' we have \eqn{{6 \choose 2} + {6 \choose 4}=30}{"6 choose 2" + "6 choose 4" = 30} feasible groups.
+#' In the group formation problem with \eqn{n=6} students \eqn{\{1,2,3,4,5,6\}}{{1,2,3,4,5,6}} sorting into groups of 3, we have \eqn{{6 \choose 3}=20}{"6 choose 3" = 20} feasible groups. For the same students sorting into groups of sizes 2 and 4, we have \eqn{{6 \choose 2} + {6 \choose 4}=30}{"6 choose 2" + "6 choose 4" = 30} feasible groups.
 #'
 #' The structural model consists of a selection and an outcome equation. The \emph{Selection Equation} 
 #' determines which matches are observed (\eqn{D=1}) and which are not (\eqn{D=0}).
@@ -78,28 +67,16 @@
 #' \code{operation = "variable"}. See the Details and Examples sections.
 #' @param outcome list containing variables and pertaining operators in the outcome equation. The format is 
 #' \code{operation = "variable"}. See the Details and Examples sections.
-#' @param roommates logical: if \code{TRUE} data is assumed to come from a roomate game. This means that groups 
-#' are of size two and the model matrix is prepared for individual-level analysis (peer-effects estimation). 
-#' If \code{FALSE} (which is the default) data is assumed to come from a group/coalition formation game and 
-#' the model matrix is prepared for group-level analysis.
-#' @param simulation should the values of dependent variables in selection and outcome equations be simulated? 
-#' Options are \code{"none"} for no simulation, \code{"NTU"} for non-transferable utility matching, \code{"TU"} 
-#' for transferable utility or \code{"random"} for random matching of individuals to groups.
-#' Simulation settings are (i) all model coefficients set to \code{alpha=beta=1}; (ii) covariance between 
-#' error terms \code{delta=0.5}; (iii) error terms \code{eta} and \code{xi} are draws from a standard normal distribution.
+#' @param roommates logical: if \code{TRUE} data is assumed to come from a roomate game. This means that groups are of size two and the model matrix is prepared for individual-level analysis (peer-effects estimation). If \code{FALSE} (which is the default) data is assumed to come from a group/coalition formation game and the model matrix is prepared for group-level analysis.
+#' @param simulation should the values of dependent variables in selection and outcome equations be simulated? Options are \code{"none"} for no simulation, \code{"NTU"} for non-transferable utility matching, \code{"TU"} for transferable utility or \code{"random"} for random matching of individuals to groups. Simulation settings are (i) all model coefficients set to \code{alpha=beta=1}; (ii) covariance between error terms \code{delta=0.5}; (iii) error terms \code{eta} and \code{xi} are draws from a standard normal distribution.
 #' @param seed integer setting the state for random number generation if \code{simulation=TRUE}.
-#' @param max.combs integer (divisible by two) giving the maximum number of feasible groups to be used for 
-#' generating group-level characteristics.
-#'
-#' @param method estimation method to be used. Either \code{"NTU"} or \code{"TU"} for selection correction using
-#' non-transferable or transferable utility matching as selection rule; \code{"outcome"} for estimation of the 
-#' outcome equation only; or \code{"model.frame"} for no estimation.
+#' @param max.combs integer (divisible by two) giving the maximum number of feasible groups to be used for generating group-level characteristics.
+#' @param method estimation method to be used. Either \code{"NTU"} or \code{"TU"} for selection correction using non-transferable or transferable utility matching as selection rule; \code{"outcome"} for estimation of the outcome equation only; or \code{"model.frame"} for no estimation.
 #' @param binary logical: if \code{TRUE} outcome variable is taken to be binary; if \code{FALSE} outcome variable is taken to be continuous.
 #' @param offsetOut vector of integers indicating the indices of columns in \code{X} for which coefficients should be forced to 1. Use 0 for none.
 #' @param offsetSel vector of integers indicating the indices of columns in \code{W} for which coefficients should be forced to 1. Use 0 for none.
 #' @param marketFE logical: if \code{TRUE} market-level fixed effects are used in outcome equation; if \code{FALSE} no market fixed effects are used.
-#' @param censored draws of the \code{delta} parameter that estimates the covariation between the error terms in selection and outcome equation 
-#' are 0:not censored, 1:censored from below, 2:censored from above.
+#' @param censored draws of the \code{delta} parameter that estimates the covariation between the error terms in selection and outcome equation are 0:not censored, 1:censored from below, 2:censored from above.
 #' @param gPrior logical: if \code{TRUE} the g-prior (Zellner, 1986) is used for the variance-covariance matrix.
 #' @param dropOnes logical: if \code{TRUE} one-group-markets are exluded from estimation.
 #' @param interOut two-colum matrix indicating the indices of columns in \code{X} that should be interacted in estimation. Use 0 for none.
@@ -120,15 +97,11 @@
 #' Operators for variable transformations in \code{selection} and \code{outcome} arguments.
 #' \describe{
 #' \item{\code{add}}{sum over all group members and divide by group size.}
-#' \item{\code{int}}{sum over all possible two-way interactions \eqn{x*y} of group members
-#' and divide by the number of those, given by \code{choose(n,2)}.}
-#' \item{\code{ieq}}{sum over all possible two-way equality assertions \eqn{1[x=y]} and
-#' divide by the number of those.}
-#' \item{\code{ive}}{sum over all possible two-way interactions of vectors
-#' of variables of group members and divide by number of those.}
+#' \item{\code{int}}{sum over all possible two-way interactions \eqn{x*y} of group members and divide by the number of those, given by \code{choose(n,2)}.}
+#' \item{\code{ieq}}{sum over all possible two-way equality assertions \eqn{1[x=y]} and divide by the number of those.}
+#' \item{\code{ive}}{sum over all possible two-way interactions of vectors of variables of group members and divide by number of those.}
 #' \item{\code{inv}}{...}
-#' \item{\code{dst}}{sum over all possible two-way distances between players and divide by
-#' number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
+#' \item{\code{dst}}{sum over all possible two-way distances between players and divide by number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
 #' \item{\code{sel}}{for \code{roommates=TRUE} only: variable for individual (for peer effects estimation).}
 #' \item{\code{oth}}{for \code{roommates=TRUE} only: variable for other in the group (for peer effects estimation).}
 #' }

@@ -13,7 +13,7 @@
 #' @description Marginal effects from regression coefficients for probit 
 #' and matching models. 
 #'
-#' @param m an object returned from function \code{stabit}.
+#' @param m an object returned from functions \code{stabit} or \code{stabit2}.
 #' @param toLatex logical: if \code{TRUE} the result tables are printed in Latex format. The default setting is \code{FALSE}.
 #' 
 #' @export

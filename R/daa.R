@@ -47,6 +47,7 @@
 #' \item{matches}{identifier of students/men assigned to colleges/women.}
 #' \item{match.mat}{matching matrix of dimension \code{nStudents} \code{x} \code{nColleges}.}
 #' \item{singles}{identifier of single (or unmatched) students/men.}
+#' \item{edgelist}{edgelist of matches}
 #' @author Thilo Klein 
 #' @keywords algorithms
 #' @references Gale, D. and Shapley, L.S. (1962). College admissions and the stability 
@@ -120,7 +121,7 @@ daa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
     ## Look at unassigned students that have not yet applied to all colleges 
     temp.singles <- c(na.omit( s.singles[s.hist[s.singles] < nColleges] ))
     if(length(temp.singles)==0){ # if unassigned students have used up all their offers: stop
-      return(list(s.prefs=s.prefs,c.prefs=c.prefs,iterations=iter-1,matches=c.hist,match.mat=current.match,singles=s.singles))
+      return(list(s.prefs=s.prefs,c.prefs=c.prefs,iterations=iter-1,matches=c.hist,match.mat=current.match,singles=s.singles,edgelist=edgefun(x=c.hist)))
       break
     }
     
@@ -130,7 +131,7 @@ daa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
       offers[i] <- s.prefs[s.hist[temp.singles[i]],temp.singles[i]]  # offer if unassigned i is index of current round college
     }
     
-    print(paste("Iteration: ",iter))
+    ##print(paste("Iteration: ",iter))
     
 	  approached <- unique(offers)	# index of colleges who received offers
 	  s.singles  <- sort(s.singles[!s.singles %in% temp.singles])  # reset unassigned students, except for singles who already used up all offers
@@ -155,11 +156,21 @@ daa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
     s.singles <- sort(c(s.singles,stay.single))
 	  if(length(s.singles)==0){	# if no unassigned students left: stop
 	    current.match <- sapply(1:nColleges, function(x) s.mat[,x] %in% c.hist[[x]])
-	    return(list(s.prefs=s.prefs,c.prefs=c.prefs,iterations=iter,matches=c.hist,match.mat=current.match,singles=s.singles))
+	    return(list(s.prefs=s.prefs,c.prefs=c.prefs,iterations=iter,matches=c.hist,match.mat=current.match,singles=s.singles,edgelist=edgefun(x=c.hist)))
   	  break
 	  }
 	  current.match <- sapply(1:nColleges, function(x) s.mat[,x] %in% c.hist[[x]])
   }
 
-  return(list(s.prefs=s.prefs,c.prefs=c.prefs,iterations=iter,matches=c.hist,match.mat=current.match,singles=s.singles))
+  ## return results
+  return(list(s.prefs=s.prefs,c.prefs=c.prefs,iterations=iter,matches=c.hist,match.mat=current.match,singles=s.singles,edgelist=edgefun(x=c.hist)))
+}
+
+## convert match matrix to edgelist
+edgefun <- function(x){
+  data.frame(colleges = c(unlist( sapply(1:length(x), function(i){
+    rep(i,length(x[[i]]))  
+  }) )), 
+  students = unlist(x),
+  stringsAsFactors = FALSE)
 }

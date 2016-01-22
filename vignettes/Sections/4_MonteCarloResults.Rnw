@@ -68,6 +68,8 @@ lm(R ~ wst.ieq, data=mdata$OUT)$coefficients
   \begin{subfigure}{.46\textwidth}
     \caption{Positive sorting bias of the independent variable}
     <<predictions, echo=FALSE, cache=TRUE, results="hide", fig.height=6>>=
+    library(ggplot2)
+    #library(gridExtra)
     lm2 <- lm(R ~ wst.ieq, data=mdata$OUT)
     lm2$coefficients["wst.ieq"] <- lm2$coefficients["wst.ieq"] + 1 ## !!
       conf.int <- data.frame(with(mdata$OUT, cbind(wst.ieq, predict(lm2, newdata=mdata$OUT, 
@@ -83,8 +85,6 @@ lm(R ~ wst.ieq, data=mdata$OUT)$coefficients
   \begin{subfigure}{.46\textwidth}
     \caption{Correlation of independent variable with eta}
     <<error, echo=FALSE, cache=TRUE, results="hide", fig.height=6>>= 
-    library(ggplot2)
-    library(gridExtra)
     lm1 <- lm(epsilon*0.5 ~ wst.ieq, data=mdata$OUT)
     conf.int <- data.frame(with(mdata$OUT, cbind(wst.ieq, predict(lm1, newdata=mdata$OUT, 
       interval="confidence", level=.95))))
