@@ -6,6 +6,13 @@ on [R-Forge](https://r-forge.r-project.org/scm/viewvc.php/?root=matchingmarkets)
 and on [GitHub](https://github.com/thiloklein/matchingMarkets).
 
 
+## matchingMarkets 0.1-8 (2016-01-22)
+
+This is a major update
+
+* Added `stabit2` function for two-sided matching markets. 
+
+
 ## matchingMarkets 0.1-6 (2015-10-05)
 
 This is a major update

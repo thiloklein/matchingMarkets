@@ -1,9 +1,9 @@
 # matchingMarkets
 > Analysis of Stable Matchings in R
 
-[![Travis-CI Build Status](https://travis-ci.org/thiloklein/matchingMarkets.svg?branch=master)](https://travis-ci.org/thiloklein/matchingMarkets)
-[![Coverage Status](https://coveralls.io/repos/thiloklein/matchingMarkets/badge.svg?branch=master)](https://coveralls.io/r/thiloklein/matchingMarkets?branch=master)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/matchingMarkets)](http://cran.r-project.org/package=matchingMarkets)
+[![CRAN_Downloads](http://cranlogs.r-pkg.org/badges/grand-total/matchingMarkets?color=brightgreen)](http://cran.r-project.org/package=matchingMarkets)
+
 
 ## Functions
 
