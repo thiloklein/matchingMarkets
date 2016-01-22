@@ -57,6 +57,7 @@
 #'   selection = ~ -1 + c1:s1 + eta
 #' )
 #' head(xdata$OUT)
+#' head(xdata$SEL)
 #' }
 stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots, 
                      colleges, students, outcome, selection=NULL, 

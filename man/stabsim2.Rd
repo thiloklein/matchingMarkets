@@ -42,7 +42,8 @@ the college's quota.}
 \item{SELs}{}
 }
 \description{
-Simulate data for two-sided matching markets.
+Simulate data for two-sided matching markets. In the simulation for the Sorensen (2007) with one
+selection equation (\code{selection}), an equal sharing rule of \code{\lambda = 0.5} is used.
 }
 \examples{
 \dontrun{

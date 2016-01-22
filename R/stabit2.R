@@ -108,8 +108,8 @@
 #' ## 2-a. Run Gibbs sampler (when \code{SEL} is given)
 #'  fit2 <- stabit2(OUT = xdata$OUT, 
 #'            SEL = xdata$SEL,
-#'            outcome = y ~ w1, 
-#'            selection = ~ -1 + w1,
+#'            outcome = y ~ c1:s1, 
+#'            selection = ~ -1 + c1:s1,
 #'            niter=1000
 #'  )
 #'
