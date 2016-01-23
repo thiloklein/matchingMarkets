@@ -12,7 +12,7 @@
 #' @title Simulate data for two-sided matching markets
 #'
 #' @description Simulate data for two-sided matching markets. In the simulation for the Sorensen (2007) with one
-#' selection equation (\code{selection}), an equal sharing rule of \code{\lambda = 0.5} is used.
+#' selection equation (\code{selection}), an equal sharing rule of \eqn{\lambda = 0.5} is used.
 #'
 #' @param m integer indicating the number of markets to be simulated.
 #' @param nStudents integer indicating the number of students per market.

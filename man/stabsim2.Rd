@@ -43,7 +43,7 @@ the college's quota.}
 }
 \description{
 Simulate data for two-sided matching markets. In the simulation for the Sorensen (2007) with one
-selection equation (\code{selection}), an equal sharing rule of \code{\lambda = 0.5} is used.
+selection equation (\code{selection}), an equal sharing rule of \eqn{\lambda = 0.5} is used.
 }
 \examples{
 \dontrun{
@@ -58,6 +58,7 @@ xdata <- stabsim2(m=2, nStudents=10, nSlots=c(2,3,5),
   selection = ~ -1 + c1:s1 + eta
 )
 head(xdata$OUT)
+head(xdata$SEL)
 }
 }
 \author{

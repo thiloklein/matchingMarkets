@@ -17,13 +17,13 @@ double f(double y);
 List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr, 
   Rcpp::List Cmatchr, Rcpp::List Dr, Rcpp::List dr, Rcpp::List Mr, Rcpp::List Hr, 
   arma::colvec nCollegesr, arma::colvec nStudentsr, Rcpp::List XXmatchr,
-  Rcpp::List CCr, Rcpp::List CCmatchr,
+  Rcpp::List CCr, Rcpp::List CCmatchr, 
   Rcpp::List Lr, Rcpp::List studentIdsr, Rcpp::List collegeIdr, int n, int N,
-  bool binary, int niter, int T, bool display_progress = true) {
+  bool binary, int niter, int T, int censored, bool display_progress = true) {
   
   //-- 
   // bool gPrior, arma::mat sigmabarbetainverse, arma::mat sigmabaralphainverse, arma::mat sigmabargammainverse,
-  int censored = 1;
+  //int censored = 1;
   
   // Enable/Disable verbose debug tracing.
   //bool DEBUG = FALSE;

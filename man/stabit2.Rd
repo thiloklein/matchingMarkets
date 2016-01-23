@@ -8,7 +8,7 @@
 stabit2(OUT, SEL = NULL, colleges = NULL, students = NULL,
   m.id = "m.id", c.id = "c.id", s.id = "s.id", outcome,
   selection = NULL, selection.student = NULL, selection.college = NULL,
-  binary = FALSE, niter, gPrior = FALSE, seed = 123)
+  binary = FALSE, niter, gPrior = FALSE, censored = 1, seed = 123)
 }
 \arguments{
 \item{OUT}{data frame with characteristics of all observed matches, including
@@ -40,6 +40,8 @@ market identifier \code{m.id}, college identifier \code{c.id} and student identi
 \item{niter}{number of iterations to use for the Gibbs sampler.}
 
 \item{gPrior}{logical: if \code{TRUE} the g-prior (Zellner, 1986) is used for the variance-covariance matrix. (Not yet implemented)}
+
+\item{censored}{draws of the \code{delta} parameter that estimates the covariation between the error terms in selection and outcome equation are 0:not censored, 1:censored from below, 2:censored from above.}
 
 \item{seed}{integer setting the state for MCMC draws.}
 }
@@ -93,9 +95,9 @@ That is, the observed outcomes would be a random sample from the population of i
 \examples{
 ## --- SIMULATED EXAMPLE ---
 \dontrun{
-## 1. Simulate two-sided matching data for 20 markets \\code{m=20} with 100 students
-##    \\code{nStudents=100} per market and 20 colleges with quotas of 5 students, each
-##    \\code{nSlots=rep(5,20)}.
+## 1. Simulate two-sided matching data for 20 markets (m=20) with 100 students
+##    (nStudents=100) per market and 20 colleges with quotas of 5 students, each
+##    (nSlots=rep(5,20)).
 
 xdata <- stabsim2(m=20, nStudents=100, nSlots=rep(5,20), 
   colleges = "c1",
@@ -105,15 +107,33 @@ xdata <- stabsim2(m=20, nStudents=100, nSlots=rep(5,20),
 )
 head(xdata$OUT)
 
-## 2-a. Run Gibbs sampler (when \\code{SEL} is given)
+
+## 2-a. Bias from sorting
+ lm1 <- lm(y ~ c1:s1, data=xdata$OUT)
+ summary(lm1)
+
+## 2-b. Cause of the bias
+ with(xdata$OUT, cor(c1*s1, eta))
+
+## 2-c. Correction for sorting bias
+ lm2a <- lm(V ~ -1 + c1:s1, data=xdata$SEL); summary(lm2a)
+ etahat <- lm2a$residuals[xdata$SEL$D==1]
+ 
+ lm2b <- lm(y ~ c1:s1 + etahat, data=xdata$OUT)
+ summary(lm2b)
+
+
+## 3. Correction for sorting bias when match valuation V is unobserved
+
+## 3-a. Run Gibbs sampler (when SEL is given)
  fit2 <- stabit2(OUT = xdata$OUT, 
            SEL = xdata$SEL,
-           outcome = y ~ w1, 
-           selection = ~ -1 + w1,
+           outcome = y ~ c1:s1, 
+           selection = ~ -1 + c1:s1,
            niter=1000
  )
 
-## 2-b. Run Gibbs sampler (when \\code{SEL} is not given)
+## 3-b. Run Gibbs sampler (when SEL is not given)
  fit2 <- stabit2(OUT = xdata$OUT, 
            colleges = "c1",
            students = "s1",
@@ -122,8 +142,21 @@ head(xdata$OUT)
            niter=1000
  )
 
-## 3. Get results
+## 4-a. Get marginal effects (for linear model)
+ fit2$coefs
+ 
+## 4-b. Get marginal effects (for probit)
  mfx(fit2)
+ 
+ 
+## 5. Plot MCMC draws for coefficients
+ plot(fit2$draws$alphadraws[1,], type="l")
+ plot(fit2$draws$betadraws[1,], type="l")
+ plot(fit2$draws$deltadraws[1,], type="l")
+ 
+ 
+## 6. Obtain the model list used in estimation
+ head(fit2$model.list)
 }
 }
 \author{
@@ -131,7 +164,7 @@ Thilo Klein
 }
 \references{
 Sorensen, M. (2007). How Smart is Smart Money? A Two-Sided Matching Model of Venture Capital.
-\emph{Journal of Finance}, .
+\emph{Journal of Finance}, 62 (6): 2725-2762.
 }
 \keyword{regression}
 

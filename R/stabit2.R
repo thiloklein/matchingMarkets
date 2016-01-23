@@ -66,6 +66,7 @@
 #' @param binary logical: if \code{TRUE} outcome variable is taken to be binary; if \code{FALSE} outcome variable is taken to be continuous.
 #' @param niter number of iterations to use for the Gibbs sampler.
 #' @param gPrior logical: if \code{TRUE} the g-prior (Zellner, 1986) is used for the variance-covariance matrix. (Not yet implemented)
+#' @param censored draws of the \code{delta} parameter that estimates the covariation between the error terms in selection and outcome equation are 0:not censored, 1:censored from below, 2:censored from above.
 #' @param seed integer setting the state for MCMC draws.
 #' 
 #' @export
@@ -158,7 +159,8 @@
 #' }
 stabit2 <- function(OUT, SEL=NULL,
                     colleges=NULL, students=NULL, m.id="m.id", c.id="c.id", s.id="s.id", outcome, selection=NULL,
-                    selection.student=NULL, selection.college=NULL, binary=FALSE, niter, gPrior=FALSE, seed=123){
+                    selection.student=NULL, selection.college=NULL, binary=FALSE, niter, gPrior=FALSE, 
+                    censored=1, seed=123){
   
   ## 1) creates an edgelist for all feasible matches taken as given an edgelist of either 
   ##    (i) equilibrium matches [as in daa()] or
@@ -263,7 +265,7 @@ stabit2 <- function(OUT, SEL=NULL,
                                  #SSr=SS, SSmatchr=SSmatch,
                                  CCmatchr=CCmatch, Lr=L, studentIdsr=studentIds, collegeIdr=collegeId, n=n, 
                                  #Vcr=Vc, Vsr=Vs,
-                                 N=N, binary=binary, niter=niter, T=T))
+                                 N=N, binary=binary, niter=niter, T=T, censored=censored))
     
     # -----------------------------------------------------------------------------
     # Add names to coefficients.
