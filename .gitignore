@@ -2,5 +2,5 @@
 .Rhistory
 .RData
 RcppExports.o
-stabitCpp
+stabitCpp.o
 stabitCpp2.o
