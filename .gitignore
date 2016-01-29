@@ -1,3 +1,6 @@
 .Rproj.user
 .Rhistory
 .RData
+RcppExports.o
+stabitCpp
+stabitCpp2.o
