@@ -39,14 +39,13 @@
   \item \emph{Design matrix generation}. The estimators are based on independent variables for all feasible, 
   i.e., observed and counterfactual, matches in the market. Generating the characteristics
   of all feasible matches from individual-level data is a combinatorial problem. 
-  The \code{\link{stabit}} function has an argument \code{method="model.frame"} 
-  that returns a design matrix based on pre-specified transformations to generate counterfactual matches. 
+  The package returns a design matrix based on pre-specified transformations to generate counterfactual matches. 
 
   \item \emph{Algorithms}. The package also contains several matching 
   algorithms such as the deferred acceptance algorithm (\code{\link{daa}}) for \href{http://en.wikipedia.org/wiki/Stable_matching}{stable marriages} and \href{http://en.wikipedia.org/wiki/Hospital_resident}{college admissions}, the top-trading-cycles algorithm (\code{\link{ttc}}) for \href{http://en.wikipedia.org/wiki/Herbert_Scarf#8._The_Housing_Market}{house allocation} and a partioning linear program (\code{\link{plp}}) for the \href{http://en.wikipedia.org/wiki/Stable_roommates_problem}{stable roommates problem}. These can be used to obtain stable matchings from simulated or 
   real preference data. 
 
-  \item \emph{Data}. In addition to the \code{\link{baac00}} dataset from borrowing groups in Thailands largest agricultural lending program, the package provides functions to simulate one's own data from matching markets. \code{\link{stabsim}} generates individual-level data and the \code{\link{stabit}} function has an argument \code{simulation} which generates group-level data and determines which groups are observed in equilibrium based on an underlying linear stochastic model.
+  \item \emph{Data}. In addition to the \code{\link{baac00}} dataset from borrowing groups in Thailands largest agricultural lending program, the package provides functions \code{\link{stabsim}} and \code{\link{stabsim2}} to simulate one's own data from one-sided and two-sided matching markets. 
   }
 }
 

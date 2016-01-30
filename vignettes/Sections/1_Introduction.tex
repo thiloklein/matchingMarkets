@@ -9,15 +9,14 @@ In the economics literature, the markets that describe these interactions are re
 The aim of this paper is to describe the \proglang{R}\footnote{The \proglang{R} project for statistical computing \citep{RCoreTeam2014} at http://www.r-project.org/.} package \code{matchingMarkets} \citep{Klein2015b} that contains \proglang{C++} code for the estimation of structural models that correct for the sample selection bias of observed outcomes in both one-sided and two-sided matching markets. 
 Specifically, the \code{matchingMarkets} package contains
 \begin{enumerate}
-\item \textit{Bayes estimators}. The estimators implemented in function \code{stabit} and \code{stabit2} correct for the selection bias from endogenous matching. The current package version provides solutions for three commonly observed matching processes: 
-(i) the \textit{group formation problem} with fixed group sizes, 
-(ii) the \textit{roommates problem} with transferable utility, and
-(iii) the \textit{college admissions problem}.
+\item \textit{Bayes estimators}. The estimators implemented in function \code{stabit} and \code{stabit2} correct for the selection bias from endogenous matching. The current package version provides solutions for two commonly observed matching processes: 
+(i) the \textit{group formation problem} with fixed group sizes and
+(ii) the \textit{college admissions problem}.
 These processes determine which matches are observed -- and which are not -- and this is a sample selection problem.
 
 \item \textit{Post-estimation tools}. Function \code{mfx} computes marginal effects from coefficients in binary outcome and selection equations and \code{khb} implements the Karlson-Holm-Breen test for confounding due to sample selection \citep{Karlson2012}.
 
-\item \textit{Design matrix generation}. The estimators are based on characteristics of all feasible -- i.e.\ observed and counterfactual -- matches in the market. Generating the characteristics of all feasible matches from individual-level data is a combinatorial problem. %The \code{stabit} function has an argument \code{method="model.frame"} that returns a design matrix based on pre-specified transformations to generate counterfactual matches. 
+\item \textit{Design matrix generation}. The estimators are based on characteristics of all feasible -- i.e.\ observed and counterfactual -- matches in the market. Generating the characteristics of all feasible matches from individual-level data is a combinatorial problem. The package returns a design matrix based on pre-specified transformations to generate counterfactual matches.
 
 \item \textit{Algorithms}. The package also contains three matching algorithms: the deferred acceptance algorithm (\code{daa}) for \href{http://en.wikipedia.org/wiki/Stable_matching}{stable marriages} and \href{http://en.wikipedia.org/wiki/Hospital_resident}{college admissions}, the top-trading-cycles algorithm (\code{ttc}) for \href{http://en.wikipedia.org/wiki/Herbert_Scarf#8._The_Housing_Market}{house allocation} and a partioning linear program (\code{plp}) for the \href{http://en.wikipedia.org/wiki/Stable_roommates_problem}{stable roommates problem}. These can be used to obtain stable matchings from simulated or real preference data. 
 
