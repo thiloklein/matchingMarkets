@@ -6,7 +6,7 @@ on [R-Forge](https://r-forge.r-project.org/scm/viewvc.php/?root=matchingmarkets)
 and on [GitHub](https://github.com/thiloklein/matchingMarkets).
 
 
-## matchingMarkets 0.1-8 (2016-01-22)
+## matchingMarkets 0.2-1 (2016-01-31)
 
 This is a major update
 

@@ -37,7 +37,7 @@
 \begin{document}
 
 % Initialisation
-%\VignetteIndexEntry{Analysis of Stable Matchings in R: Package matchingMarkets}
+%\VignetteIndexEntry{Analysis of Stable Matchings}
 %\VignetteDepends{matchingMarkets,knitr}
 %\VignetteKeywords{market design, stable matching, endogeneity, selection models, Bayesian methods, econometrics, R}
 %\VignettePackage{matchingMarkets}
@@ -66,7 +66,7 @@ knitr::read_chunk('./inputs/script.R')
 @
 <<Application, child='./Sections/5_Application.Rnw'>>=
 @
-\input{./Sections/6_Conclusion.tex}
+%\input{./Sections/6_Conclusion.tex}
 
 %\newpage
 
