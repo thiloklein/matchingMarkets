@@ -25,6 +25,7 @@
 #' @param selection.student formula for match valuations of students. This argument is ignored when \code{selection} is provided.
 #' @param colleges character vector of variable names for college characteristics. These variables carry the same value for any college.
 #' @param students character vector of variable names for student characteristics. These variables carry the same value for any student.
+#' @param binary logical: if \code{TRUE} outcome variable is binary; if \code{FALSE} outcome variable is continuous.
 #' @param seed integer setting the state for random number generation. Defaults to \code{set.seed(123)}.
 #' 
 #' @export
@@ -61,7 +62,8 @@
 #' }
 stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots, 
                      colleges, students, outcome, selection=NULL, 
-                     selection.student=NULL, selection.college=NULL, seed=123){
+                     selection.student=NULL, selection.college=NULL, 
+                     binary=FALSE, seed=123){
 
   #rm(list=ls())
   #seed <- 123
@@ -69,8 +71,10 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
   #nStudents=6
   #nSlots=c(1,2,3) 
   #nColleges <- length(nSlots)
-  #outcome = ~ w1 + eta + nu
-  #selection = ~ -1 + w1 + eta
+  #outcome = ~ c1:s1 + eta + nu
+  #selection = ~ -1 + c1:s1 + eta
+  #colleges = "c1"
+  #students = "s1"
   
   if(is.null(selection)){
     method <- "Klein"
@@ -180,7 +184,7 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
     s.prefs <- apply(-1*s.prefs, 2, order)
     
     ## run daa
-    library(matchingMarkets)
+    #library(matchingMarkets)
     matching <- daa(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=nSlots)$edgelist
     
     ## obtain equilibrium identifier 'd'
@@ -258,6 +262,11 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
     rownames(h) <- 1:dim(h)[1]
     h
   })
+  
+  if(binary == TRUE){
+    RETURN$OUT$y <- ifelse(RETURN$OUT$y > median(RETURN$OUT$y), 1, 0)
+  }
+  
   return(RETURN)
   
 }

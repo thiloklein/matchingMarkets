@@ -333,7 +333,7 @@ stabit2_inner <- function(iter, data, SEL, colleges, students, m.id="m.id", c.id
                           selection.student, selection.college, method){
   
   data <- data[data[,m.id]==iter,]
-  
+    
   if(is.null(SEL)){
     
     ## 
@@ -368,6 +368,18 @@ stabit2_inner <- function(iter, data, SEL, colleges, students, m.id="m.id", c.id
   } else{
     
     SEL <- SEL[[iter]]
+    
+    ## 1) sort SEL by c.id and s.id (based on data/OUT)
+    iddata <- with(data, paste(c.id, s.id, sep="_"))
+    SEL$idSEL <- with(SEL, paste(c.id, s.id, sep="_"))
+    
+    ## 1-a) which matches in SEL are in data/OUT?
+    SEL_top <- SEL[SEL$idSEL %in% iddata,]
+    SEL_top <- SEL_top[match(iddata, SEL_top$idSEL),]
+    SEL_bot <- SEL[! SEL$idSEL %in% iddata,]
+    SEL <- rbind(SEL_top, SEL_bot)
+    rm(SEL_top, SEL_bot)
+    
     indices <- SEL
     
     ## unique student and college ids
