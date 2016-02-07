@@ -8,9 +8,11 @@
 
 using namespace Rcpp;
 arma::colvec mvrnormArma(arma::colvec mu, arma::mat sigma, int ncols);
-double truncn(double bound, bool lb, double mu, double sigma);
-double truncn2(double a, double b, double mu, double sigma);
-double f(double y);
+double norm_rs(double a, double b);
+double half_norm_rs(double a, double b);
+double unif_rs(double a, double b);
+double exp_rs(double a, double b);
+double truncn2(double mu, double sigma, double lower, double upper);
 
 //' @export
 // [[Rcpp::export]]
@@ -186,9 +188,9 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
         for(int ij=0; ij < nStudents(t); ij++){
           Yhat = arma::as_scalar( Xmatch(t).row(ij)*alpha + ( Vc(t)(ij) - Cmatch(t).row(ij)*beta )*kappa );
           if(R(t)(ij) == 1){
-            Y(t)(ij) = truncn(0, TRUE, Yhat, 1.0); // bound, lb, mu, sigma
+            Y(t)(ij) = truncn2(Yhat, 1.0, 0, arma::datum::inf ); // mu, sigma, lower, upper
           } else{
-            Y(t)(ij) = truncn(0, FALSE, Yhat, 1.0); // bound, lb, mu, sigma
+            Y(t)(ij) = truncn2(Yhat, 1.0, -arma::datum::inf, 0 ); // mu, sigma, lower, upper
           }            
         }
       }                    
@@ -225,7 +227,7 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
             Vhat = arma::as_scalar( C(t).row(M(t)(i,j))*beta );            
             // Eqn (5)
             Vcupperbar = std::max( Vc(t)(M(t)(collegeId(t)(j),j)), arma::min(Vc(t)(M(t)(iuvec,studentIds(L(t)(i))))) ); 
-            Vc(t)(M(t)(i,j)) = truncn(Vcupperbar, FALSE, Vhat, 1.0); // bound, lb, mu, sigma
+            Vc(t)(M(t)(i,j)) = truncn2(Vhat, 1.0, -arma::datum::inf, Vcupperbar ); // mu, sigma, lower, upper
 
           } else{  // equilibrium matches
                           
@@ -256,7 +258,7 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
             sum7 = Y(t)(M(t)(i,j)) - Xmatch(t).row(M(t)(i,j))*alpha;
             Vhat = arma::as_scalar( C(t).row(M(t)(i,j))*beta + kappa*sum7/(sigmasquarenu+pow(kappa,2)) );
             sigmahatsquareV = sigmasquarenu/(sigmasquarenu+pow(kappa,2));
-            Vc(t)(M(t)(i,j)) = truncn(Vclowerbar, TRUE, Vhat, sqrt(sigmahatsquareV)); // bound, lb, mu, sigma
+            Vc(t)(M(t)(i,j)) = truncn2(Vhat, sqrt(sigmahatsquareV), Vclowerbar, arma::datum::inf ); // mu, sigma, lower, upper
             
           }  
           
@@ -314,9 +316,9 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     sigmahatsquarekappa = 1/(1/sigmabarsquarekappa + (1/sigmasquarenu)*arma::as_scalar(sum7));
     kappahat = -sigmahatsquarekappa*(-kappabar/sigmabarsquarekappa - (1/sigmasquarenu)*arma::as_scalar(sum8));      
     if(censored == 1){ // from below, positive covariation of residuals
-      kappa = truncn(0, TRUE, kappahat, sqrt(sigmahatsquarekappa) ); // bound, lb, mu, sigma
+      kappa = truncn2(kappahat, sqrt(sigmahatsquarekappa), 0, arma::datum::inf ); // mu, sigma, lower, upper
     } else if(censored == 2){ // from above, negative covariation of residuals
-      kappa = truncn(0, FALSE, kappahat, sqrt(sigmahatsquarekappa) ); // bound, lb, mu, sigma
+      kappa = truncn2(kappahat, sqrt(sigmahatsquarekappa), -arma::datum::inf, 0 ); // mu, sigma, lower, upper
     } else{ // not censored
       kappa = ::Rf_rnorm(kappahat, sqrt(sigmahatsquarekappa));
     }
@@ -423,103 +425,145 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
 }
 
 
-// ---------------------------------------------  
-// Returns one draw from truncated normal distribution (mu,sigma^2) with range
-// (a,b) from http://athens.src.uchicago.edu/jenni/econ319_2003/lecture.html
-// ---------------------------------------------  
+// norm_rs(a, b)
+// generates a sample from a N(0,1) RV restricted to be in the interval
+// (a,b) via rejection sampling.
+// ======================================================================
 
-double f(double y){
-  return exp(-0.5*pow(y,2));
+double norm_rs(double a, double b)
+{
+   double  x;
+   x = Rf_rnorm(0.0, 1.0);
+   while( (x < a) || (x > b) ) x = norm_rand();
+   return x;
 }
 
-double truncn2(double a, double b, double mu, double sigma){
-  
-  arma::colvec u = arma::zeros(2,1);
-  double c, c1, c2, x, cdel, f1, f2, z, dtruncn;
-  double eps=1e-20, t1=0.375, t2=2.18, t3=0.725, t4=0.45;
-  bool lflip;
-  //double c, z, w;
-  
-  // 1. standardised cut-off c for truncation from below or above 
-  c1 = (a-mu)/sigma;
-  c2 = (b-mu)/sigma;
-  lflip = FALSE;
-    
-  // 2. standardised draw using Geweke's (1991) normal rejection sampling
-  if(c1*c2 < 0){
-    if((f(c1)>t1) & (f(c2)>t1)){
-      cdel = c2 - c1;
-      
-      u(0) = ::Rf_runif(0.0,1.0); // u = runif(2);
-      u(1) = ::Rf_runif(0.0,1.0); 
-      x = c1 + cdel*u(0);
-      while(-(u(1) < f(x))){
-        u(0) = ::Rf_runif(0.0,1.0); // u = runif(2);
-        u(1) = ::Rf_runif(0.0,1.0); 
-        x = c1 + cdel*u(0);
-      }
-    } else{
-      
-      x = ::Rf_rnorm(0.0,1.0);
-      while(-((x>c1) & (x<c2))){
-        x = ::Rf_rnorm(0.0,1.0);
-      }
-    }
-  } else{
-    
-    if(c1<0){
-      c  =  c1;
-      c1 = -c2;
-      c2 = -c;
-      lflip = TRUE;
-    }
-    f1 = f(c1);
-    f2 = f(c2);
-    
-    if((f2<eps) | (f1/f2>t2)){
-      if(c1>t3){  // exponential rejection sampling
-        
-        c = c2 - c1;
-        
-        u(0) = ::Rf_runif(0.0,1.0);  // u = runif(2);
-        u(1) = ::Rf_runif(0.0,1.0);
-        z = -log(u(0))/c1;
-        while(-((z<c) & (u(1)<f(z)))){
-          u(0) = ::Rf_runif(0.0,1.0);  // u = runif(2);
-          u(1) = ::Rf_runif(0.0,1.0);
-          z = -log(u(0))/c1;
-        }
-        x = c1 + z;
-        
-      } else{  // half-normal rejection sampling
-        
-        x = ::Rf_rnorm(0.0,1.0);
-        x = std::abs(x);
-        while(-((x>c1) & (x<c2))){
-          x = ::Rf_rnorm(0.0,1.0);
-          x = std::abs(x);
-        }
-      }
-    } else{  // uniform rejection sampling
-      cdel = c2 - c1;
-      
-      u(0) = ::Rf_runif(0.0,1.0);  // u = runif(2);
-      u(1) = ::Rf_runif(0.0,1.0);
-      x = c1 + cdel*u(0);
-      while(-(u(1) < (f(x)/f1))){
-        u(0) = ::Rf_runif(0.0,1.0);  // u = runif(2);
-        u(1) = ::Rf_runif(0.0,1.0);
-        x = c1 + cdel*u(0);
-      }
-    }
-  }
-  
-  // 3. reverse standardisation
-  if(lflip){
-    return dtruncn = mu - sigma*x;
-  } else{
-    return dtruncn = mu + sigma*x;
-  }
+// half_norm_rs(a, b)
+// generates a sample from a N(0,1) RV restricted to the interval
+// (a,b) (with a > 0) using half normal rejection sampling.
+// ======================================================================
+
+double half_norm_rs(double a, double b)
+{
+   double   x;
+   x = fabs(norm_rand());
+   while( (x<a) || (x>b) ) x = fabs(norm_rand());
+   return x;
 }
+
+// unif_rs(a, b)
+// generates a sample from a N(0,1) RV restricted to the interval
+// (a,b) using uniform rejection sampling. 
+// ======================================================================
+
+double unif_rs(double a, double b)
+{
+   double xstar, logphixstar, x, logu;
+
+   // Find the argmax (b is always >= 0)
+   // This works because we want to sample from N(0,1)
+   if(a <= 0.0) xstar = 0.0;
+   else xstar = a;
+   logphixstar = R::dnorm(xstar, 0.0, 1.0, 1.0);
+
+   x = R::runif(a, b);
+   logu = log(R::runif(0.0, 1.0));
+   while( logu > (R::dnorm(x, 0.0, 1.0,1.0) - logphixstar))
+   {
+      x = R::runif(a, b);
+      logu = log(R::runif(0.0, 1.0));
+   }
+   return x;
+}
+
+// exp_rs(a, b)
+// generates a sample from a N(0,1) RV restricted to the interval
+// (a,b) using exponential rejection sampling.
+// ======================================================================
+
+double exp_rs(double a, double b)
+{
+  double  z, u, rate;
+
+//  Rprintf("in exp_rs");
+  rate = 1/a;
+//1/a
+
+   // Generate a proposal on (0, b-a)
+   z = R::rexp(rate);
+   while(z > (b-a)) z = R::rexp(rate);
+   u = R::runif(0.0, 1.0);
+
+   while( log(u) > (-0.5*z*z))
+   {
+      z = R::rexp(rate);
+      while(z > (b-a)) z = R::rexp(rate);
+      u = R::runif(0.0,1.0);
+   }
+   return(z+a);
+}
+
+// truncn2( mu, sigma, lower, upper)
+//
+// generates one random normal RVs with mean 'mu' and standard
+// deviation 'sigma', truncated to the interval (lower,upper), where
+// lower can be -Inf and upper can be Inf.
+//======================================================================
+
+double truncn2(double mu, double sigma, double lower, double upper)
+{
+int change;
+ double a, b;
+ double logt1 = log(0.150), logt2 = log(2.18), t3 = 0.725;
+ double z, tmp, lograt;
+
+ change = 0;
+ a = (lower - mu)/sigma;
+ b = (upper - mu)/sigma;
+
+ // First scenario
+ if( (a == R_NegInf) || (b == R_PosInf))
+   {
+     if(a == R_NegInf)
+       {
+     change = 1;
+     a = -b;
+     b = R_PosInf;
+       }
+
+     // The two possibilities for this scenario
+     if(a <= 0.45) z = norm_rs(a, b);
+     else z = exp_rs(a, b);
+     if(change) z = -z;
+   }
+ // Second scenario
+ else if((a * b) <= 0.0)
+   {
+     // The two possibilities for this scenario
+     if((R::dnorm(a, 0.0, 1.0,1.0) <= logt1) || (R::dnorm(b, 0.0, 1.0, 1.0) <= logt1))
+       {
+     z = norm_rs(a, b);
+       }
+     else z = unif_rs(a,b);
+   }
+ // Third scenario
+ else
+   {
+     if(b < 0)
+       {
+     tmp = b; b = -a; a = -tmp; change = 1;
+       }
+
+     lograt = R::dnorm(a, 0.0, 1.0, 1.0) - R::dnorm(b, 0.0, 1.0, 1.0);
+     if(lograt <= logt2) z = unif_rs(a,b);
+     else if((lograt > logt1) && (a < t3)) z = half_norm_rs(a,b);
+     else z = exp_rs(a,b);
+     if(change) z = -z;
+   }
+   double output;
+   output = sigma*z + mu;
+ return (output);
+}
+
 
 

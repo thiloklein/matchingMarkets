@@ -63,6 +63,7 @@
 #' @param selection formula for match valuations.
 #' @param selection.college formula for match valuations of colleges. This argument is ignored when \code{selection} is provided.
 #' @param selection.student formula for match valuations of students. This argument is ignored when \code{selection} is provided.
+#' @param H equilibriums per market
 #' @param binary logical: if \code{TRUE} outcome variable is taken to be binary; if \code{FALSE} outcome variable is taken to be continuous.
 #' @param niter number of iterations to use for the Gibbs sampler.
 #' @param gPrior logical: if \code{TRUE} the g-prior (Zellner, 1986) is used for the variance-covariance matrix. (Not yet implemented)
@@ -160,7 +161,7 @@
 stabit2 <- function(OUT, SEL=NULL,
                     colleges=NULL, students=NULL, m.id="m.id", c.id="c.id", s.id="s.id", outcome, selection=NULL,
                     selection.student=NULL, selection.college=NULL, binary=FALSE, niter, gPrior=FALSE, 
-                    censored=1, seed=123){
+                    censored=1, H=NULL, seed=123){
   
   ## 1) creates an edgelist for all feasible matches taken as given an edgelist of either 
   ##    (i) equilibrium matches [as in daa()] or
@@ -185,9 +186,12 @@ stabit2 <- function(OUT, SEL=NULL,
   #outcome = y ~ c1:s1 
   #selection = ~ -1 + c1:s1
   #niter=100
-
   
-  Y=list(); Xmatch=list(); C=list(); Cmatch=list(); S=list(); Smatch=list(); D=list(); d=list(); M=list(); H=list()
+  Y=list(); Xmatch=list(); C=list(); Cmatch=list(); S=list(); Smatch=list(); D=list(); d=list(); M=list()
+  
+  if(is.null(H)){
+    H <- list()
+  }
   
   for(i in 1:length(unique(OUT[,m.id]))){
     
@@ -202,10 +206,11 @@ stabit2 <- function(OUT, SEL=NULL,
     D[[i]]      <- as.matrix(X$D)
     d[[i]]      <- as.matrix(X$d) - 1
     M[[i]]      <- as.matrix(X$M) - 1
-    H[[i]]      <- as.matrix(X$H)
     if(method=="Klein"){
       S[[i]]      <- as.matrix(X$S)
       Smatch[[i]] <- as.matrix(X$Smatch)
+    } else{
+      H[[i]]      <- as.matrix(X$H)
     }
     
   }
@@ -213,12 +218,22 @@ stabit2 <- function(OUT, SEL=NULL,
   ## Preliminaries.
   T <- length(Y); #// Number of markets.
   nColleges <- nStudents <- XXmatch <- CC <- SS <- CCmatch <- SSmatch <- list()
-  L <- studentIds <- collegeId <- rep(list(vector()),T)
+  L <- rep(list(vector()),T)
+  if(method=="Klein"){
+    studentIds <- collegeId <- rep(list(matrix()),T)
+  } else{
+    studentIds <- collegeId <- rep(list(vector()),T)
+  }
   
   s <- 0
   for(i in 1:T){
-    nColleges[[i]] <- nrow(H[[i]])
-    nStudents[[i]] <- ncol(H[[i]])
+    if(method=="Klein"){
+      nColleges[[i]] <- nrow(H[[i]][,,1])
+      nStudents[[i]] <- ncol(H[[i]][,,1])
+    } else{
+      nColleges[[i]] <- nrow(H[[i]])
+      nStudents[[i]] <- ncol(H[[i]])
+    }
     
     XXmatch[[i]]   <- t(Xmatch[[i]]) %*% Xmatch[[i]]
     CC[[i]]        <- t(C[[i]]) %*% C[[i]]
@@ -226,33 +241,53 @@ stabit2 <- function(OUT, SEL=NULL,
     if(method=="Klein"){
       SSmatch[[i]]   <- t(Smatch[[i]]) %*% Smatch[[i]]
       SS[[i]]        <- t(S[[i]]) %*% S[[i]]
+      collegeId[[i]] <- matrix(NA, nrow=nStudents[[i]], ncol=dim(H[[i]])[3]) ##
     }
     
     ## Record the id's of students matched to each college, and the id of the college matched to each student.
     for(j in 1:nColleges[[i]]){
       s <- s+1
       L[[i]][j] <- s - 1
-      studentIds[[s]] <- which(H[[i]][j,] == 1) - 1
+      if(method=="Klein"){
+        studentIds[[s]] <- matrix(NA, nrow=1, ncol=dim(H[[i]])[3])
+        for(k in 1:dim(H[[i]])[3]){
+          studentIds[[s]][,k] <- which(H[[i]][j,,k] == 1) - 1
+        }
+      } else{
+        studentIds[[s]] <- which(H[[i]][j,] == 1) - 1
+      }      
     }
     
     for(j in 1:nStudents[[i]]){
-      collegeId[[i]][j] <- which(H[[i]][,j] == 1) - 1
+      if(method=="Klein"){
+        for(k in 1:dim(H[[i]])[3]){
+          collegeId[[i]][j,k] <- which(H[[i]][,j,k] == 1) - 1
+        }
+      } else{
+        collegeId[[i]][j] <- which(H[[i]][,j] == 1) - 1
+      }      
     }
   }
   n <- sum(unlist(nStudents)) ## Total number of students/matches.
   N <- sum(unlist(nColleges)) ## Total number of students/matches.
   
+  ## nEquilibs
+  nEquilibs <- unlist(lapply(H, function(z) dim(z)[3]))
+  
   if(method=="Klein"){
     return( list(Y=Y, Xmatch=Xmatch, C=C, Cmatch=Cmatch, S=S, Smatch=Smatch, D=D, d=d, M=M, H=H, 
                  nColleges=unlist(nColleges), nStudents=unlist(nStudents), XXmatch=XXmatch, CC=CC, SS=SS, 
                  CCmatch=CCmatch, SSmatch=SSmatch, L=L, studentIds=studentIds, collegeId=collegeId, n=n, N=N,
-                 binary=binary, niter=niter, T=T, gPrior=gPrior) )    
+                 binary=binary, niter=niter, T=T, gPrior=gPrior, nEquilibs=nEquilibs) )    
   } else if(method=="Sorensen"){
     fit2 <- list(Y=Y, Xmatch=Xmatch, C=C, Cmatch=Cmatch, D=D, d=d, M=M, H=H, 
                  nColleges=unlist(nColleges), nStudents=unlist(nStudents), XXmatch=XXmatch, CC=CC, 
                  CCmatch=CCmatch, L=L, studentIds=studentIds, collegeId=collegeId, n=n, N=N,
                  binary=binary, niter=niter, T=T, gPrior=gPrior)
     
+    #return(fit2)
+    #break;
+
     # -----------------------------------------------------------------------------
     # Source C++ script
     # -----------------------------------------------------------------------------    

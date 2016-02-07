@@ -6,7 +6,14 @@ on [R-Forge](https://r-forge.r-project.org/scm/viewvc.php/?root=matchingmarkets)
 and on [GitHub](https://github.com/thiloklein/matchingMarkets).
 
 
-## matchingMarkets 0.2-1 (2016-01-31)
+## matchingMarkets 0.2-2 (2016-02-07)
+
+This is a minor update
+
+* Allowed for two selection equations in `stabit2` function for two-sided matching markets. 
+
+
+## matchingMarkets 0.2-1 (2016-01-30)
 
 This is a major update
 
