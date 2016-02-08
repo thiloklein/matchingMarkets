@@ -76,6 +76,23 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
   #colleges = "c1"
   #students = "s1"
   
+  #rm(list=ls())
+  #seed <- 123
+  #m=2
+  #nStudents=6
+  #nSlots=c(1,2,3) 
+  #nColleges <- length(nSlots)
+  #outcome = ~ c1 + s1 + delta + eta + nu
+  #selection.student = ~ -1 + s1 + eta
+  #selection.college = ~ -1 + c1 + delta
+  #selection=NULL
+  #colleges = "c1"
+  #students = "s1"
+  #binary=FALSE
+  #seed=123
+  
+  set.seed(seed)
+  
   if(is.null(selection)){
     method <- "Klein"
   } else{
@@ -223,7 +240,6 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
     
   }
   
-  set.seed(seed)
   
   if(method == "Klein"){
     
