@@ -62,8 +62,8 @@ data(klein15b)
 
 ## define function to obtain the mode
 mode <- function(x){
-d <- density(x,bw="SJ")
-formatC( round( d$x[which.max(d$y)], 3), format='f', digits=3)
+  d <- density(x,bw="SJ")
+  formatC( round( d$x[which.max(d$y)], 3), format='f', digits=3)
 }
 
 ## Benchmark study
@@ -118,8 +118,10 @@ densityplot( ~ Structural + OLS | type, plot.points=FALSE, auto.key=keys,
 
 
 ## ---- mf-gibbs-draws ----
+library(matchingMarkets)
+load(klein15a)
+#load("~/Documents/Research/Microfinance/2_cleanData/klein15a.RData")
 
-load("~/Documents/Research/Microfinance/2_cleanData/klein15a.RData")
 
 dd <- cbind(#beta.pi   = klein15a$draws$betadraws["pi.inv",seq(1,800000,1000)],
             beta.wst  = klein15a$draws$betadraws["wst.ieq",seq(1,800000,1000)],

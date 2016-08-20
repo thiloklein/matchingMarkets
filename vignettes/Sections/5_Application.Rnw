@@ -33,8 +33,14 @@ Specifically, the selection problem arising from endogenous group formation -- w
 The first half of all 800,000 draws are discarded as burn-in draws. The remaining 400,000 draws are used in approximating the posterior means and the posterior standard deviations based on the distributions in Figure \ref{Fig:mf-gibbs-draws}.
 
 %% FIGURE: MC results
-<<mf-gibbs-draws, child='../inputs/figures/5_gibbs-draws.Rnw'>>=
-@
+%<<mf-gibbs-draws, child='../inputs/figures/5_gibbs-draws.Rnw'>>=
+%@
+\begin{figure}[htbp!]
+\centering
+\caption{Posterior draws of key parameters in the microfinance application.}
+\label{Fig:mf-gibbs-draws}
+\includegraphics[width=\textwidth]{./inputs/figures/mf-gibbs-draws-1.pdf}
+\end{figure}
 
 
 \noindent The function \code{khb} implements the statistical test for confounding in Probit models proposed in \citet{Karlson2012}. The function takes as arguments the data frame of independent variables \code{X=X}, the dependent variable \code{y=R}, and the name of the confounding variable \code{z="eta"}.

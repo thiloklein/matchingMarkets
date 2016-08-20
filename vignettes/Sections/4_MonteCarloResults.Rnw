@@ -175,6 +175,8 @@ can reduce the bias of standard OLS estimates. Experiment 1 tests the robustness
 <<mc-fig, child='../inputs/figures/4_MC.Rnw'>>=
 @
 
+
+
 \subsubsection{Benchmark study}
 
 The following steps replicate the results of the benchmark experiment in Table \ref{Tab:MCresults}. The \proglang{R} code for replication is available in the documentation of function \code{mce}.
