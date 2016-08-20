@@ -21,7 +21,7 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   arma::colvec nCollegesr, arma::colvec nStudentsr, Rcpp::List XXmatchr,
   Rcpp::List CCr, Rcpp::List CCmatchr, 
   Rcpp::List Lr, Rcpp::List studentIdsr, Rcpp::List collegeIdr, int n, int N,
-  bool binary, int niter, int T, int censored, bool display_progress = true) {
+  bool binary, int niter, int T, int censored, int thin, bool display_progress = true) {
   
   //-- 
   // bool gPrior, arma::mat sigmabarbetainverse, arma::mat sigmabaralphainverse, arma::mat sigmabargammainverse,
@@ -151,12 +151,12 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   // Matrices for parameter draws.
   // ---------------------------------------------
   
-  arma::mat alphadraws(kX,niter);
-  arma::mat betadraws(kC,niter);
-  arma::mat kappadraws(1,niter);
-  arma::mat etadraws(n,niter);
-  //arma::mat deltadraws(n,niter);
-  arma::mat sigmasquarenudraws(1,niter);
+  arma::mat alphadraws(kX,floor(niter/thin));
+  arma::mat betadraws(kC,floor(niter/thin));
+  arma::mat kappadraws(1,floor(niter/thin));
+  arma::mat etadraws(n,floor(niter/thin));
+  //arma::mat deltadraws(n,floor(niter/thin));
+  arma::mat sigmasquarenudraws(1,floor(niter/thin));
   
   // ---------------------------------------------
   // Main loop.
@@ -362,15 +362,17 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     // ---------------------------------------------  
     // save this iterations draws.
     // ---------------------------------------------
-    
-    alphadraws.col(iter) = alpha;
-    betadraws.col(iter) = beta;
-    kappadraws.col(iter) = kappa;
-    etadraws.col(iter) = eta;
-    //deltadraws.col(iter) = delta;
-    
-    if(binary == FALSE){
-      sigmasquarenudraws.col(iter) = sigmasquarenu;
+
+    if((iter % thin == 0) & (iter<(niter-thin+1))){
+      alphadraws.col(iter/thin) = alpha;
+      betadraws.col(iter/thin) = beta;
+      kappadraws.col(iter/thin) = kappa;
+      etadraws.col(iter/thin) = eta;
+      //deltadraws.col(iter/thin) = delta;
+      
+      if(binary == FALSE){
+        sigmasquarenudraws.col(iter/thin) = sigmasquarenu;
+      }
     }
   }
   
@@ -382,42 +384,41 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   // The last half of all draws are used in approximating the posterior means and the posterior standard deviations.
   // ---------------------------------------------  
   
-  int startiter = niter/2;
+  niter = floor(niter/thin);
+  int startiter = floor(niter/2);
   
   if(binary == TRUE){
     return List::create(  
       // parameter draws
-      Named("alphadraws") = betadraws,
-      Named("betadraws") = alphadraws,
-      Named("deltadraws") = kappadraws,
+      Named("alphadraws") = alphadraws,
+      Named("betadraws") = betadraws,
+      Named("kappadraws") = kappadraws,
       // posterior means
       Named("eta") = mean(etadraws.cols(startiter,niter-1),1),
-      //Named("delta") = mean(deltadraws.cols(startiter,niter-1),1),
       Named("alpha") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
       Named("beta") = join_rows( mean(alphadraws.cols(startiter,niter-1),1), stddev(alphadraws.cols(startiter,niter-1),0,1) ),
-      Named("delta") = join_rows( mean(kappadraws.cols(startiter,niter-1),1), stddev(kappadraws.cols(startiter,niter-1),0,1) ),
-      Named("sigmasquarexi") = join_rows( arma::ones(1,1) , arma::zeros(1,1) ),
+      Named("kappa") = join_rows( mean(kappadraws.cols(startiter,niter-1),1), stddev(kappadraws.cols(startiter,niter-1),0,1) ),
+      Named("sigmasquarenu") = join_rows( arma::ones(1,1) , arma::zeros(1,1) ),
       // vcov
-      Named("alphavcov") = cov(trans(betadraws.cols(startiter,niter-1))),
-      Named("betavcov") = cov(trans(alphadraws.cols(startiter,niter-1)))
+      Named("alphavcov") = cov(trans(alphadraws.cols(startiter,niter-1))),
+      Named("betavcov") = cov(trans(betadraws.cols(startiter,niter-1)))
     );  
   } else if(binary == FALSE){
     return List::create(  
       // parameter draws
-      Named("alphadraws") = betadraws,
-      Named("betadraws") = alphadraws,
-      Named("deltadraws") = kappadraws,
-      Named("sigmasquarexidraws") = sigmasquarenudraws,
+      Named("alphadraws") = alphadraws,
+      Named("betadraws") = betadraws,
+      Named("kappadraws") = kappadraws,
+      Named("sigmasquarenudraws") = sigmasquarenudraws,
       // posterior means
       Named("eta") = mean(etadraws.cols(startiter,niter-1),1),
-      //Named("delta") = mean(deltadraws.cols(startiter,niter-1),1),
-      Named("alpha") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
-      Named("beta") = join_rows( mean(alphadraws.cols(startiter,niter-1),1), stddev(alphadraws.cols(startiter,niter-1),0,1) ),
-      Named("delta") = join_rows( mean(kappadraws.cols(startiter,niter-1),1), stddev(kappadraws.cols(startiter,niter-1),0,1) ),
-      Named("sigmasquarexi") = join_rows( mean(sigmasquarenudraws.cols(startiter,niter-1),1), stddev(sigmasquarenudraws.cols(startiter,niter-1),0,1) ),
+      Named("alpha") = join_rows( mean(alphadraws.cols(startiter,niter-1),1), stddev(alphadraws.cols(startiter,niter-1),0,1) ),
+      Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
+      Named("kappa") = join_rows( mean(kappadraws.cols(startiter,niter-1),1), stddev(kappadraws.cols(startiter,niter-1),0,1) ),
+      Named("sigmasquarenu") = join_rows( mean(sigmasquarenudraws.cols(startiter,niter-1),1), stddev(sigmasquarenudraws.cols(startiter,niter-1),0,1) ),
       // vcov
-      Named("alphavcov") = cov(trans(betadraws.cols(startiter,niter-1))),
-      Named("betavcov") = cov(trans(alphadraws.cols(startiter,niter-1)))
+      Named("alphavcov") = cov(trans(alphadraws.cols(startiter,niter-1))),
+      Named("betavcov") = cov(trans(betadraws.cols(startiter,niter-1)))
     );
   } else{
       return 0;

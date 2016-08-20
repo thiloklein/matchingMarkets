@@ -3,12 +3,12 @@
 \name{stabit2}
 \alias{stabit2}
 \alias{stabitCpp2}
+\alias{stabitCpp3}
 \title{Structural Matching Model to correct for sample selection bias in two-sided matching markets}
 \usage{
-stabit2(OUT, SEL = NULL, colleges = NULL, students = NULL,
-  m.id = "m.id", c.id = "c.id", s.id = "s.id", outcome,
-  selection = NULL, selection.student = NULL, selection.college = NULL,
-  binary = FALSE, niter, gPrior = FALSE, censored = 1, seed = 123)
+stabit2(OUT, SEL = NULL, colleges = NULL, students = NULL, outcome,
+  selection, binary = FALSE, niter, gPrior = FALSE, censored = 1,
+  thin = 1)
 }
 \arguments{
 \item{OUT}{data frame with characteristics of all observed matches, including
@@ -21,19 +21,9 @@ market identifier \code{m.id}, college identifier \code{c.id} and student identi
 
 \item{students}{character vector of variable names for student characteristics. These variables carry the same value for any student.}
 
-\item{m.id}{character name of the market identifier variable. Defaults to \code{"m.id"}.}
-
-\item{c.id}{character name of the college identifier variable. Defaults to \code{"c.id"}.}
-
-\item{s.id}{character name of the student identifier variable. Defaults to \code{"s.id"}.}
-
 \item{outcome}{formula for match outcomes.}
 
 \item{selection}{formula for match valuations.}
-
-\item{selection.student}{formula for match valuations of students. This argument is ignored when \code{selection} is provided.}
-
-\item{selection.college}{formula for match valuations of colleges. This argument is ignored when \code{selection} is provided.}
 
 \item{binary}{logical: if \code{TRUE} outcome variable is taken to be binary; if \code{FALSE} outcome variable is taken to be continuous.}
 
@@ -41,13 +31,12 @@ market identifier \code{m.id}, college identifier \code{c.id} and student identi
 
 \item{gPrior}{logical: if \code{TRUE} the g-prior (Zellner, 1986) is used for the variance-covariance matrix. (Not yet implemented)}
 
-\item{censored}{draws of the \code{delta} parameter that estimates the covariation between the error terms in selection and outcome equation are 0:not censored, 1:censored from below, 2:censored from above.}
+\item{censored}{draws of the \code{kappa} parameter that estimates the covariation between the error terms in selection and outcome equation are 0:not censored, 1:censored from below, 2:censored from above.}
 
-\item{seed}{integer setting the state for MCMC draws.}
+\item{thin}{integer indicating the level of thinning in the MCMC draws. The default \code{thin=1} saves every draw, \code{thin=2} every second, etc.}
 }
 \value{
-\code{stabit} returns a list with the following items.
-\item{model.list}{}
+\code{stabit2} returns a list with the following items.
 \item{draws}{}
 \item{coefs}{}
 }
@@ -60,16 +49,16 @@ The structural model consists of a selection and an outcome equation. The \emph{
 determines which matches are observed (\eqn{D=1}) and which are not (\eqn{D=0}).
 \deqn{ \begin{array}{lcl}
        D &= & 1[V \in \Gamma] \\
-       V &= & W\alpha + \eta
+       V &= & W\beta + \eta
        \end{array}
-     }{ D = 1[V in \Gamma] with V = W\alpha + \eta
+     }{ D = 1[V in \Gamma] with V = W\beta + \eta
      }
 Here, \eqn{V} is a vector of latent valuations of \emph{all feasible} matches, ie observed and 
 unobserved, and \eqn{1[.]} is the Iverson bracket. 
 A match is observed if its match valuation is in the set of valuations \eqn{\Gamma}
 that satisfy the equilibrium condition (see Sorensen, 2007). 
 The match valuation \eqn{V} is a linear function of \eqn{W}, a matrix of characteristics for 
-\emph{all feasible} groups, and \eqn{\eta}, a vector of random errors. \eqn{\alpha} is a paramter 
+\emph{all feasible} groups, and \eqn{\eta}, a vector of random errors. \eqn{\beta} is a paramter 
 vector to be estimated.
 
 The \emph{Outcome Equation} determines the outcome for \emph{observed} matches. The dependent
@@ -78,17 +67,17 @@ argument. In the binary case, the dependent variable \eqn{R} is determined by a 
 rule for the latent variable \eqn{Y}.
 \deqn{ \begin{array}{lcl}
        R &= & 1[Y > c] \\
-       Y &= & X\beta + \epsilon
+       Y &= & X\alpha + \epsilon
        \end{array}
-     }{ R = 1[Y > c] with Y = X\beta + \epsilon
+     }{ R = 1[Y > c] with Y = X\alpha + \epsilon
      }
 Here, \eqn{Y} is a linear function of \eqn{X}, a matrix of characteristics for \emph{observed} 
-matches, and \eqn{\epsilon}, a vector of random errors. \eqn{\beta} is a paramter vector to 
+matches, and \eqn{\epsilon}, a vector of random errors. \eqn{\alpha} is a paramter vector to 
 be estimated.
 
 The structural model imposes a linear relationship between the error terms of both equations 
-as \eqn{\epsilon = \delta\eta + \xi}, where \eqn{\xi} is a vector of random errors and \eqn{\delta}
-is the covariance paramter to be estimated. If \eqn{\delta} were zero, the marginal distributions
+as \eqn{\epsilon = \kappa\eta + \nu}, where \eqn{\nu} is a vector of random errors and \eqn{\kappa}
+is the covariance paramter to be estimated. If \eqn{\kappa} were zero, the marginal distributions
 of \eqn{\epsilon} and \eqn{\eta} would be independent and the selection problem would vanish.
 That is, the observed outcomes would be a random sample from the population of interest.
 }
@@ -102,7 +91,7 @@ That is, the observed outcomes would be a random sample from the population of i
 xdata <- stabsim2(m=20, nStudents=100, nSlots=rep(5,20), 
   colleges = "c1",
   students = "s1",
-  outcome = ~ c1:s1 + eta +nu,
+  outcome = ~ c1:s1 + eta + nu,
   selection = ~ -1 + c1:s1 + eta
 )
 head(xdata$OUT)
@@ -146,17 +135,13 @@ head(xdata$OUT)
  fit2$coefs
  
 ## 4-b. Get marginal effects (for probit)
- mfx(fit2)
+ #mfx(fit2)
  
  
 ## 5. Plot MCMC draws for coefficients
  plot(fit2$draws$alphadraws[1,], type="l")
  plot(fit2$draws$betadraws[1,], type="l")
- plot(fit2$draws$deltadraws[1,], type="l")
- 
- 
-## 6. Obtain the model list used in estimation
- head(fit2$model.list)
+ plot(fit2$draws$kappadraws[1,], type="l")
 }
 }
 \author{

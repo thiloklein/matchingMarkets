@@ -12,7 +12,7 @@ The \code{stabsim} function simulates individual-level, independent variables. T
 
 <<4a>>=
 ## Simulate individual-level, independent variables
-library(matchingMarkets)
+library(matchingMarkets, quietly = TRUE)
 idata <- stabsim(m=1000, ind=5, seed=123, gpm=2)
 head(idata)
 @
@@ -102,8 +102,8 @@ lm(R ~ wst.ieq, data=mdata$OUT)$coefficients
 ## epsilon is correlated with independent variables
 with(mdata$OUT, cor(epsilon, wst.ieq))
 @
-\noindent The intuition behind this bias is given in the example in Section \ref{Section:Example} and a formal treatement is available in \citet{Klein2015a}.
-From Eqn \ref{Eqn:ExampleOutcomeEqn}, we know that \code{epsilon = delta*eta}. Thus, conditional on \code{eta}, the unobservables in the outcome equation are independent of the exogenous variables (because \code{xi} does not enter the selection equation). 
+\noindent The intuition behind this bias is given a formal treatement in \citet{Klein2015a}.
+We know that \code{epsilon = delta*eta}. Thus, conditional on \code{eta}, the unobservables in the outcome equation are independent of the exogenous variables (because \code{xi} does not enter the selection equation). 
 
 <<4f>>=
 ## xi is uncorrelated with independent variables
@@ -164,6 +164,17 @@ The Monte Carlo experiments are designed to test for the validity of the estimat
 can reduce the bias of standard OLS estimates. Experiment 1 tests the robustness of the estimator when applied to a random sample of the groups' members. Experiment 2 works with the full population of group members but uses random samples from the counterfactual groups to reduce the computational burden arising from the combinatorics of large groups. I discuss motivation, set-up, implementation and results of each experiment in turn. 
 
 
+
+\newpage
+
+%% TABLE: MC results
+<<mc-tab, child='../inputs/tables/4_MC.Rnw'>>=
+@
+
+%% FIGURE: MC results
+<<mc-fig, child='../inputs/figures/4_MC.Rnw'>>=
+@
+
 \subsubsection{Benchmark study}
 
 The following steps replicate the results of the benchmark experiment in Table \ref{Tab:MCresults}. The \proglang{R} code for replication is available in the documentation of function \code{mce}.
@@ -199,14 +210,6 @@ The results for the benchmark study in Table \ref{Tab:MCresults} confirm the upw
 The benchmark study works with the full population of borrowers. The two experiments below investigate the robustness of the estimator for the practically more relevant case of working with random samples from the population of interest.
 
 
-%% TABLE: MC results
-<<mc-tab, child='../inputs/tables/4_MC.Rnw'>>=
-@
-
-%% FIGURE: MC results
-<<mc-fig, child='../inputs/figures/4_MC.Rnw'>>=
-@
-
 
 \subsubsection{Experiment 1: randomly sampled group members}
 
@@ -215,6 +218,7 @@ are often restricted to a random sample of the groups' members.
 
 \textit{Set-up:}
 I continue to work with a sample of five borrowers per group but take original group sizes to be six borrowers. This means that one group member is dropped at random.
+
 
 \textit{Implementation:}
 \begin{enumerate}

@@ -6,11 +6,10 @@
 \title{Structural Matching Model to correct for sample selection bias in one-sided matching markets}
 \usage{
 stabit(x, m.id = "m.id", g.id = "g.id", R = "R", selection = NULL,
-  outcome = NULL, roommates = FALSE, simulation = "none", seed = 123,
-  max.combs = Inf, method = "NTU", binary = FALSE, offsetOut = 0,
-  offsetSel = 0, marketFE = FALSE, censored = 0, gPrior = FALSE,
-  dropOnes = FALSE, interOut = 0, interSel = 0, standardize = 0,
-  niter = 10)
+  outcome = NULL, simulation = "none", seed = 123, max.combs = Inf,
+  method = "NTU", binary = FALSE, offsetOut = 0, offsetSel = 0,
+  marketFE = FALSE, censored = 0, gPrior = FALSE, dropOnes = FALSE,
+  interOut = 0, interSel = 0, standardize = 0, niter = 10)
 }
 \arguments{
 \item{x}{data frame with individual-level characteristics of all group members including
@@ -27,8 +26,6 @@ market- and group-identifiers.}
 
 \item{outcome}{list containing variables and pertaining operators in the outcome equation. The format is 
 \code{operation = "variable"}. See the Details and Examples sections.}
-
-\item{roommates}{logical: if \code{TRUE} data is assumed to come from a roomate game. This means that groups are of size two and the model matrix is prepared for individual-level analysis (peer-effects estimation). If \code{FALSE} (which is the default) data is assumed to come from a group/coalition formation game and the model matrix is prepared for group-level analysis.}
 
 \item{simulation}{should the values of dependent variables in selection and outcome equations be simulated? Options are \code{"none"} for no simulation, \code{"NTU"} for non-transferable utility matching, \code{"TU"} for transferable utility or \code{"random"} for random matching of individuals to groups. Simulation settings are (i) all model coefficients set to \code{alpha=beta=1}; (ii) covariance between error terms \code{delta=0.5}; (iii) error terms \code{eta} and \code{xi} are draws from a standard normal distribution.}
 
@@ -125,8 +122,6 @@ Operators for variable transformations in \code{selection} and \code{outcome} ar
 \item{\code{ive}}{sum over all possible two-way interactions of vectors of variables of group members and divide by number of those.}
 \item{\code{inv}}{...}
 \item{\code{dst}}{sum over all possible two-way distances between players and divide by number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
-\item{\code{sel}}{for \code{roommates=TRUE} only: variable for individual (for peer effects estimation).}
-\item{\code{oth}}{for \code{roommates=TRUE} only: variable for other in the group (for peer effects estimation).}
 }
 }
 \section{Values of model.list}{
@@ -183,15 +178,6 @@ Operators for variable transformations in \code{selection} and \code{outcome} ar
 ## MODEL FRAMES (method="model.frame") ##
 #########################################
 
-## --- ROOMMATES GAME ---
-## 1. Simulate one-sided matching data for 3 markets (m=3) with 3 groups 
-##    per market (gpm=3) and 2 individuals per group (ind=2)
- idata <- stabsim(m=3, ind=2, gpm=3)
-## 2. Obtain the model frame
- s1 <- stabit(x=idata, selection = list(add="pi", ieq="wst"), 
-     outcome = list(add="pi", ieq="wst"), 
-     method="model.frame", simulation="TU", roommates=TRUE)
-
 ## --- GROUP/COALITION FORMATION (I) ---
 ## 1. Simulate one-sided matching data for 3 markets (m=3) with 2 groups 
 ## per market (gpm=2) and 2 to 4 individuals per group (ind=2:4)
@@ -199,7 +185,7 @@ Operators for variable transformations in \code{selection} and \code{outcome} ar
 ## 2. Obtain the model frame
  s2 <- stabit(x=idata, selection = list(add="pi", ieq="wst"), 
       outcome = list(add="pi", ieq="wst"), 
-      method="model.frame", simulation="NTU", roommates=FALSE)
+      method="model.frame", simulation="NTU")
 
 ## --- GROUP/COALITION FORMATION (II) ---
 \dontrun{

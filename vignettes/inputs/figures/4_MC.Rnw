@@ -1,9 +1,9 @@
 
 \begin{figure}[htbp!]
 \centering
-\caption{Posterior distributions of parameters for benchmark simulations. True value are given by vertical, dotted lines. Structural model and OLS estimates for 1,000 draws are given by straight and dashed lines, respectively.}
+\caption{Posterior distributions of parameters for benchmark simulations with 1,000 draws. True values are given by vertical, dotted lines.}
 \label{Fig:coefsDensities}
-<<mc-plots, echo=FALSE, fig.height=4, fig.align="center">>=
+<<mc-plots, echo=FALSE, fig.height=3, fig.align="center">>=
 @
 \end{figure}
 

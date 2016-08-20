@@ -21,8 +21,8 @@
 #' the college's quota.
 #' @param outcome formula for match outcomes.
 #' @param selection formula for match valuations.
-#' @param selection.college formula for match valuations of colleges. This argument is ignored when \code{selection} is provided.
-#' @param selection.student formula for match valuations of students. This argument is ignored when \code{selection} is provided.
+# @param selection.college formula for match valuations of colleges. Is ignored when \code{selection} is provided.
+# @param selection.student formula for match valuations of students. Is ignored when \code{selection} is provided.
 #' @param colleges character vector of variable names for college characteristics. These variables carry the same value for any college.
 #' @param students character vector of variable names for student characteristics. These variables carry the same value for any student.
 #' @param binary logical: if \code{TRUE} outcome variable is binary; if \code{FALSE} outcome variable is continuous.
@@ -61,40 +61,17 @@
 #' head(xdata$SEL)
 #' }
 stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots, 
-                     colleges, students, outcome, selection=NULL, 
-                     selection.student=NULL, selection.college=NULL, 
+                     colleges, students, outcome, selection, 
                      binary=FALSE, seed=123){
 
-  #rm(list=ls())
-  #seed <- 123
-  #m=2
-  #nStudents=6
-  #nSlots=c(1,2,3) 
-  #nColleges <- length(nSlots)
-  #outcome = ~ c1:s1 + eta + nu
-  #selection = ~ -1 + c1:s1 + eta
-  #colleges = "c1"
-  #students = "s1"
-  
-  #rm(list=ls())
-  #seed <- 123
-  #m=2
-  #nStudents=6
-  #nSlots=c(1,2,3) 
-  #nColleges <- length(nSlots)
-  #outcome = ~ c1 + s1 + delta + eta + nu
-  #selection.student = ~ -1 + s1 + eta
-  #selection.college = ~ -1 + c1 + delta
-  #selection=NULL
-  #colleges = "c1"
-  #students = "s1"
-  #binary=FALSE
-  #seed=123
-  
   set.seed(seed)
   
-  if(is.null(selection)){
+  ## select method based on arguments provided
+  if(is.list(selection)){
     method <- "Klein"
+    selection.college <- selection$college
+    selection.student <- selection$student
+    selection <- NULL
   } else{
     method <- "Sorensen"
   }
@@ -102,13 +79,6 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
   # --------------------------------------------------------------------
   # R-code (www.r-project.org) for simulating purely random (!) data for
   # all players in the market.
-  
-  rFormula <- function(formula, data=list(), ...){
-    mf <- model.frame(formula=formula, data=data)
-    x <- model.matrix(attr(mf, "terms"), data=mf)
-    y <- model.response(mf)
-    as.data.frame(cbind(y,x))
-  }
   
   stabsim2_inner <- function(mi, nStudents, nColleges=length(nSlots), nSlots, colleges, students, 
                              outcome, selection, selection.student, selection.college){
@@ -124,8 +94,6 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
                   stringsAsFactors=FALSE )
     }
     indices <- as.data.frame(combs(uColleges, uStudents))
-    
-    
     
     ## create random, exogenous variables
     C <- data.frame(matrix(rnorm(nColleges*length(colleges), sd=sqrt(0.5)), nrow=nColleges, ncol=length(colleges)))
@@ -166,14 +134,7 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
       Vs <- apply(Smtch, 1, sum)
       
     } else if(method == "Sorensen"){
-      
-      #selection.terms <- attr( attr(terms.formula(selection), "factors"), "dimnames")[[1]]
-      #outcome.terms <- attr( attr(terms.formula(outcome), "factors"), "dimnames")[[1]]
-      #terms <- unique(c(outcome.terms, selection.terms))
-      
-      #Xexp <- data.frame(matrix(rnorm(nStudents*nColleges*length(terms), sd=1), nrow=nStudents*nColleges, ncol=length(terms)))
-      #names(Xexp) <- terms
-      
+
       selection.terms <- attr( attr(terms.formula(selection), "factors"), "dimnames")[[1]]
       selection.terms <- selection.terms[! selection.terms %in% c(colleges, students)]
       outcome.terms <- attr( attr(terms.formula(outcome), "factors"), "dimnames")[[1]]
@@ -190,7 +151,6 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
       Xmtch <- rFormula(formula = outcome, data=Xexp)
       
       Vc <- Vs <- apply(Wmtch, 1, sum)*0.5 ## equal sharing rule
-            
     }
     
     ## convert preferences to ranks in matrix format
@@ -200,17 +160,17 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
     c.prefs <- apply(-1*c.prefs, 2, order)
     s.prefs <- apply(-1*s.prefs, 2, order)
     
-    ## run daa
-    #library(matchingMarkets)
-    matching <- daa(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=nSlots)$edgelist
+    ## obtain student-optimal matching
+    matching <- hri(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=nSlots)$matchings
+    matching <- matching[matching$sOptimal==1,]
     
     ## obtain equilibrium identifier 'd'
-    matching$id <- paste(matching$colleges, matching$students, sep="_")
+    matching$id <- paste(matching$college, matching$student, sep="_")
     indices$id  <- paste(indices$c.id, indices$s.id, sep="_")
-    d <- which(indices$id %in% matching$id)
+    indices$D <- ifelse(indices$id %in% matching$id, 1, 0) # identifier for s-optimal matches
     
-    indx <- c(d, (1:nrow(indices))[-d])
-    indices$D <- ifelse(indices$id %in% matching$id, 1, 0) 
+    d <- which(indices$id %in% matching$id)
+    indx <- c(d, (1:nrow(indices))[-d]) # s-optimal matchings come first in output
     indices$id <- NULL
     
     ## --- OUTPUT for stabsim2() ---
@@ -223,38 +183,29 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
       
       SELc <- cbind(m.id=mi, Vc=Vc[indx], Cmtch[indx,], #apply(Cmtch,2,function(i) i[indx]),
                          Xexp[indx,setdiff(names(Xexp),names(Xmtch))], indices[indx,])
-      
       SELs <- cbind(m.id=mi, Vs=Vs[indx], Smtch[indx,], #apply(Smtch,2,function(i) i[indx]), 
                          Xexp[indx,setdiff(names(Xexp),names(Xmtch))], indices[indx,])
-      
       list(OUT=OUT, SELc=SELc, SELs=SELs)
             
     } else if(method == "Sorensen"){
       
       SEL <- cbind(m.id=mi, V=Vc[indx]+Vs[indx], Wmtch[indx,], #apply(Wmtch,2,function(i) i[indx]), 
                         Xexp[indx,setdiff(names(Xexp),names(Xmtch))], indices[indx,])
-      
       list(OUT=OUT, SEL=SEL)
-      
     }
-    
   }
-  
   
   if(method == "Klein"){
     
     RETURN <- list(OUT=list(), SELs=list(), SELc=list())
     
     for(i in 1:m){
-      
       X <- stabsim2_inner(mi=i, nStudents=nStudents, nSlots=nSlots, 
                           colleges=colleges, students=students, outcome=outcome, selection=selection,
                           selection.student=selection.student, selection.college=selection.college)  
-      
       RETURN$OUT[[i]]  <- X$OUT
       RETURN$SELs[[i]] <- X$SELs
       RETURN$SELc[[i]] <- X$SELc
-      
     }
        
   } else if(method == "Sorensen"){
@@ -262,14 +213,11 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
     RETURN <- list(OUT=list(), SEL=list())  
     
     for(i in 1:m){
-      
       X <- stabsim2_inner(mi=i, nStudents=nStudents, nSlots=nSlots, 
                           colleges=colleges, students=students, outcome=outcome, selection=selection,
                           selection.student=selection.student, selection.college=selection.college)  
-      
-      RETURN$OUT[[i]]  <- X$OUT
+      RETURN$OUT[[i]] <- X$OUT
       RETURN$SEL[[i]] <- X$SEL
-      
     }
   }
   
@@ -284,7 +232,15 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
   }
   
   return(RETURN)
-  
 }
 
+
+
+
+rFormula <- function(formula, data=list(), ...){
+  mf <- model.frame(formula=formula, data=data)
+  x <- model.matrix(attr(mf, "terms"), data=mf)
+  y <- model.response(mf)
+  as.data.frame(cbind(y,x))
+}
 

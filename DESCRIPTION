@@ -1,16 +1,16 @@
 Package: matchingMarkets
-Version: 0.2-2
+Version: 0.3-1
 Depends:
-    R (>= 3.0.2)
+    R (>= 3.0.2),
+    rJava
 Imports:
     Rcpp (>= 0.11.2),
-    lpSolve (>= 5.6.6),
     partitions,
     stats
+SystemRequirements: Java
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress (>= 0.2)
 Suggests:
-    knitr,
-    testthat
+    knitr
 VignetteBuilder: knitr
 Title: Analysis of Stable Matchings
 Author: Thilo Klein
@@ -19,11 +19,10 @@ Description: Implements structural estimators to correct for
     the sample selection bias from observed outcomes in matching
     markets. This includes one-sided matching of agents into
     groups as well as two-sided matching of students to schools.
-    The package also contains R code for three matching algorithms:
-    the deferred-acceptance (or Gale-Shapley) algorithm for
-    stable marriage and college admissions problems, the
-    top-trading-cycles algorithm for house allocation and a
-    partitioning linear programme for the roommates problem.
+    The package also contains algorithms to find stable matchings 
+    in the three most common matching problems: the stable roommates 
+    problem, the college admissions problem, and the house 
+    allocation problem.
 URL: https://github.com/thiloklein/matchingMarkets, 
      http://matchingmarkets.r-forge.r-project.org,
      http://klein.uk

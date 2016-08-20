@@ -12,18 +12,18 @@
 
 
 
-\author{Thilo Klein\thanks{I thank Christian Ahlin, Jiawei Chen and Morten S{\o}rensen for their guidance and helpful discussions. All views and errors are mine.}\\OECD}
+\author{Thilo Klein\thanks{I thank Christian Ahlin, Jiawei Chen, Augustine Kwanashie and Morten S{\o}rensen for their guidance and helpful discussions. All views and errors are mine.}\\OECD}
 \Plainauthor{Thilo Klein}
 
 \title{Analysis of Stable Matchings in \proglang{R}: Package~\pkg{matchingMarkets}}
 \Plaintitle{Analysis of Stable Matchings in R: Package matchingMarkets}
 
 \Abstract{
-\noindent \proglang{R} package \pkg{matchingMarkets} implements structural estimators to correct for the sample selection bias from observed outcomes in matching markets. This includes one-sided matching of agents into groups as well as two-sided matching of students to schools. The package also comes with \proglang{R} code for three matching algorithms: the deferred-acceptance (or Gale-Shapley) algorithm for stable marriage and college admissions problems, the top-trading-cycles algorithm for house allocation and a partitioning linear program for the roommates problem.
+\noindent \proglang{R} package \pkg{matchingMarkets} implements structural estimators to correct for the sample selection bias from observed outcomes in matching markets. This includes one-sided matching of agents into groups as well as two-sided matching of students to schools. The package also contains algorithms to find stable matchings in the three most common matching problems: the stable roommates problem, the college admissions problem, and the house allocation problem.
 }
 
-\Keywords{market design, stable matching, endogeneity, selection models, Bayesian methods, econometrics, \proglang{R}}
-\Plainkeywords{market design, stable matching, endogeneity, selection models, Bayesian methods, econometrics, R}
+\Keywords{market design, stable matching, matching algorithms, selection models, Bayesian methods, econometrics, \proglang{R}}
+\Plainkeywords{market design, stable matching, matching algorithms, selection models, Bayesian methods, econometrics, R}
 
 \Address{
   Thilo Klein\\
@@ -60,7 +60,7 @@ knitr::read_chunk('./inputs/script.R')
 @
 
 \input{./Sections/1_Introduction.tex}
-\input{./Sections/2_Example.tex}
+%\input{./Sections/2_Example.tex}
 \input{./Sections/3_StructuralModel.tex}
 <<MC, child='./Sections/4_MonteCarloResults.Rnw'>>=
 @
@@ -76,11 +76,11 @@ knitr::read_chunk('./inputs/script.R')
 
 \appendix
 
-\input{./Sections/AppendixA.tex}
-\clearpage
-<<AppendixB, child='./Sections/AppendixB.Rnw'>>=
-@
-\clearpage
+%\input{./Sections/AppendixA.tex}
+%\clearpage
+%<<AppendixB, child='./Sections/AppendixB.Rnw'>>=
+%@
+%\clearpage
 \input{./Sections/AppendixC.tex}
 \clearpage
 \input{./Sections/AppendixD.tex}

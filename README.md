@@ -15,11 +15,13 @@
 
 and three algorithms that can be used to simulate matching data:
 
-* `daa`: Gale-Shapley Deferred Acceptance Algorithm. Finds stable matchings in two-sided matching markets. Implemented for both the [stable marriage problem](http://en.wikipedia.org/wiki/Stable_marriage_problem) (one-to-one matching) and the [college admissions problem](http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems) (many-to-one matching).
+* `hri`: Constraint model for the hospital/residents problem. Finds *all* stable matchings in two-sided matching markets. Implemented for both the [stable marriage problem](http://en.wikipedia.org/wiki/Stable_marriage_problem) (one-to-one matching) and the [hospital/residents problem](http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems), a.k.a. college admissions problem (many-to-one matching). 
 
-* `plp`: Partitioning Linear Programme. Finds stable matchings in the [roommates problem](https://en.wikipedia.org/wiki/Stable_roommates_problem) (one-sided matching market) with transferable utility.
+* `sri`: Constraint model for the stable roommates problem. Finds all stable matchings in the [roommates problem](https://en.wikipedia.org/wiki/Stable_roommates_problem) (one-sided matching market).
 
-* `ttc`: Top-Trading-Cycles Algorithm. Finds stable matchings in the [housing market problem](http://en.wikipedia.org/wiki/Herbert_Scarf#8._The_Housing_Market).
+* `ttc`: Top-Trading-Cycles Algorithm. Finds stable matchings in the [housing market problem](https://en.wikipedia.org/wiki/Top_trading_cycle).
+
+Functions `hri` and `sri` are based on the Prosser (2014) constraint encoding model. They allow for *incomplete preference lists* (some agents find certain agents unacceptable) and *unbalanced instances* (unequal number of agents on both sides). 
 
 
 ## Installation

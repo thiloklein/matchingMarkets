@@ -7,10 +7,6 @@ This section contains \proglang{R} code to replicate the results of the structur
 ## 1. Load individual-level data
 library("matchingMarkets")
 data(baac00)
-baac00$pi           <- baac00$pi + (1-baac00$pi)*0.5
-baac00$loan_size    <- baac00$loan_size/sd(baac00$loan_size)
-baac00$loan_size2   <- baac00$loan_size^2
-baac00$lngroup_agei <- baac00$lngroup_agei/sd(baac00$lngroup_agei)
 @
 \noindent In the next step, specify variables and variable transformations for selection and outcome equation. The function \code{stabit} generates the group-level design matrix and runs the Gibbs sampler with 800,000 iterations to obtain the results of the structural model.
 
@@ -34,6 +30,13 @@ The results on the attenuation bias in Experiment 1, Section \ref{Section:MonteC
 Specifically, the selection problem arising from endogenous group formation -- while already strongly significant -- is still likely to be underrated because attenuation results in an \textit{underestimation} of the positive Probit coefficient and, at the same time, an \textit{overestimation} of the negative coefficient from the structural model.
 
 
+The first half of all 800,000 draws are discarded as burn-in draws. The remaining 400,000 draws are used in approximating the posterior means and the posterior standard deviations based on the distributions in Figure \ref{Fig:mf-gibbs-draws}.
+
+%% FIGURE: MC results
+<<mf-gibbs-draws, child='../inputs/figures/5_gibbs-draws.Rnw'>>=
+@
+
+
 \noindent The function \code{khb} implements the statistical test for confounding in Probit models proposed in \citet{Karlson2012}. The function takes as arguments the data frame of independent variables \code{X=X}, the dependent variable \code{y=R}, and the name of the confounding variable \code{z="eta"}.
 
 <<5d,warning=FALSE>>=
@@ -54,7 +57,7 @@ head(khb(X=X, y=y, z="eta"),5)
 %% R package documentation
 % \includepdf[pages=-, pagecommand=\thispagestyle{fancy},scale=1]{./inputs/Rd2.pdf}
 
-
+\newpage
 
 
 

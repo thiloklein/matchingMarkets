@@ -5,7 +5,7 @@
 \begin{table}[htbp!]
 \centering
 \small
-\caption{Monte Carlo results for 40 two-group markets (based on 512 draws)}
+\caption{Monte Carlo results for 40 two-group markets (based on 1,000 draws). True values are given in the first row.}
 \label{Tab:MCresults}
 \begin{tabular}{llccccc}
 \hline\hline

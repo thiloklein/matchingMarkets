@@ -5,8 +5,7 @@
 \title{Simulate data for two-sided matching markets}
 \usage{
 stabsim2(m, nStudents, nColleges = length(nSlots), nSlots, colleges, students,
-  outcome, selection = NULL, selection.student = NULL,
-  selection.college = NULL, binary = FALSE, seed = 123)
+  outcome, selection, binary = FALSE, seed = 123)
 }
 \arguments{
 \item{m}{integer indicating the number of markets to be simulated.}
@@ -25,10 +24,6 @@ the college's quota.}
 \item{outcome}{formula for match outcomes.}
 
 \item{selection}{formula for match valuations.}
-
-\item{selection.student}{formula for match valuations of students. This argument is ignored when \code{selection} is provided.}
-
-\item{selection.college}{formula for match valuations of colleges. This argument is ignored when \code{selection} is provided.}
 
 \item{binary}{logical: if \code{TRUE} outcome variable is binary; if \code{FALSE} outcome variable is continuous.}
 

@@ -7,9 +7,9 @@
 
 
 \description{
-  The \code{matchingMarkets} package contains \R and \code{C++} code for the estimation 
-  of structural models that correct for the sample selection bias of observed outcomes in 
-  matching markets.
+  The \code{matchingMarkets} package contains \R, \code{C++} and \code{Java} code for stable matching 
+  algorithms and the estimation of structural models that correct for the sample selection bias of 
+  observed outcomes in matching markets.
 
   Matching is concerned with who transacts with whom, and how. For example, who 
   works at which job, which students go to which school, who forms a workgroup 
@@ -39,11 +39,18 @@
   \item \emph{Design matrix generation}. The estimators are based on independent variables for all feasible, 
   i.e., observed and counterfactual, matches in the market. Generating the characteristics
   of all feasible matches from individual-level data is a combinatorial problem. 
-  The package returns a design matrix based on pre-specified transformations to generate counterfactual matches. 
+  The package returns design matrices based on pre-specified transformations to generate counterfactual matches. 
 
-  \item \emph{Algorithms}. The package also contains several matching 
-  algorithms such as the deferred acceptance algorithm (\code{\link{daa}}) for \href{http://en.wikipedia.org/wiki/Stable_matching}{stable marriages} and \href{http://en.wikipedia.org/wiki/Hospital_resident}{college admissions}, the top-trading-cycles algorithm (\code{\link{ttc}}) for \href{http://en.wikipedia.org/wiki/Herbert_Scarf#8._The_Housing_Market}{house allocation} and a partioning linear program (\code{\link{plp}}) for the \href{http://en.wikipedia.org/wiki/Stable_roommates_problem}{stable roommates problem}. These can be used to obtain stable matchings from simulated or 
-  real preference data. 
+  \item \emph{Algorithms}. The package also contains three matching 
+  algorithms that can be used to simulated matching data: \code{\link{hri}}: A constraint model (Posser, 2014) 
+  for the \href{http://en.wikipedia.org/wiki/Stable_marriage_problem}{stable marriage} and 
+  \href{http://en.wikipedia.org/wiki/Hospital_resident}{college admissions} problem, a.k.a. hospital/residents 
+  problem (see Gale and Shapley, 1962). \code{\link{sri}}: A constraint model for the 
+  \href{http://en.wikipedia.org/wiki/Stable_roommates_problem}{stable roommates problem} (see Gusfield and
+  Irving, 1989).
+  \code{\link{ttc}}: The top-trading-cycles algorithm for the 
+  \href{https://en.wikipedia.org/wiki/Top_trading_cycle}{housing market problem}. These can be used to obtain
+  stable matchings from simulated or real preference data (see Shapley and Scarf, 1974). 
 
   \item \emph{Data}. In addition to the \code{\link{baac00}} dataset from borrowing groups in Thailands largest agricultural lending program, the package provides functions \code{\link{stabsim}} and \code{\link{stabsim2}} to simulate one's own data from one-sided and two-sided matching markets. 
   }
@@ -64,9 +71,15 @@
 
   Gale, D. and Shapley, L.S. (1962). College admissions and the stability of marriage. \emph{The American Mathematical Monthly}, 69(1):9--15.
 
+  Gusfield, D.M. and R.W. Irving (1989). The stable marriage problem: Structure and algorithms, MIT Press.
+
   Heckman, J. (1979). Sample selection bias as a specification error. \emph{Econometrica}, 47(1):153--161.
 
+  Prosser, P. (2014). Stable Roommates and Constraint Programming. \emph{Working Paper}, School of Computing Science, University of Glasgow.
+
   Pycia, M. (2012). Stability and preference alignment in matching and coalition formation. \emph{Econometrica}, 80(1):323--362.
+  
+  Shapley, L. and H. Scarf (1974). On cores and indivisibility. \emph{Journal of Mathematical Economics}, 1(1):23--37.
 
   Sorensen, M. (2007). How smart is smart money? A two-sided matching model of venture capital. \emph{The Journal of Finance}, 62(6):2725--2762.
 }
@@ -117,7 +130,7 @@
 \section{How to cite this package}{
   Whenever using this package, please cite as
 
-  Klein, T. (2015). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.2-2.
+  Klein, T. (2016). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.3-1.
 }
 
 

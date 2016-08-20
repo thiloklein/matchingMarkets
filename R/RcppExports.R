@@ -2,8 +2,13 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' @export
-stabitCpp2 <- function(Yr, Xmatchr, Cr, Cmatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, CCmatchr, Lr, studentIdsr, collegeIdr, n, N, binary, niter, T, censored, display_progress = TRUE) {
-    .Call('matchingMarkets_stabitCpp2', PACKAGE = 'matchingMarkets', Yr, Xmatchr, Cr, Cmatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, CCmatchr, Lr, studentIdsr, collegeIdr, n, N, binary, niter, T, censored, display_progress)
+stabitCpp2 <- function(Yr, Xmatchr, Cr, Cmatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, CCmatchr, Lr, studentIdsr, collegeIdr, n, N, binary, niter, T, censored, thin, display_progress = TRUE) {
+    .Call('matchingMarkets_stabitCpp2', PACKAGE = 'matchingMarkets', Yr, Xmatchr, Cr, Cmatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, CCmatchr, Lr, studentIdsr, collegeIdr, n, N, binary, niter, T, censored, thin, display_progress)
+}
+
+#' @export
+stabitCpp3 <- function(Yr, Xmatchr, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, nEquilibsr, sopt2equr, equ2soptr, copt2equr, equ2coptr, coptidr, n, N, binary, niter, T, censored, thin, display_progress = TRUE) {
+    .Call('matchingMarkets_stabitCpp3', PACKAGE = 'matchingMarkets', Yr, Xmatchr, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, nEquilibsr, sopt2equr, equ2soptr, copt2equr, equ2coptr, coptidr, n, N, binary, niter, T, censored, thin, display_progress)
 }
 
 #' @export

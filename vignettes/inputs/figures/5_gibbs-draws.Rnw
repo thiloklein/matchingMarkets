@@ -1,0 +1,9 @@
+
+\begin{figure}[htbp!]
+\centering
+\caption{Posterior draws of key parameters in the microfinance application.}
+\label{Fig:mf-gibbs-draws}
+<<mf-gibbs-draws, echo=FALSE, fig.height=3, fig.align="center">>=
+@
+\end{figure}
+

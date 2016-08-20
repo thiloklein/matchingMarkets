@@ -19,6 +19,8 @@
 #' @author Thilo Klein 
 #' @keywords algorithms
 #' @references Abdulkadiroglu, A. and Sonmez, T. (1999). House Allocation with Existing Tenants. \emph{Journal of Economic Theory}, 88(2):233--260.
+#' 
+#' Shapley, L. and H. Scarf (1974). On Cores and Indivisibility. \emph{Journal of Mathematical Economics}, 1(1):23--37.
 #' @examples
 #' ## generate list of individuals' preference rankings over objects
 #' P <- list()
@@ -62,15 +64,20 @@ ttc <- function(P=NULL,X=NULL){
   }
 }
 findCycle <- function(P=NULL,X=NULL){
+  
   Cycle   <- data.frame(ind=NA, obj=NA)
   thisind <- X$ind[1] # start with first individual in line
+  
   for(j in 1:length(unique(X$ind))){
+    
     Cycle[j,] <- c(thisind,P[[thisind]][1]) # id and top-ranked object of the individual in line
     thisind   <- X[X$obj == P[[thisind]][1],"ind"] # individual whose object is requested
+    
     if(Cycle[j,1] == Cycle[j,2]){ # if individual points to own object
       return(Cycle[j,])
       break
     }
+    
     if(thisind %in% Cycle$ind){ # if this individual completes a cycle
       return(Cycle)
       break
