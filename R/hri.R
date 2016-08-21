@@ -63,8 +63,8 @@
 #' @references Gale, D. and L.S. Shapley (1962). College admissions and the stability 
 #' of marriage. \emph{The American Mathematical Monthly}, 69(1):9--15.
 #' 
-#' Prosser, P. (2014). Stable Roommates and Constraint Programming. 
-#' \emph{Working Paper}, School of Computing Science, University of Glasgow.
+#' Prosser, P. (2014). Stable Roommates and Constraint Programming. \emph{Lecture Notes in Computer Science, CPAIOR 2014 Edition}. 
+#' Springer International Publishing, 8451: 15--28.
 #' 
 #' @examples
 #' ######################

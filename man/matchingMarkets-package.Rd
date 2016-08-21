@@ -75,7 +75,7 @@
 
   Heckman, J. (1979). Sample selection bias as a specification error. \emph{Econometrica}, 47(1):153--161.
 
-  Prosser, P. (2014). Stable Roommates and Constraint Programming. \emph{Working Paper}, School of Computing Science, University of Glasgow.
+  Prosser, P. (2014). Stable Roommates and Constraint Programming. \emph{Lecture Notes in Computer Science, CPAIOR 2014 Edition}. Springer International Publishing, 8451: 15--28.
 
   Pycia, M. (2012). Stability and preference alignment in matching and coalition formation. \emph{Econometrica}, 80(1):323--362.
   

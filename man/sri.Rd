@@ -50,8 +50,8 @@ Thilo Klein
 Gusfield, D.M. and R.W. Irving (1989). The Stable Marriage Problem: 
 Structure and Algorithms, MIT Press.
 
-Prosser, P. (2014). Stable Roommates and Constraint Programming. 
-\emph{Working Paper}, School of Computing Science, University of Glasgow.
+Prosser, P. (2014). Stable Roommates and Constraint Programming. \emph{Lecture Notes in Computer Science, CPAIOR 2014 Edition}. 
+Springer International Publishing, 8451: 15--28.
 }
 \keyword{algorithms}
 
