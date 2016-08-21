@@ -1,4 +1,4 @@
-//#define ARMA_NO_DEBUG
+#define ARMA_NO_DEBUG
 // Uncomment the above line if you want to disable all run-time checks.
 // This will result in faster code, but you first need to make sure that your code runs correctly!
 
@@ -384,7 +384,7 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
                       
           } else{
             
-            if(Vclowerbar != 0 | Vcupperbar != 0){
+            if((Vclowerbar != 0) | (Vcupperbar != 0)){
             
             sum7 = Y(t)(M(t)(i,j)) - Xmatch(t).row(M(t)(i,j))*alpha - lambda*(Vs(t)(M(t)(i,j)) - Smatch(t).row(M(t)(i,j))*gamma);
             Vhat = arma::as_scalar( C(t).row(M(t)(i,j))*beta + kappa*sum7/(sigmasquarenu+pow(kappa,2)) );
@@ -492,7 +492,7 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
             
           } else{
             
-            if(Vslowerbar != 0 | Vsupperbar != 0){
+            if((Vslowerbar != 0) | (Vsupperbar != 0)){
 
             sum7 = Y(t)(M(t)(i,j)) - Xmatch(t).row(M(t)(i,j))*alpha - kappa*(Vc(t)(M(t)(i,j)) - Cmatch(t).row(M(t)(i,j))*beta);
             Vhat = arma::as_scalar( S(t).row(M(t)(i,j))*gamma + lambda*sum7/(sigmasquarenu+pow(lambda,2)) );

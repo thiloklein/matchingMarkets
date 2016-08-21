@@ -21,7 +21,7 @@ and three algorithms that can be used to simulate matching data:
 
 * `ttc`: Top-Trading-Cycles Algorithm. Finds stable matchings in the [housing market problem](https://en.wikipedia.org/wiki/Top_trading_cycle).
 
-Functions `hri` and `sri` are based on the Prosser (2014) constraint encoding model. They allow for *incomplete preference lists* (some agents find certain agents unacceptable) and *unbalanced instances* (unequal number of agents on both sides). 
+Functions `hri` and `sri` are based on the [Prosser (2014)](http://www.dcs.gla.ac.uk/~pat/Downloads.html) constraint encoding model. They allow for *incomplete preference lists* (some agents find certain agents unacceptable) and *unbalanced instances* (unequal number of agents on both sides). 
 
 
 ## Installation

@@ -1,4 +1,4 @@
-//#define ARMA_NO_DEBUG
+#define ARMA_NO_DEBUG
 // Uncomment the above line if you want to disable all run-time checks.
 // This will result in faster code, but you first need to make sure that your code runs correctly!
 
