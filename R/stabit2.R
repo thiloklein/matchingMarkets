@@ -376,9 +376,9 @@ stabit2 <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, select
   
   ## variable names
   an <- colnames(Xmatch[[1]])
-  bn <- colnames(Cmatch[[1]])
+  bn <- colnames(C[[1]])
   if(method=="Klein"){
-    cn <- colnames(Smatch[[1]])
+    cn <- colnames(S[[1]])
   }
   ## parameter draws
   rownames(res$alphadraws) = an
