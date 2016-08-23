@@ -58,7 +58,7 @@ unobserved, and \eqn{1[.]} is the Iverson bracket.
 A match is observed if its match valuation is in the set of valuations \eqn{\Gamma}
 that satisfy the equilibrium condition (see Sorensen, 2007). 
 The match valuation \eqn{V} is a linear function of \eqn{W}, a matrix of characteristics for 
-\emph{all feasible} groups, and \eqn{\eta}, a vector of random errors. \eqn{\beta} is a paramter 
+\emph{all feasible} matches, and \eqn{\eta}, a vector of random errors. \eqn{\beta} is a paramter 
 vector to be estimated.
 
 The \emph{Outcome Equation} determines the outcome for \emph{observed} matches. The dependent

@@ -130,7 +130,7 @@
 \section{How to cite this package}{
   Whenever using this package, please cite as
 
-  Klein, T. (2016). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.3-1.
+  Klein, T. (2016). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.3-2.
 }
 
 

@@ -195,14 +195,14 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   // Matrices for parameter draws.
   // ---------------------------------------------
   
-  arma::mat alphadraws(kX,floor(niter/thin));
-  arma::mat betadraws(kC,floor(niter/thin));
-  arma::mat gammadraws(kS,floor(niter/thin));
-  arma::mat kappadraws(1,floor(niter/thin));
-  arma::mat lambdadraws(1,floor(niter/thin));
-  //arma::mat etadraws(2*TwoN,floor(niter/thin));
-  //arma::mat deltadraws(2*TwoN,floor(niter/thin));
-  arma::mat sigmasquarenudraws(1,floor(niter/thin));
+  arma::mat alphadraws(kX,(niter-(niter % thin))/thin); //floor(niter/thin);
+  arma::mat betadraws(kC,(niter-(niter % thin))/thin);
+  arma::mat gammadraws(kS,(niter-(niter % thin))/thin);
+  arma::mat kappadraws(1,(niter-(niter % thin))/thin);
+  arma::mat lambdadraws(1,(niter-(niter % thin))/thin);
+  //arma::mat etadraws(2*TwoN,(niter-(niter % thin))/thin);
+  //arma::mat deltadraws(2*TwoN,(niter-(niter % thin))/thin);
+  arma::mat sigmasquarenudraws(1,(niter-(niter % thin))/thin);
   
   // ---------------------------------------------
   // Main loop.
@@ -268,7 +268,7 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
         ivec(0) = i;  
         iuvec = arma::conv_to<arma::uvec>::from(ivec); 
         
-        for(int j=0; j < nStudents(t); j++){
+        for(unsigned int j=0; j < nStudents(t); j++){
           
           // --- Calculation of equilibrium bounds ---
           
@@ -716,8 +716,8 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   // The last half of all draws are used in approximating the posterior means and the posterior standard deviations.
   // ---------------------------------------------  
   
-  niter = floor(niter/thin);
-  int startiter = floor(niter/2);
+  niter = (niter-(niter % thin))/thin; //floor(niter/thin);
+  int startiter = (niter-(niter % 2))/2; //floor(niter/2);
   
   if(binary == TRUE){
     return List::create(  

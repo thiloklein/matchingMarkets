@@ -26,7 +26,7 @@
 #' A match is observed if its match valuation is in the set of valuations \eqn{\Gamma}
 #' that satisfy the equilibrium condition (see Sorensen, 2007). 
 #' The match valuation \eqn{V} is a linear function of \eqn{W}, a matrix of characteristics for 
-#' \emph{all feasible} groups, and \eqn{\eta}, a vector of random errors. \eqn{\beta} is a paramter 
+#' \emph{all feasible} matches, and \eqn{\eta}, a vector of random errors. \eqn{\beta} is a paramter 
 #' vector to be estimated.
 #' 
 #' The \emph{Outcome Equation} determines the outcome for \emph{observed} matches. The dependent
@@ -288,7 +288,7 @@ stabit2 <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, select
     }
   }
   n <- sum(unlist(nStudents)) # total number of students/matches
-  N <- sum(unlist(nColleges)) # total number of students/matches
+  N <- sum(unlist(nColleges)) # total number of colleges
   nEquilibs <- unlist(lapply(H, function(z) dim(z)[3])) # number of equilibria
   
   ## ---------------------------------------------------------------------------------------------
@@ -395,6 +395,9 @@ stabit2 <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, select
   rownames(res$alpha) = an
   rownames(res$beta) = bn
   rownames(res$kappa) = "kappa"
+  if(binary==FALSE){
+    rownames(res$sigmasquarenu) = "sigmasquarenu"
+  }
   if(method=="Sorensen"){
     colnames(res$eta) = "eta"
   } else if(method=="Klein"){
@@ -412,6 +415,10 @@ stabit2 <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, select
   if(method=="Klein"){
     colnames(res$gamma) = colnames(res$lambda) = c("coef","s.e.")
   }
+  
+  ## consolidation
+  # ...
+  
   ## output
   if(binary==TRUE){
     rownames(res$sigmasquarenu) = "sigma"
@@ -547,7 +554,7 @@ stabit2_inner <- function(iter, OUT, SEL, SELs, SELc, colleges, students,
     }
     indices <- as.data.frame(combs(uColleges, uStudents))
     
-    ## index equilibrium groups from x in indices
+    ## index equilibrium matches from x in indices
     indices$id <- paste(indices$c.id, indices$s.id, sep="_")
     OUT$id    <- paste(OUT$c.id, OUT$s.id, sep="_")
     

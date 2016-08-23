@@ -1,0 +1,16 @@
+citHeader("To cite matchingMarkets in publications use:")
+
+citEntry(entry = "Article",
+  title        = "Analysis of Stable Matchings in {R}: Package {matchingMarkets}",
+  author       = personList(as.person("Thilo Klein")),
+  journal      = "The Comprehensive R Archive Network",
+  year         = "2016",
+  url          = "https://cran.r-project.org/package=matchingMarkets",
+
+  textVersion  =
+  paste("Thilo Klein (2016).",
+        "Analysis of Stable Matchings in R: Package matchingMarkets.",
+        "The Comprehensive R Archive Network.",
+        "URL https://cran.r-project.org/package=matchingMarkets.")
+)
+
