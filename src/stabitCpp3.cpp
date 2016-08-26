@@ -25,13 +25,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   Rcpp::List sopt2equr, Rcpp::List equ2soptr, Rcpp::List copt2equr, Rcpp::List equ2coptr, arma::colvec coptidr,
   int n, int N, bool binary, int niter, int T, int censored, int thin, bool display_progress = true) {
   
-  //-- 
-  // bool gPrior, arma::mat sigmabarbetainverse, arma::mat sigmabaralphainverse, arma::mat sigmabargammainverse,
-  // int censored = 1;
-  
-  // Enable/Disable verbose debug tracing.
-  bool DEBUG = FALSE;
-
   // ---------------------------------------------
   // Independent variables
   // ---------------------------------------------
@@ -107,32 +100,20 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   
   // alpha
   arma::colvec alphabar = arma::zeros(kX,1);
-  //if(gPrior == FALSE){
-    arma::mat sigmabaralpha = 10*arma::eye(kX,kX);
-    arma::mat sigmabaralphainverse = arma::inv(sigmabaralpha);
-  //} else{
-  //  sigmabaralphainverse = sigmabaralphainverse;
-  //}
+  arma::mat sigmabaralpha = 10*arma::eye(kX,kX);
+  arma::mat sigmabaralphainverse = arma::inv(sigmabaralpha);
   arma::mat alphabaroversigma = sigmabaralphainverse*alphabar;  
 
   // beta
   arma::colvec betabar = arma::zeros(kC,1);
-  //if(gPrior == FALSE){
-    arma::mat sigmabarbeta = 10*arma::eye(kC,kC);
-    arma::mat sigmabarbetainverse = arma::inv(sigmabarbeta);    
-  //} else{
-  //  sigmabarbetainverse = sigmabarbetainverse;
-  //}
+  arma::mat sigmabarbeta = 10*arma::eye(kC,kC);
+  arma::mat sigmabarbetainverse = arma::inv(sigmabarbeta);    
   arma::colvec betabaroversigma = sigmabarbetainverse*betabar;
 
   // gamma
   arma::colvec gammabar = arma::zeros(kS,1);
-  //if(gPrior == FALSE){
-    arma::mat sigmabargamma = 10*arma::eye(kS,kS);
-    arma::mat sigmabargammainverse = arma::inv(sigmabargamma);    
-  //} else{
-  //  sigmabargammainverse = sigmabargammainverse;
-  //}
+  arma::mat sigmabargamma = 10*arma::eye(kS,kS);
+  arma::mat sigmabargammainverse = arma::inv(sigmabargamma);    
   arma::colvec gammabaroversigma = sigmabargammainverse*gammabar;
   
   // kappa
@@ -208,16 +189,12 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   // Main loop.
   // ---------------------------------------------  
   
-  Rcout << "Drawing " << niter << " MCMC samples..." << std::endl;
+  Rcpp::Rcout << "Drawing " << niter << " MCMC samples..." << std::endl;
   
   // Initiate Progress Bar
   Progress prog(niter, display_progress);
   
   for(int iter = 0; iter < niter; iter++){
-    
-    //if(iter % 1000 == 999){
-    //  Rcout << iter+1 << " of " << niter << std::endl;
-    //}
     
     // update Progress Bar
     prog.increment(); 
@@ -241,18 +218,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
         }
       }                    
     }
-    
-    if(DEBUG==TRUE){
-      std::cout << "Y(T-1):" << std::endl;
-      std::cout << Y(T-1) << std::endl;
-      std::cout << std::endl;        
-    }
-    
-    if(DEBUG==TRUE){
-      std::cout << "Xmatch(T-1):" << std::endl;
-      std::cout << Xmatch(T-1) << std::endl;
-      std::cout << std::endl;        
-    }    
     
     // ---------------------------------------------
     // Simulate each of the Vstar's conditional on all other Vstar's, data, and parameters.
@@ -391,10 +356,7 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
             sigmahatsquareV = sigmasquarenu/(sigmasquarenu+pow(kappa,2));
             Vc(t)(M(t)(i,j)) = truncn2(Vhat, sqrt(sigmahatsquareV), Vclowerbar, Vcupperbar); // mu, sigma, lower, upper
             
-            } //else{
-              //std::cout << "iter: " << iter << ", i: " << i << ", j: " << j << ", Vclowerbar: " << Vclowerbar << ", Vcupperbar: " << Vcupperbar << std::endl;
-            //}
-            
+            }
           }
           
           // --- Draw of u_i,j: college i's valuation over student j (truncated by equilibrium bounds) ---
@@ -499,10 +461,7 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
             sigmahatsquareV = sigmasquarenu/(sigmasquarenu+pow(lambda,2));  
             Vs(t)(M(t)(i,j)) = truncn2(Vhat, sqrt(sigmahatsquareV), Vslowerbar, Vsupperbar); // mu, sigma, lower, upper
             
-            } //else{
-              //std::cout << "iter: " << iter << ", i: " << i << ", j: " << j << ", Vslowerbar: " << Vslowerbar << ", Vsupperbar: " << Vsupperbar << std::endl;
-            //}
-            
+            }
           }
 
         } // j = nStudents
@@ -528,12 +487,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     alphahat = -sigmahatalpha * (-alphabaroversigma - (1/sigmasquarenu)*sum2);
     alpha = mvrnormArma(alphahat,sigmahatalpha,kX); 
     
-    if(DEBUG==TRUE){
-      std::cout << "alpha:" << std::endl;
-      std::cout << alpha << std::endl;
-      std::cout << std::endl;        
-    }
-    
     // ---------------------------------------------
     // beta.
     // ---------------------------------------------
@@ -541,8 +494,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     sum3.zeros(kC,kC); // reset to zero
     sum4.zeros(kC,1);  // reset to zero
 
-    //Rprintf("\nFor strain %d",i); 
-    
     for(int t=0; t<T; t++){ 
       sum3 += CC(t) + (pow(kappa,2)/sigmasquarenu)*CCmatch(t);
       sum4 += -trans(C(t))*Vc(t) + (kappa/sigmasquarenu)*(trans(Cmatch(t))*(Y(t) - Xmatch(t)*alpha - kappa*Vc(t)(d(t)) - lambda*(Vs(t)(d(t)) - Smatch(t)*gamma)) );
@@ -550,12 +501,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     sigmahatbeta = arma::inv(sigmabarbetainverse + sum3); 
     betahat = -sigmahatbeta * (-betabaroversigma + sum4); 
     beta = mvrnormArma(betahat,sigmahatbeta,kC);
-    
-    if(DEBUG==TRUE){
-      std::cout << "beta:" << std::endl;
-      std::cout << beta << std::endl;
-      std::cout << std::endl;        
-    }
     
     // ---------------------------------------------
     // gamma.
@@ -572,12 +517,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     gammahat = -sigmahatgamma * (-gammabaroversigma + sum6); 
     gamma = mvrnormArma(gammahat,sigmahatgamma,kS);
     
-    if(DEBUG==TRUE){
-      std::cout << "gamma:" << std::endl;
-      std::cout << gamma << std::endl;
-      std::cout << std::endl;        
-    }
-    
     // ---------------------------------------------
     // kappa.
     // ---------------------------------------------
@@ -588,8 +527,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     sum8.zeros(1,1); // reset to zero
     
     for(int t=0; t<T; t++){ 
-      //sum7 += sum( pow(Vc(t)(d(t)) - Cmatch(t)*beta, 2) );      
-      //sum8 += sum( (Y(t) - Xmatch(t)*alpha - lambda*(Vs(t)(d(t)) - Smatch(t)*gamma)) * (Vc(t)(d(t)) - Cmatch(t)*beta) );
       sum7 += trans(Vc(t)(d(t)) - Cmatch(t)*beta) * (Vc(t)(d(t)) - Cmatch(t)*beta);      
       sum8 += trans(Y(t) - Xmatch(t)*alpha - lambda*(Vs(t)(d(t)) - Smatch(t)*gamma)) * (Vc(t)(d(t)) - Cmatch(t)*beta);
     }      
@@ -602,14 +539,7 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     } else{ // not censored
       kappa = ::Rf_rnorm(kappahat, sqrt(sigmahatsquarekappa));
     }
-    
-    if(DEBUG==TRUE){
-      std::cout << "kappa:" << std::endl;
-      std::cout << kappa << std::endl;
-      std::cout << std::endl;        
-    }
-    
-    //}
+
     // ---------------------------------------------
     // lambda.
     // ---------------------------------------------
@@ -618,8 +548,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     sum8.zeros(1,1); // reset to zero
     
     for(int t=0; t<T; t++){ 
-      //sum7 += sum( pow(Vs(t)(d(t)) - Smatch(t)*gamma, 2) );
-      //sum8 += sum( (Y(t) - Xmatch(t)*alpha - kappa*(Vc(t)(d(t)) - Cmatch(t)*beta)) * (Vs(t)(d(t)) - Smatch(t)*gamma) );
       sum7 += trans(Vs(t)(d(t)) - Smatch(t)*gamma) * (Vs(t)(d(t)) - Smatch(t)*gamma);
       sum8 += trans(Y(t) - Xmatch(t)*alpha - kappa*(Vc(t)(d(t)) - Cmatch(t)*beta)) * (Vs(t)(d(t)) - Smatch(t)*gamma);
     }      
@@ -632,13 +560,7 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     } else{ // not censored
       lambda = ::Rf_rnorm(lambdahat, sqrt(sigmahatsquarelambda));
     }
-    
-    if(DEBUG==TRUE){
-      std::cout << "lambda:" << std::endl;
-      std::cout << lambda << std::endl;
-      std::cout << std::endl;        
-    }
-    
+
     // ---------------------------------------------
     // eta.
     // ---------------------------------------------
@@ -649,12 +571,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
       etacount = etacount + nStudents(t);
     }
     
-    if(DEBUG==TRUE){
-    //  std::cout << "eta:" << std::endl;
-    //  std::cout << eta << std::endl;
-    //  std::cout << std::endl;        
-    }
-
     // ---------------------------------------------
     // delta.
     // ---------------------------------------------
@@ -663,12 +579,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     for(int t=0; t<T; t++){
       delta.rows(deltacount, deltacount + nStudents(t) - 1) = Vs(t)(d(t)) - Smatch(t)*gamma;
       deltacount = deltacount + nStudents(t);
-    }
-    
-    if(DEBUG==TRUE){
-      //  std::cout << "delta:" << std::endl;
-      //  std::cout << delta << std::endl;
-      //  std::cout << std::endl;        
     }
     
     // ---------------------------------------------
@@ -687,12 +597,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
       bhat = 1/(1/b + arma::as_scalar(sum7)/2); // scale = 1/rate
       sigmasquarenuinverse = ::Rf_rgamma(ahat, bhat); // shape, scale
       sigmasquarenu = 1/sigmasquarenuinverse;
-      
-      if(DEBUG==TRUE){
-        std::cout << "sigmasquarenu:" << std::endl;
-        std::cout << sigmasquarenu << std::endl;
-        std::cout << std::endl;        
-      }
     }
     
     // ---------------------------------------------  
@@ -713,10 +617,6 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
       }
     }
   }
-  
-  // print to screen
-  //Rcout << "done." << std::endl;
-  //Rcout << std::endl;
   
   // ---------------------------------------------  
   // Return the parameter draws.

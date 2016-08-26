@@ -149,16 +149,12 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
   // Main loop.
   // ---------------------------------------------  
   
-  Rcout << "Drawing " << niter << " MCMC samples..." << std::endl;
+  Rcpp::Rcout << "Drawing " << niter << " MCMC samples..." << std::endl;
   
   // Initiate Progress Bar
   Progress prog(niter, display_progress);
 
   for(int iter = 0; iter < niter; iter++){
-
-    //if(iter % 1000 == 999){
-    //  Rcout << iter+1 << " of " << niter << std::endl;
-    //}
 
     // update Progress Bar
     prog.increment(); 
@@ -167,18 +163,14 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
     // Simulate the latent outcomes conditional on the latent group valuations, data, and parameters.
     // ---------------------------------------------
     
-    double Yhat; //, uppercdf, lowercdf;
+    double Yhat; 
     
     if(binary == TRUE){
       for(int t=One1; t < OneN; t++){ // one-group-market identifiers.        
         Yhat = arma::as_scalar( X(t)*beta );
         if(R(t)(0) == 1){
-          //lowercdf = ::Rf_pnorm5(-offOut(t)(0), Yhat, 1.0, 1,0);
-          //Y(t)     = ::Rf_qnorm5(lowercdf+(1-lowercdf)*::Rf_runif(0,1), Yhat, 1.0, 1,0);
           Y(t) = truncn(-offOut(t)(0), TRUE, Yhat, 1.0); // bound, lb, mu, sigma
         } else{
-          //uppercdf = ::Rf_pnorm5(-offOut(t)(0), Yhat, 1.0, 1,0); // q, mu, sigma, 1, 0
-          //Y(t)     = ::Rf_qnorm5(uppercdf*::Rf_runif(0,1), Yhat, 1.0, 1,0);
           Y(t) = truncn(-offOut(t)(0), FALSE, Yhat, 1.0); // bound, lb, mu, sigma
         }
       }     
@@ -187,12 +179,8 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
           for(int G=0; G < 2; G++){
             Yhat = arma::as_scalar( X(t).row(G)*beta + (V(t)(G)-W(t).row(G)*alpha)*delta );
             if(R(t)(G) == 1){
-              //lowercdf = ::Rf_pnorm5(-offOut(t)(G), Yhat, 1.0, 1,0);
-              //Y(t)(G)  = ::Rf_qnorm5(lowercdf+(1-lowercdf)*::Rf_runif(0,1), Yhat, 1.0, 1,0);
               Y(t)(G) = truncn(-offOut(t)(G), TRUE, Yhat, 1.0); // bound, lb, mu, sigma
             } else{
-              //uppercdf = ::Rf_pnorm5(-offOut(t)(G), Yhat, 1.0, 1,0); // q, mu, sigma, 1, 0
-              //Y(t)(G)  = ::Rf_qnorm5(uppercdf*::Rf_runif(0,1), Yhat, 1.0, 1,0);
               Y(t)(G) = truncn(-offOut(t)(G), FALSE, Yhat, 1.0); // bound, lb, mu, sigma
             }            
           }
@@ -202,30 +190,14 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
           for(int G=0; G < 2; G++){
             Yhat = arma::as_scalar( X(t).row(G)*beta );
             if(R(t)(G) == 1){
-              //lowercdf = ::Rf_pnorm5(-offOut(t)(G), Yhat, 1.0, 1,0);
-              //Y(t)(G)  = ::Rf_qnorm5(lowercdf+(1-lowercdf)*::Rf_runif(0,1), Yhat, 1.0, 1,0);
               Y(t)(G) = truncn(-offOut(t)(G), TRUE, Yhat, 1.0); // bound, lb, mu, sigma
             } else{
-              //uppercdf = ::Rf_pnorm5(-offOut(t)(G), Yhat, 1.0, 1,0); // q, mu, sigma, 1, 0
-              //Y(t)(G)  = ::Rf_qnorm5(uppercdf*::Rf_runif(0,1), Yhat, 1.0, 1,0);
               Y(t)(G) = truncn(-offOut(t)(G), FALSE, Yhat, 1.0); // bound, lb, mu, sigma
             } 
           }
         }            
       }
     }
-    
-    if(DEBUG==TRUE){
-      std::cout << "Y(T-1).rows(0,1):" << std::endl;
-      std::cout << Y(T-1).rows(0,1) << std::endl;
-      std::cout << std::endl;        
-    }
-    
-    if(DEBUG==TRUE){
-      std::cout << "X(T-1).rows(0,1):" << std::endl;
-      std::cout << X(T-1).rows(0,1) << std::endl;
-      std::cout << std::endl;        
-    }    
         
     // ---------------------------------------------
     // Simulate the latent valuations conditional on the latent group outcomes, data, and parameters.
@@ -285,16 +257,6 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
         }
       } 
     }
-    
-    if(DEBUG==TRUE){
-      std::cout << "V(T-1).rows(0,l(T-1)-1):" << std::endl;
-      std::cout << V(T-1).rows(0,l(T-1)-1) << std::endl;
-      std::cout << std::endl;    
-      
-      std::cout << "W(T-1).rows(0,l(T-1)-1):" << std::endl;
-      std::cout << W(T-1).rows(0,l(T-1)-1) << std::endl;
-      std::cout << std::endl;  
-    }
 
     // ---------------------------------------------
     // Simulate each group of parameters conditional on latents, data, and all other parameters.
@@ -325,12 +287,6 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
     betahat = -sigmahatbeta * (-betabaroversigma - (1/sigmasquarexi)*sum2);
     beta = mvrnormArma(betahat,sigmahatbeta,kX); 
     
-    if(DEBUG==TRUE){
-      std::cout << "beta:" << std::endl;
-      std::cout << beta << std::endl;
-      std::cout << std::endl;        
-    }
-    
     if(selection == TRUE){
       
       // ---------------------------------------------
@@ -346,12 +302,6 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
       sigmahatalpha = arma::inv(sigmabaralphainverse + sum3); 
       alphahat = -sigmahatalpha * (-alphabaroversigma + sum4); 
       alpha = mvrnormArma(alphahat,sigmahatalpha,kW);
-      
-      if(DEBUG==TRUE){
-        std::cout << "alpha:" << std::endl;
-        std::cout << alpha << std::endl;
-        std::cout << std::endl;        
-      }
       
       // ---------------------------------------------
       // delta.
@@ -375,23 +325,11 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
         delta = ::Rf_rnorm(deltahat, sqrt(sigmahatsquaredelta));
       }
       
-      if(DEBUG==TRUE){
-        std::cout << "delta:" << std::endl;
-        std::cout << delta << std::endl;
-        std::cout << std::endl;        
-      }
-      
       // ---------------------------------------------
       // eta.
       // ---------------------------------------------
       for(int t=Two1; t<TwoN; t++){
         eta.rows(2*t,2*t+1) = V(t).rows(0,1) - W(t).rows(0,1)*alpha;
-      }
-      
-      if(DEBUG==TRUE){
-        std::cout << "eta:" << std::endl;
-        std::cout << eta << std::endl;
-        std::cout << std::endl;        
       }
     }
     
@@ -423,12 +361,6 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
       bhat = 1/(1/b + arma::as_scalar(sum7)/2); // scale = 1/rate
       sigmasquarexiinverse = ::Rf_rgamma(ahat, bhat); // shape, scale
       sigmasquarexi = 1/sigmasquarexiinverse;
-      
-      if(DEBUG==TRUE){
-        std::cout << "sigmasquarexi:" << std::endl;
-        std::cout << sigmasquarexi << std::endl;
-        std::cout << std::endl;        
-      }
     }
     
     // ---------------------------------------------  
@@ -443,10 +375,6 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
     }
     sigmasquarexidraws.col(iter) = sigmasquarexi;
   }
-  
-  // print to screen
-  //Rcout << "done." << std::endl;
-  //Rcout << std::endl;
   
   // ---------------------------------------------  
   // Return the parameter draws.
