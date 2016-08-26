@@ -19,9 +19,6 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
   int niter, double n, arma::colvec l, Rcpp::List Pr, arma::colvec p,
   bool binary, bool selection, int censored, bool ntu, bool gPrior,
   bool display_progress=true) {
-    
-  // Enable/Disable verbose debug tracing.
-  bool DEBUG = FALSE;
 
   // Market identifiers.
   int Two1=Two(0), TwoN=Two(1), One1=One(0), OneN=One(1);
