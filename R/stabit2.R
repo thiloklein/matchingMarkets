@@ -62,6 +62,7 @@
 #' @param gPrior logical: if \code{TRUE} the g-prior (Zellner, 1986) is used for the variance-covariance matrix. (Not yet implemented)
 #' @param censored draws of the \code{kappa} parameter that estimates the covariation between the error terms in selection and outcome equation are 0:not censored, 1:censored from below, 2:censored from above.
 #' @param thin integer indicating the level of thinning in the MCMC draws. The default \code{thin=1} saves every draw, \code{thin=2} every second, etc.
+#' @param ... .
 #' 
 # @param selection.college formula for match valuations of colleges. Is ignored when \code{selection} is provided.
 # @param selection.student formula for match valuations of students. Is ignored when \code{selection} is provided.
@@ -83,11 +84,6 @@
 #' 
 #' @aliases stabitCpp2 stabitCpp3
 #' 
-#' @return
-#' \code{stabit2} returns a list with the following items.
-#' \item{draws}{}
-#' \item{coefs}{}
-#' 
 #' @author Thilo Klein 
 #' 
 #' @keywords regression
@@ -100,7 +96,8 @@
 #' \dontrun{
 #' ## 1. Simulate two-sided matching data for 20 markets (m=20) with 100 students
 #' ##    (nStudents=100) per market and 20 colleges with quotas of 5 students, each
-#' ##    (nSlots=rep(5,20)).
+#' ##    (nSlots=rep(5,20)). True parameters in selection and outcome equations are 
+#' ##    all equal to 1.
 #' 
 #' xdata <- stabsim2(m=20, nStudents=100, nSlots=rep(5,20), 
 #'   colleges = "c1",
@@ -110,6 +107,8 @@
 #' )
 #' head(xdata$OUT)
 #' 
+#' 
+#' ## 2. Correction for sorting bias when match valuations V are observed
 #' 
 #' ## 2-a. Bias from sorting
 #'  lm1 <- lm(y ~ c1:s1, data=xdata$OUT)
@@ -126,7 +125,7 @@
 #'  summary(lm2b)
 #' 
 #' 
-#' ## 3. Correction for sorting bias when match valuation V is unobserved
+#' ## 3. Correction for sorting bias when match valuations V are unobserved
 #' 
 #' ## 3-a. Run Gibbs sampler (when SEL is given)
 #'  fit2 <- stabit2(OUT = xdata$OUT, 
@@ -136,7 +135,7 @@
 #'            niter=1000
 #'  )
 #'
-#' ## 3-b. Run Gibbs sampler (when SEL is not given)
+#' ## 3-b. Alternatively: Run Gibbs sampler (when SEL is not given)
 #'  fit2 <- stabit2(OUT = xdata$OUT, 
 #'            colleges = "c1",
 #'            students = "s1",
@@ -145,21 +144,56 @@
 #'            niter=1000
 #'  )
 #'
-#' ## 4-a. Get marginal effects (for linear model)
-#'  fit2$coefs
+#'
+#' ## 4. Implemented methods
+#'
+#' ## 4-a. Get coefficients
+#'  fit2
 #'  
-#' ## 4-b. Get marginal effects (for probit)
-#'  #mfx(fit2)
+#' ## 4-b. Coefficient table
+#'  summary(fit2)
 #'  
+#' ## 4-c. Get marginal effects
+#'  summary(fit2, mfx=TRUE)
 #'  
-#' ## 5. Plot MCMC draws for coefficients
-#'  plot(fit2$draws$alphadraws[1,], type="l")
-#'  plot(fit2$draws$betadraws[1,], type="l")
-#'  plot(fit2$draws$kappadraws[1,], type="l")
+#' ## 4-d. Also try the following functions
+#'  coef(fit2)
+#'  fitted(fit2)
+#'  residuals(fit2)
+#'  predict(fit, newdata=NULL)
+#'
+#'    
+#' ## 5. Plot MCMC draws for coefficients in outcome equation
+#'  res <- as.data.frame(t(fit2$draws$alphadraws))
+#'  res$iteration <- 1:nrow(res)
+#'  library(tidyr)
+#'  res.long <- gather(res, condition, measurement, 1:(ncol(res)-1))
+#'  
+#'  library(lattice)
+#'  lattice.options(default.args=list(as.table=TRUE), 
+#'                  default.theme=standard.theme(color=FALSE))
+#'  xyplot(measurement ~ iteration | factor(condition), 
+#'         data = res.long, scales=list(relation="free"),
+#'         xlab = "iterations",
+#'         ylab = "paramter draws", type = "l") 
 #' }
 stabit2 <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, selection,
                     binary=FALSE, niter, gPrior=FALSE, 
-                    censored=1, thin=1){
+                    censored=1, thin=1, ...) UseMethod("stabit2")
+
+#' @export
+print.stabit2 <- function(x, ...){
+  
+  cat("Call:\n")
+  print(x$call)
+  cat("\nCoefficients:\n")
+  print(x$coefficients)
+}
+
+#' @export
+stabit2.default <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, selection,
+                            binary=FALSE, niter, gPrior=FALSE, 
+                            censored=1, thin=1, ...){
   
   ## ------------------------
   ## --- 1. Preliminaries ---
@@ -197,7 +231,7 @@ stabit2 <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, select
   m.id <- "m.id"
   c.id <- "c.id"
   s.id <- "s.id"
-
+  
   ## empty lists for results
   Y=list(); Xmatch=list(); C=list(); Cmatch=list(); S=list(); Smatch=list(); D=list(); d=list()
   M=list(); H=list(); H2=list(); copt.id=vector(); indices=list()
@@ -212,7 +246,7 @@ stabit2 <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, select
                        selection.student=selection.student, selection.college=selection.college, 
                        s.prefs=s.prefs, c.prefs=c.prefs,
                        method=method)
-
+    
     ## continue to write the results per market
     Y[[i]]      <- as.matrix(X$Y)
     Xmatch[[i]] <- as.matrix(X$Xmatch)
@@ -355,7 +389,7 @@ stabit2 <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, select
   
   if(method=="Klein"){
     
-    res <- stabitCpp3(Yr=Y, Xmatchr=Xmatch, Cr=C, Cmatchr=Cmatch, Sr=S, Smatchr=Smatch, Dr=D, dr=d,
+    est <- stabitCpp3(Yr=Y, Xmatchr=Xmatch, Cr=C, Cmatchr=Cmatch, Sr=S, Smatchr=Smatch, Dr=D, dr=d,
                       Mr=M, Hr=H, nCollegesr=unlist(nColleges), nStudentsr=unlist(nStudents), XXmatchr=XXmatch, 
                       CCr=CC, SSr=SS, SSmatchr=SSmatch, CCmatchr=CCmatch, Lr=L,
                       studentIdsr=studentIds, collegeIdr=collegeId, nEquilibsr=nEquilibs,
@@ -364,7 +398,7 @@ stabit2 <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, select
     
   } else if(method=="Sorensen"){
     
-    res <- stabitCpp2(Yr=Y, Xmatchr=Xmatch, Cr=C, Cmatchr=Cmatch, Dr=D, dr=d,
+    est <- stabitCpp2(Yr=Y, Xmatchr=Xmatch, Cr=C, Cmatchr=Cmatch, Dr=D, dr=d,
                       Mr=M, Hr=H, nCollegesr=unlist(nColleges), nStudentsr=unlist(nStudents), XXmatchr=XXmatch, 
                       CCr=CC, CCmatchr=CCmatch, Lr=L, 
                       studentIdsr=studentIds, collegeIdr=collegeId, 
@@ -375,98 +409,121 @@ stabit2 <- function(OUT, SEL=NULL, colleges=NULL, students=NULL, outcome, select
   # --- 5. Add names to coefficients ---
   
   ## variable names
+  
   an <- colnames(Xmatch[[1]])
   bn <- colnames(C[[1]])
   if(method=="Klein"){
     cn <- colnames(S[[1]])
   }
+  
   ## parameter draws
-  rownames(res$alphadraws) = an
-  rownames(res$betadraws) = bn
-  rownames(res$kappadraws) = "kappa"
-  if(binary==FALSE){
-    rownames(res$sigmasquarenudraws) = "sigmasquarenu"
-  }
-  if(method=="Klein"){
-    rownames(res$gammadraws) = cn
-    rownames(res$lambdadraws) = "lambda"
-  }
-  ## posterior means
-  rownames(res$alpha) = an
-  rownames(res$beta) = bn
-  rownames(res$kappa) = "kappa"
-  if(binary==FALSE){
-    rownames(res$sigmasquarenu) = "sigmasquarenu"
-  }
+  
+  rownames(est$betadraws) <- bn
   if(method=="Sorensen"){
-    colnames(res$eta) = "eta"
+    est$alphadraws <- with(est, rbind(alphadraws, kappadraws))
+    rownames(est$alphadraws) <- c(an,"kappa")
+    est$kappadraws <- NULL
   } else if(method=="Klein"){
-    rownames(res$gamma) = cn
-    rownames(res$lambda) = "lambda"
+    est$alphadraws <- with(est, rbind(alphadraws, kappadraws, lambdadraws))
+    rownames(est$alphadraws) <- c(an,"kappa","lambda")
+    est$kappadraws  <- NULL
+    est$lambdadraws <- NULL
+    rownames(est$gammadraws) = cn
   }
+  
+  ## posterior means
+  
+  ## The last half of all draws are used in approximating the posterior means and the posterior standard deviations.
+  niter <- dim(est$alphadraws)[2]
+  startiter <- floor(niter/2)
+  
+  posMeans <- function(x){
+    sapply(1:nrow(x), function(z) mean(x[z,startiter:niter]))
+  }
+  
+  est$alpha <- posMeans(est$alphadraws) 
+  names(est$alpha) <- rownames(est$alphadraws)
+  
+  est$beta <- posMeans(est$betadraws)
+  names(est$beta) <- bn
+  
+  if(method=="Klein"){
+    est$gamma <- posMeans(est$gammadraws)
+    names(est$gamma) <- cn
+  }
+  
+  if(binary==FALSE){
+    est$sigma <- sqrt(posMeans(est$sigmasquarenudraws))
+    est$sigmasquarenudraws <- NULL
+  }
+  
+  ## error terms
+  
+  est$eta <- posMeans(est$etadraws)
+  est$etadraws <- NULL
+  if(method=="Klein"){
+    est$delta <- posMeans(est$deltadraws)
+    est$deltadraws <- NULL
+  }
+  
   ## vcov
-  rownames(res$alphavcov) = colnames(res$alphavcov) = an
-  rownames(res$betavcov) = colnames(res$betavcov) = bn
+  
+  est$vcov$alpha <- var(t(est$alphadraws))
+  est$vcov$beta <- var(t(est$betadraws))
   if(method=="Klein"){
-    rownames(res$gammavcov) = colnames(res$gammavcov) = cn
-  }
-  ## colnames
-  colnames(res$alpha) = colnames(res$beta) = colnames(res$kappa)  = colnames(res$sigmasquarenu) = c("coef","s.e.")
-  if(method=="Klein"){
-    colnames(res$gamma) = colnames(res$lambda) = c("coef","s.e.")
+    est$vcov$gamma <- var(t(est$gammadraws))
   }
   
-  ## consolidation
-  # ...
+  ## variables
   
-  ## output
-  if(binary==TRUE){
-    rownames(res$sigmasquarenu) = "sigma"
+  est$X <- do.call(rbind, Xmatch)
+  est$X <- cbind(est$X, eta=est$eta)
+  if(method=="Klein"){
+    est$X <- cbind(est$X, delta=est$delta)
+    est$S <- do.call(rbind, S)  
+  }
+  est$C <- do.call(rbind, C)
+  est$Y <- do.call(c, Y)
+  est$D <- do.call(c, D)
+  
+  if(method=="Sorensen"){
     
-    if(method=="Sorensen"){
-      out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,kappadraws=kappadraws)), 
-                  coefs=with(res,list(eta=eta,alphavcov=alphavcov,betavcov=betavcov,alpha=alpha,beta=beta,
-                                      kappa=kappa)))    
-    } else if(method=="Klein"){
-      out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,gammadraws=gammadraws,
-                                      kappadraws=kappadraws,lambdadraws=lambdadraws)), 
-                  coefs=with(res,list(alphavcov=alphavcov,betavcov=betavcov,gammavcov=gammavcov,
-                                      alpha=alpha,beta=beta,gamma=gamma,
-                                      kappa=kappa,lambda=lambda))) 
-    }
+    est$coefficients <- unlist(with(est, list(o=alpha, s=beta)))
     
-  } else if(binary==FALSE){
+  } else if(method=="Klein"){
     
-    if(method=="Sorensen"){
-      out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,kappadraws=kappadraws,
-                                      sigmasquarenudraws=sigmasquarenudraws)), 
-                  coefs=with(res,list(eta=eta,alphavcov=alphavcov,betavcov=betavcov,alpha=alpha,beta=beta,
-                                      kappa=kappa,sigmasquarenu=sigmasquarenu)))
-    } else if(method=="Klein"){
-      out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,gammadraws=gammadraws,
-                                      kappadraws=kappadraws,lambdadraws=lambdadraws,
-                                      sigmasquarenudraws=sigmasquarenudraws)), 
-                  coefs=with(res,list(alphavcov=alphavcov,betavcov=betavcov,gammavcov=gammavcov,
-                                      alpha=alpha,beta=beta,gamma=gamma,
-                                      kappa=kappa,lambda=lambda,sigmasquarenu=sigmasquarenu)))
-    }
-  }  
+    est$coefficients <- unlist(with(est, list(o=alpha, c=beta, s=gamma)))
+  }
+  est$fitted.values <- with(est, as.vector(X %*% alpha))
+  est$residuals <- est$Y - est$fitted.values
+  est$df <- n-ncol(est$X)
+  
+  est$call <- match.call()
+  est$method <- method
+  est$binary <- binary
+  est$formula <- outcome
+  
+  ## consolidate
+  
+  h <- est[grep(pattern="draws",x=names(est))]
+  est[grep(pattern="draws",x=names(est))] <- NULL
+  est$draws <- h
+  
+  h <- est[which(names(est) %in% c("alpha","beta","gamma","kappa","lambda"))]
+  est[which(names(est) %in% c("alpha","beta","gamma","kappa","lambda"))] <- NULL
+  est$coefs <- h
+  
+  h <- est[which(names(est) %in% c("X","S","C","Y","D"))]
+  est[which(names(est) %in% c("X","S","C","Y","D"))] <- NULL
+  est$variables <- h
+  
+  h <- NULL
   
   # ------------------
   # --- 6. Returns ---
   
-  #indices <- do.call(rbind, indices)
-  #indices <- 
-  #names(indices) <- c("c.id","s.id")
-  #m.id, 
-  
-  #if(method=="Sorensen"){
-  #  model.frame <- list(D=D, Y=Y, W=C, X=Xmatch)
-  #} else if(method=="Klein"){
-  #  model.frame <- list(D=D, Y=Y, C=C, S=S, X=Xmatch)
-  #}
-  #return(list(model.frame=model.frame, draws=out$draws, coefs=out$coefs))
-  return(list(draws=out$draws, coefs=out$coefs))
+  class(est) <- "stabit2"
+  return(est)
 }
 
 
@@ -486,12 +543,12 @@ stabit2_inner <- function(iter, OUT, SEL, SELs, SELc, colleges, students,
                           m.id="m.id", c.id="c.id", s.id="s.id", 
                           outcome, selection, selection.student, selection.college, 
                           s.prefs=s.prefs, c.prefs=c.prefs, method){
-
+  
   ## ----------------------------------------------------------------------------------------------
   ## --- 1. Sort datasets by colleges (c.id) and students (s.id), put equilibrium matches first ---
   
   if(!is.null(SEL)){
-
+    
     ## sort SEL by c.id and s.id (based on OUT)
     idOUT <- with(OUT, paste(c.id, s.id, sep="_"))
     SEL$idSEL <- with(SEL, paste(c.id, s.id, sep="_"))
@@ -509,7 +566,7 @@ stabit2_inner <- function(iter, OUT, SEL, SELs, SELc, colleges, students,
     uStudents <- sort(unique(indices$s.id))
     
   } else if(!is.null(SELs) & !is.null(SELc)){
-
+    
     ## sort SELs/SELc by c.id and s.id (based on OUT)
     idOUT <- with(OUT, paste(c.id, s.id, sep="_"))
     SELs$idSEL <- with(SELs, paste(c.id, s.id, sep="_"))
@@ -671,5 +728,222 @@ stabit2_inner <- function(iter, OUT, SEL, SELs, SELc, colleges, students,
   }  
 }  
 
+
+
+
+#' @export
+summary.stabit2 <- function(object, mfx=FALSE, ...){
+  
+  ## function to produce regression tables
+  tab <- function(coefs, vcov){
+    se <- sqrt(diag(vcov))
+    tval <- coefs / se
+    TAB <- cbind(Estimate = coefs,
+                 StdErr = se,
+                 t.value = tval,
+                 p.value = 2*pt(-abs(tval), df=object$df))
+    TAB
+  }
+  
+  res <- list()
+  
+  ## Selection equation(s)
+  
+  if(object$method!="Outcome-only"){
+    
+    if(mfx==FALSE){
+      
+      if(object$method=="Klein"){
+        
+        res$college <- tab(coefs=object$coefs$beta, vcov=object$vcov$beta)
+        
+        res$student <- tab(coefs=object$coefs$gamma, vcov=object$vcov$gamma)
+        
+      } else{
+        
+        res$selection <- tab(coefs=object$coefs$beta, vcov=object$vcov$beta)
+      }
+      
+    } else if(mfx==TRUE){
+      
+      if(object$method=="Klein"){
+        
+        res$college <- mfxVal(coefs = object$coefs$beta, 
+                              vcov = object$vcov$beta,
+                              df = nrow(object$variables$C) - ncol(object$variables$C) )
+        
+        res$student <- mfxVal(coefs = object$coefs$gamma, 
+                              vcov = object$vcov$gamma,
+                              df = nrow(object$variables$S) - ncol(object$variables$S) )
+        
+      } else if(object$method=="Sorensen"){
+        
+        res$selection <- mfxVal(coefs = object$coefs$beta, 
+                                vcov = object$vcov$beta,
+                                df = nrow(object$variables$C) - ncol(object$variables$C) )
+      }  else{
+        
+        res$selection <- mfxVal(coefs = object$coefs$beta, 
+                                vcov = object$vcov$beta,
+                                df = nrow(object$variables$W) - ncol(object$variables$W) )
+      }
+    }
+  }
+  
+  
+  ## Outcome equation
+  
+  if(mfx==FALSE){
+    
+    res$outcome <- tab(coefs=object$coefs$alpha, vcov=object$vcov$alpha)
+    
+  } else{
+    
+    if(object$binary==TRUE){
+      
+      res$outcome <- mfxOut(sims = 10000, X = object$variables$X,
+                            coefs = object$coefs$alpha,
+                            vcov = object$vcov$alpha,
+                            df = nrow(object$variables$X) - ncol(object$variables$X) )
+    } else{
+      
+      res$outcome <- tab(coefs = object$coefs$alpha,
+                         vcov = object$vcov$alpha )
+    }
+  }
+  
+  res$call <- object$call
+  res$method <- object$method
+  res$mfx <- mfx
+  
+  class(res) <- "summary.stabit2"
+  res
+}
+
+
+mfxOut <- function(sims=10000, x.mean=TRUE, coefs, vcov, X, df){
+  
+  ## source: http://researchrepository.ucd.ie/handle/10197/3404
+  ## method: average of individual marginal effects at each observation
+  ## interpretation: http://www.indiana.edu/~statmath/stat/all/cdvm/cdvm.pdf page 8
+  
+  set.seed(1984)
+  se <- sqrt(diag(vcov))
+  
+  if(x.mean==TRUE){
+    
+    ## marginal effects are calculated at the means of independent variables
+    pdf <- dnorm(mean(X%*%coefs))
+    pdfsd <- dnorm(sd(X%*%coefs))
+    
+  } else{
+    
+    ## marginal effects are calculated for each observation and then averaged
+    pdf <- mean(dnorm(X%*%coefs))
+    pdfsd <- sd(dnorm(X%*%coefs))
+  }  
+  mx <- pdf*coefs
+  
+  sim <- matrix(rep(NA,sims*length(coefs)), nrow=sims)
+  
+  for(i in 1:length(coefs)){
+    sim[,i] <- rnorm(sims,coefs[i],se[i])
+  }
+  
+  pdfsim <- rnorm(sims,pdf,pdfsd)
+  sim.se <- pdfsim*sim
+  s.e. <- apply(sim.se,2,sd)
+  
+  tval <- mx / s.e.
+  TAB <- cbind(Estimate = mx,
+               StdErr = s.e.,
+               t.value = tval,
+               p.value = pt(-abs(tval), df=df))
+  TAB
+}
+
+
+mfxVal <- function(coefs, vcov, df){
+  
+  ## Reference: Sorensen (2007, p. 2748)
+  se <- sqrt(diag(vcov))
+  mx <- dnorm(0)*coefs/sqrt(2)
+  s.e. <- dnorm(0)*se/sqrt(2)
+  tval <- mx / s.e.
+  TAB <- cbind(Estimate = mx,
+               StdErr = s.e.,
+               t.value = tval,
+               p.value = pt(-abs(tval), df=df))
+  TAB
+}
+
+
+
+
+#' @export
+print.summary.stabit2 <- function(x, ...){
+  
+  if(x$mfx==TRUE){
+    cat("\nMarginal effects for multi-index sample selection model.")
+  } else{
+    cat("\nCoefficients for multi-index sample selection model.")
+  }
+  
+  if(x$method=="Klein"){
+    cat("\nMethod: Klein (2016), two-sided matching market\n")
+  } else if(x$method=="Sorensen"){
+    cat("\nMethod: Sorensen (2007), two-sided matching market\n")
+  } else{
+    cat("\nMethod: Klein (2015), one-sided matching market\n")
+  }
+  
+  cat("\nCall:\n")
+  print(x$call)
+  
+  if(x$method!="Outcome-only"){
+    
+    if(x$method=="Klein"){
+      
+      cat("\nSelection equation (Valuation over colleges):")
+      cat("\n")
+      printCoefmat(x$college, P.values=TRUE, has.Pvalue=TRUE, signif.legend=FALSE)
+      
+      cat("\nSelection equation (Valuation over students):")
+      cat("\n")
+      printCoefmat(x$student, P.values=TRUE, has.Pvalue=TRUE, signif.legend=FALSE)
+      
+    } else{
+      
+      cat("\nSelection equation:")
+      cat("\n")
+      printCoefmat(x$selection, P.values=TRUE, has.Pvalue=TRUE, signif.legend=FALSE) 
+    }
+  }
+  
+  cat("\nOutcome equation:")
+  cat("\n")
+  printCoefmat(x$outcome, P.values=TRUE, has.Pvalue=TRUE, signif.legend=TRUE)
+  
+}
+
+
+
+
+#' @export
+predict.stabit2 <- function(object, newdata=NULL, ...){
+  if(is.null(newdata))
+    y <- fitted(object)
+  else{
+    if(!is.null(object$formula)){
+      ## model has been fitted using formula interface
+      x <- model.matrix(object$formula, newdata)
+    }
+    else{
+      x <- newdata
+    }
+    y <- as.vector(x %*% object$coefs$alpha)
+  }
+  y
+}
 
 

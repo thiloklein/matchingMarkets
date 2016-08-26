@@ -32,7 +32,7 @@
   These processes determine which matches are observed -- 
   and which are not -- and this is a sample selection problem.
   
-  \item \emph{Post-estimation tools}. Function \code{\link{mfx}} 
+  \item \emph{Post-estimation tools}. Setting \code{mfx=TRUE} in the \code{summary} function  
   computes marginal effects from coefficients in binary outcome and selection equations 
   and \code{\link{khb}} implements the Karlson-Holm-Breen test for confounding due to sample selection.
 

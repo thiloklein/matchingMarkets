@@ -8,7 +8,7 @@
 \usage{
 stabit2(OUT, SEL = NULL, colleges = NULL, students = NULL, outcome,
   selection, binary = FALSE, niter, gPrior = FALSE, censored = 1,
-  thin = 1)
+  thin = 1, ...)
 }
 \arguments{
 \item{OUT}{data frame with characteristics of all observed matches, including
@@ -34,11 +34,8 @@ market identifier \code{m.id}, college identifier \code{c.id} and student identi
 \item{censored}{draws of the \code{kappa} parameter that estimates the covariation between the error terms in selection and outcome equation are 0:not censored, 1:censored from below, 2:censored from above.}
 
 \item{thin}{integer indicating the level of thinning in the MCMC draws. The default \code{thin=1} saves every draw, \code{thin=2} every second, etc.}
-}
-\value{
-\code{stabit2} returns a list with the following items.
-\item{draws}{}
-\item{coefs}{}
+
+\item{...}{.}
 }
 \description{
 The function provides a Gibbs sampler for a structural matching model that corrects 
@@ -86,7 +83,8 @@ That is, the observed outcomes would be a random sample from the population of i
 \dontrun{
 ## 1. Simulate two-sided matching data for 20 markets (m=20) with 100 students
 ##    (nStudents=100) per market and 20 colleges with quotas of 5 students, each
-##    (nSlots=rep(5,20)).
+##    (nSlots=rep(5,20)). True parameters in selection and outcome equations are 
+##    all equal to 1.
 
 xdata <- stabsim2(m=20, nStudents=100, nSlots=rep(5,20), 
   colleges = "c1",
@@ -96,6 +94,8 @@ xdata <- stabsim2(m=20, nStudents=100, nSlots=rep(5,20),
 )
 head(xdata$OUT)
 
+
+## 2. Correction for sorting bias when match valuations V are observed
 
 ## 2-a. Bias from sorting
  lm1 <- lm(y ~ c1:s1, data=xdata$OUT)
@@ -112,7 +112,7 @@ head(xdata$OUT)
  summary(lm2b)
 
 
-## 3. Correction for sorting bias when match valuation V is unobserved
+## 3. Correction for sorting bias when match valuations V are unobserved
 
 ## 3-a. Run Gibbs sampler (when SEL is given)
  fit2 <- stabit2(OUT = xdata$OUT, 
@@ -122,7 +122,7 @@ head(xdata$OUT)
            niter=1000
  )
 
-## 3-b. Run Gibbs sampler (when SEL is not given)
+## 3-b. Alternatively: Run Gibbs sampler (when SEL is not given)
  fit2 <- stabit2(OUT = xdata$OUT, 
            colleges = "c1",
            students = "s1",
@@ -131,17 +131,38 @@ head(xdata$OUT)
            niter=1000
  )
 
-## 4-a. Get marginal effects (for linear model)
- fit2$coefs
+
+## 4. Implemented methods
+
+## 4-a. Get coefficients
+ fit2
  
-## 4-b. Get marginal effects (for probit)
- #mfx(fit2)
+## 4-b. Coefficient table
+ summary(fit2)
  
+## 4-c. Get marginal effects
+ summary(fit2, mfx=TRUE)
  
-## 5. Plot MCMC draws for coefficients
- plot(fit2$draws$alphadraws[1,], type="l")
- plot(fit2$draws$betadraws[1,], type="l")
- plot(fit2$draws$kappadraws[1,], type="l")
+## 4-d. Also try the following functions
+ coef(fit2)
+ fitted(fit2)
+ residuals(fit2)
+ predict(fit, newdata=NULL)
+
+   
+## 5. Plot MCMC draws for coefficients in outcome equation
+ res <- as.data.frame(t(fit2$draws$alphadraws))
+ res$iteration <- 1:nrow(res)
+ library(tidyr)
+ res.long <- gather(res, condition, measurement, 1:(ncol(res)-1))
+ 
+ library(lattice)
+ lattice.options(default.args=list(as.table=TRUE), 
+                 default.theme=standard.theme(color=FALSE))
+ xyplot(measurement ~ iteration | factor(condition), 
+        data = res.long, scales=list(relation="free"),
+        xlab = "iterations",
+        ylab = "paramter draws", type = "l") 
 }
 }
 \author{

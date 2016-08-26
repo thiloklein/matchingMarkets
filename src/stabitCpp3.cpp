@@ -188,8 +188,8 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   arma::colvec sum8 = arma::zeros(1,1);
   
   // eta and delta
-  //arma::colvec eta(2*TwoN);
-  //arma::colvec delta(2*TwoN);
+  arma::colvec eta(n);
+  arma::colvec delta(n);
     
   // ---------------------------------------------
   // Matrices for parameter draws.
@@ -200,8 +200,8 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   arma::mat gammadraws(kS,(niter-(niter % thin))/thin);
   arma::mat kappadraws(1,(niter-(niter % thin))/thin);
   arma::mat lambdadraws(1,(niter-(niter % thin))/thin);
-  //arma::mat etadraws(2*TwoN,(niter-(niter % thin))/thin);
-  //arma::mat deltadraws(2*TwoN,(niter-(niter % thin))/thin);
+  arma::mat etadraws(n,(niter-(niter % thin))/thin);
+  arma::mat deltadraws(n,(niter-(niter % thin))/thin);
   arma::mat sigmasquarenudraws(1,(niter-(niter % thin))/thin);
   
   // ---------------------------------------------
@@ -642,9 +642,12 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     // ---------------------------------------------
     // eta.
     // ---------------------------------------------
-    //for(int t=0; t<T; t++){
-    //  eta.rows(2*t,2*t+1) = V(t).rows(0,1) - W(t).rows(0,1)*alpha;
-    //}
+
+    double etacount = 0;
+    for(int t=0; t<T; t++){
+      eta.rows(etacount, etacount + nStudents(t) - 1) = Vc(t)(d(t)) - Cmatch(t)*beta;
+      etacount = etacount + nStudents(t);
+    }
     
     if(DEBUG==TRUE){
     //  std::cout << "eta:" << std::endl;
@@ -655,9 +658,12 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     // ---------------------------------------------
     // delta.
     // ---------------------------------------------
-    //for(int t=0; t<T; t++){
-    //  delta.rows(2*t,2*t+1) = V(t).rows(0,1) - W(t).rows(0,1)*alpha;
-    //}
+    
+    double deltacount = 0;
+    for(int t=0; t<T; t++){
+      delta.rows(deltacount, deltacount + nStudents(t) - 1) = Vs(t)(d(t)) - Smatch(t)*gamma;
+      deltacount = deltacount + nStudents(t);
+    }
     
     if(DEBUG==TRUE){
       //  std::cout << "delta:" << std::endl;
@@ -699,8 +705,8 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
       gammadraws.col(iter/thin) = gamma;
       kappadraws.col(iter/thin) = kappa;
       lambdadraws.col(iter/thin) = lambda;
-      //etadraws.col(iter/thin) = eta;
-      //deltadraws.col(iter/thin) = delta;
+      etadraws.col(iter/thin) = eta;
+      deltadraws.col(iter/thin) = delta;
       
       if(binary == FALSE){
         sigmasquarenudraws.col(iter/thin) = sigmasquarenu;
@@ -713,12 +719,9 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   //Rcout << std::endl;
   
   // ---------------------------------------------  
-  // The last half of all draws are used in approximating the posterior means and the posterior standard deviations.
+  // Return the parameter draws.
   // ---------------------------------------------  
-  
-  niter = (niter-(niter % thin))/thin; //floor(niter/thin);
-  int startiter = (niter-(niter % 2))/2; //floor(niter/2);
-  
+
   if(binary == TRUE){
     return List::create(  
       // parameter draws
@@ -727,19 +730,8 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
       Named("gammadraws") = gammadraws,
       Named("kappadraws") = kappadraws,
       Named("lambdadraws") = lambdadraws,
-      // posterior means
-      //Named("eta") = mean(etadraws.cols(startiter,niter-1),1),
-      //Named("delta") = mean(deltadraws.cols(startiter,niter-1),1),
-      Named("alpha") = join_rows( mean(alphadraws.cols(startiter,niter-1),1), stddev(alphadraws.cols(startiter,niter-1),0,1) ),
-      Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
-      Named("gamma") = join_rows( mean(gammadraws.cols(startiter,niter-1),1), stddev(gammadraws.cols(startiter,niter-1),0,1) ),
-      Named("kappa") = join_rows( mean(kappadraws.cols(startiter,niter-1),1), stddev(kappadraws.cols(startiter,niter-1),0,1) ),
-      Named("lambda") = join_rows( mean(lambdadraws.cols(startiter,niter-1),1), stddev(lambdadraws.cols(startiter,niter-1),0,1) ),
-      Named("sigmasquarenu") = join_rows( arma::ones(1,1) , arma::zeros(1,1) ),
-      // vcov
-      Named("alphavcov") = cov(trans(alphadraws.cols(startiter,niter-1))),
-      Named("betavcov") = cov(trans(betadraws.cols(startiter,niter-1))),
-      Named("gammavcov") = cov(trans(betadraws.cols(startiter,niter-1)))
+      Named("etadraws") = etadraws,
+      Named("deltadraws") = deltadraws
     );  
   } else if(binary == FALSE){
     return List::create(  
@@ -749,20 +741,9 @@ List stabitCpp3(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
       Named("gammadraws") = gammadraws,
       Named("kappadraws") = kappadraws,
       Named("lambdadraws") = lambdadraws,
-      Named("sigmasquarenudraws") = sigmasquarenudraws,
-      // posterior means
-      //Named("eta") = mean(etadraws.cols(startiter,niter-1),1),
-      //Named("delta") = mean(deltadraws.cols(startiter,niter-1),1),
-      Named("alpha") = join_rows( mean(alphadraws.cols(startiter,niter-1),1), stddev(alphadraws.cols(startiter,niter-1),0,1) ),
-      Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
-      Named("gamma") = join_rows( mean(gammadraws.cols(startiter,niter-1),1), stddev(gammadraws.cols(startiter,niter-1),0,1) ),
-      Named("kappa") = join_rows( mean(kappadraws.cols(startiter,niter-1),1), stddev(kappadraws.cols(startiter,niter-1),0,1) ),
-      Named("lambda") = join_rows( mean(lambdadraws.cols(startiter,niter-1),1), stddev(lambdadraws.cols(startiter,niter-1),0,1) ),
-      Named("sigmasquarenu") = join_rows( mean(sigmasquarenudraws.cols(startiter,niter-1),1), stddev(sigmasquarenudraws.cols(startiter,niter-1),0,1) ),
-      // vcov
-      Named("alphavcov") = cov(trans(alphadraws.cols(startiter,niter-1))),
-      Named("betavcov") = cov(trans(betadraws.cols(startiter,niter-1))),
-      Named("gammavcov") = cov(trans(gammadraws.cols(startiter,niter-1)))
+      Named("etadraws") = etadraws,
+      Named("deltadraws") = deltadraws,
+      Named("sigmasquarenudraws") = sigmasquarenudraws
     );
   } else{
       return 0;

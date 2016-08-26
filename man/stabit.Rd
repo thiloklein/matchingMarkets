@@ -57,13 +57,6 @@ market- and group-identifiers.}
 
 \item{niter}{number of iterations to use for the Gibbs sampler.}
 }
-\value{
-\code{stabit} returns a list with the following items.
-\item{model.list}{}
-\item{model.frame}{}
-\item{draws}{}
-\item{coefs}{}
-}
 \description{
 The function provides a Gibbs sampler for a structural matching model that corrects for sample selection bias when the selection process is a one-sided matching game; that is, group/coalition formation.
 
@@ -174,61 +167,71 @@ Operators for variable transformations in \code{selection} and \code{outcome} ar
 }
 }
 \examples{
-#########################################
-## MODEL FRAMES (method="model.frame") ##
-#########################################
-
-## --- GROUP/COALITION FORMATION (I) ---
-## 1. Simulate one-sided matching data for 3 markets (m=3) with 2 groups 
-## per market (gpm=2) and 2 to 4 individuals per group (ind=2:4)
- idata <- stabsim(m=3, ind=2:4, gpm=2)
-## 2. Obtain the model frame
- s2 <- stabit(x=idata, selection = list(add="pi", ieq="wst"), 
-      outcome = list(add="pi", ieq="wst"), 
-      method="model.frame", simulation="NTU")
-
-## --- GROUP/COALITION FORMATION (II) ---
-\dontrun{
-## 1. Load baac00 data from the Townsend Thai project
- data(baac00)
-## 2. Obtain the model frame
- s3 <- stabit(x=baac00, selection = list(add="pi", int="pi", ieq="wst", ive="occ"), 
-      outcome = list(add="pi", int="pi", ieq="wst", ive="occ", 
-      add=c("loan_size","loan_size2","lngroup_agei")),
-      method="model.frame", simulation="none")
-}
-
-###############################
-## ESTIMATION (method="NTU") ##
-###############################
 
 \dontrun{
 ## --- SIMULATED EXAMPLE ---
-## 1. Simulate one-sided matching data for 3 markets (m=3) with 2 groups
-##    per market (gpm=2) and 2 to 4 individuals per group (ind=2:4)
- idata <- stabsim(m=3, ind=2:4, gpm=2)
-## 2. Run Gibbs sampler
- fit1 <- stabit(x=idata, selection = list(add="pi",ieq="wst"), 
-        outcome = list(add="pi",ieq="wst"), 
-        method="NTU", simulation="NTU", binary=FALSE, niter=2000)
-## 3. Get results
- names(fit1)
+
+## 1. Simulate one-sided matching data for 1,000 markets (m=1000) with 2 groups
+##    per market (gpm=2) and 5 individuals per group (ind=5)
+
+## 1-a. Simulate individual-level, independent variables
+ idata <- stabsim(m=1000, ind=5, seed=123, gpm=2)
+ head(idata)
+ 
+## 1-b. Simulate group-level variables (takes a minute to complete...)
+ mdata <- stabit(x=idata, simulation="NTU", method="model.frame",
+                 selection = list(ieq="wst"),
+                 outcome = list(ieq="wst"))$model.frame
+ head(mdata$OUT)
+ head(mdata$SEL)
+
+
+## 2. Bias from sorting
+
+## 2-a. Naive OLS estimation
+ lm(R ~ wst.ieq, data=mdata$OUT)$coefficients
+
+## 2-b. epsilon is correlated with independent variables
+ with(mdata$OUT, cor(epsilon, wst.ieq))
+ 
+## 2-c. but xi is uncorrelated with independent variables
+ with(mdata$OUT, cor(xi, wst.ieq))
+
+## 3. Correction of sorting bias when valuations V are observed
+
+## 3-a. 1st stage: obtain fitted value for eta
+lm.sel <- lm(V ~ -1 + wst.ieq, data=mdata$SEL)
+lm.sel$coefficients
+
+eta <- lm.sel$resid[mdata$SEL$D==1]
+
+## 3-b. 2nd stage: control for eta
+ lm(R ~ wst.ieq + eta, data=mdata$OUT)$coefficients
+
+
+## 4. Run Gibbs sampler
+ fit1 <- stabit(x=idata, selection = list(ieq="wst"), 
+        outcome = list(ieq="wst"), method="NTU", 
+        simulation="NTU", niter=2000)
+
+
+## 5. Coefficient table
+ summary(fit1)
+
 
 ## --- REPLICATION, Klein (2015a) ---
+
 ## 1. Load data 
  data(baac00); head(baac00)
-## 2. standardise variables
- baac00$pi <- baac00$pi + (1-baac00$pi)*0.5
- baac00$loan_size <- baac00$loan_size/sd(baac00$loan_size)
- baac00$loan_size2 <- baac00$loan_size^2
- baac00$lngroup_agei <- baac00$lngroup_agei/sd(baac00$lngroup_agei)
-## 3. Run Gibbs sampler
+ 
+## 2. Run Gibbs sampler
  klein15a <- stabit(x=baac00, selection = list(inv="pi",ieq="wst"), 
         outcome = list(add="pi",inv="pi",ieq="wst",
         add=c("loan_size","loan_size2","lngroup_agei")), offsetOut=1,
         method="NTU", binary=TRUE, gPrior=TRUE, marketFE=TRUE, niter=800000)
-## 4. Get results
- mfx(klein15a)
+
+## 3. Marginal effects
+ summary(klein15a, mfx=TRUE)
 }
 }
 \author{

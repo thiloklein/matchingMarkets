@@ -103,13 +103,6 @@
 #' \item{\code{dst}}{sum over all possible two-way distances between players and divide by number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
 #' }
 #' 
-#' @return
-#' \code{stabit} returns a list with the following items.
-#' \item{model.list}{}
-#' \item{model.frame}{}
-#' \item{draws}{}
-#' \item{coefs}{}
-#' 
 #' @section Values of model.list:
 #' \describe{
 #' \item{\code{D}}{vector that indicates -- for all feasible groups in the market -- whether a group is observed in the data \code{D=1} or not \code{D=0}.}
@@ -159,61 +152,71 @@
 #' volume 6, pages 233--243. North-Holland, Amsterdam.
 #' 
 #' @examples
-#' #########################################
-#' ## MODEL FRAMES (method="model.frame") ##
-#' #########################################
-#' 
-#' ## --- GROUP/COALITION FORMATION (I) ---
-#' ## 1. Simulate one-sided matching data for 3 markets (m=3) with 2 groups 
-#' ## per market (gpm=2) and 2 to 4 individuals per group (ind=2:4)
-#'  idata <- stabsim(m=3, ind=2:4, gpm=2)
-#' ## 2. Obtain the model frame
-#'  s2 <- stabit(x=idata, selection = list(add="pi", ieq="wst"), 
-#'       outcome = list(add="pi", ieq="wst"), 
-#'       method="model.frame", simulation="NTU")
-#' 
-#' ## --- GROUP/COALITION FORMATION (II) ---
-#' \dontrun{
-#' ## 1. Load baac00 data from the Townsend Thai project
-#'  data(baac00)
-#' ## 2. Obtain the model frame
-#'  s3 <- stabit(x=baac00, selection = list(add="pi", int="pi", ieq="wst", ive="occ"), 
-#'       outcome = list(add="pi", int="pi", ieq="wst", ive="occ", 
-#'       add=c("loan_size","loan_size2","lngroup_agei")),
-#'       method="model.frame", simulation="none")
-#' }
-#' 
-#' ###############################
-#' ## ESTIMATION (method="NTU") ##
-#' ###############################
 #' 
 #' \dontrun{
 #' ## --- SIMULATED EXAMPLE ---
-#' ## 1. Simulate one-sided matching data for 3 markets (m=3) with 2 groups
-#' ##    per market (gpm=2) and 2 to 4 individuals per group (ind=2:4)
-#'  idata <- stabsim(m=3, ind=2:4, gpm=2)
-#' ## 2. Run Gibbs sampler
-#'  fit1 <- stabit(x=idata, selection = list(add="pi",ieq="wst"), 
-#'         outcome = list(add="pi",ieq="wst"), 
-#'         method="NTU", simulation="NTU", binary=FALSE, niter=2000)
-#' ## 3. Get results
-#'  names(fit1)
+#' 
+#' ## 1. Simulate one-sided matching data for 1,000 markets (m=1000) with 2 groups
+#' ##    per market (gpm=2) and 5 individuals per group (ind=5)
+#' 
+#' ## 1-a. Simulate individual-level, independent variables
+#'  idata <- stabsim(m=1000, ind=5, seed=123, gpm=2)
+#'  head(idata)
+#'  
+#' ## 1-b. Simulate group-level variables (takes a minute to complete...)
+#'  mdata <- stabit(x=idata, simulation="NTU", method="model.frame",
+#'                  selection = list(ieq="wst"),
+#'                  outcome = list(ieq="wst"))$model.frame
+#'  head(mdata$OUT)
+#'  head(mdata$SEL)
+#' 
+#' 
+#' ## 2. Bias from sorting
+#' 
+#' ## 2-a. Naive OLS estimation
+#'  lm(R ~ wst.ieq, data=mdata$OUT)$coefficients
+#' 
+#' ## 2-b. epsilon is correlated with independent variables
+#'  with(mdata$OUT, cor(epsilon, wst.ieq))
+#'  
+#' ## 2-c. but xi is uncorrelated with independent variables
+#'  with(mdata$OUT, cor(xi, wst.ieq))
+#' 
+#' ## 3. Correction of sorting bias when valuations V are observed
+#' 
+#' ## 3-a. 1st stage: obtain fitted value for eta
+#' lm.sel <- lm(V ~ -1 + wst.ieq, data=mdata$SEL)
+#' lm.sel$coefficients
+#' 
+#' eta <- lm.sel$resid[mdata$SEL$D==1]
+#' 
+#' ## 3-b. 2nd stage: control for eta
+#'  lm(R ~ wst.ieq + eta, data=mdata$OUT)$coefficients
+#' 
+#' 
+#' ## 4. Run Gibbs sampler
+#'  fit1 <- stabit(x=idata, selection = list(ieq="wst"), 
+#'         outcome = list(ieq="wst"), method="NTU", 
+#'         simulation="NTU", niter=2000)
+#' 
+#' 
+#' ## 5. Coefficient table
+#'  summary(fit1)
+#' 
 #' 
 #' ## --- REPLICATION, Klein (2015a) ---
+#' 
 #' ## 1. Load data 
 #'  data(baac00); head(baac00)
-#' ## 2. standardise variables
-#'  baac00$pi <- baac00$pi + (1-baac00$pi)*0.5
-#'  baac00$loan_size <- baac00$loan_size/sd(baac00$loan_size)
-#'  baac00$loan_size2 <- baac00$loan_size^2
-#'  baac00$lngroup_agei <- baac00$lngroup_agei/sd(baac00$lngroup_agei)
-#' ## 3. Run Gibbs sampler
+#'  
+#' ## 2. Run Gibbs sampler
 #'  klein15a <- stabit(x=baac00, selection = list(inv="pi",ieq="wst"), 
 #'         outcome = list(add="pi",inv="pi",ieq="wst",
 #'         add=c("loan_size","loan_size2","lngroup_agei")), offsetOut=1,
 #'         method="NTU", binary=TRUE, gPrior=TRUE, marketFE=TRUE, niter=800000)
-#' ## 4. Get results
-#'  mfx(klein15a)
+#' 
+#' ## 3. Marginal effects
+#'  summary(klein15a, mfx=TRUE)
 #' }
 stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=NULL, 
                    simulation="none", seed=123, max.combs=Inf,
@@ -234,7 +237,7 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
   # -----------------------------------------------------------------------------
   # Obtain parameter estimates.
   # -----------------------------------------------------------------------------
-
+  
   
   sel <- ifelse(method=="outcome", FALSE, TRUE)
   NTU <- ifelse(method=="NTU", TRUE, FALSE)
@@ -454,7 +457,7 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
     # Source C++ script
     # -----------------------------------------------------------------------------    
     
-    res <- stabitCpp(Xr=X, Rr=R, Wr=W, One=One, Two=Two, T=T, 
+    est <- stabitCpp(Xr=X, Rr=R, Wr=W, One=One, Two=Two, T=T, 
                      offOutr=offOut, offSelr=offSel,
                      sigmabarbetainverse=sigmabarbetainverse, sigmabaralphainverse=sigmabaralphainverse,
                      niter=niter, n=n, l=matrix(unlist(l),length(l),1), Pr=P, p=matrix(unlist(p),length(p),1),
@@ -463,90 +466,114 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
     # -----------------------------------------------------------------------------
     # Add names to coefficients.
     # ----------------------------------------------------------------------------- 
-    if(binary==TRUE & sel==TRUE){
-      # parameter draws
-      rownames(res$alphadraws) = an
-      rownames(res$betadraws) = bn
-      rownames(res$deltadraws) = "delta"
-      # posterior means
-      rownames(res$alpha) = an
-      rownames(res$beta) = bn
-      rownames(res$delta) = "delta"
-      rownames(res$sigmasquarexi) = "sigma"
-      colnames(res$eta) = "eta"
-      # vcov
-      rownames(res$alphavcov) = colnames(res$alphavcov) = an
-      rownames(res$betavcov) = colnames(res$betavcov) = bn
-      #
-      colnames(res$alpha) = colnames(res$beta) = colnames(res$delta)  = colnames(res$sigmasquarexi) = c("coef","s.e.")
-      #
-      out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,deltadraws=deltadraws)), 
-                  coefs=with(res,list(eta=eta,alphavcov=alphavcov,betavcov=betavcov,alpha=alpha,beta=beta,
-                                      delta=delta,sigmasquarexi=sigmasquarexi)))
-      
-    } else if(binary==TRUE & sel==FALSE){
-      # parameter draws
-      rownames(res$betadraws) = bn
-      # posterior means
-      rownames(res$beta) = bn
-      rownames(res$sigmasquarexi) = "sigma"
-      # vcov
-      rownames(res$betavcov) = colnames(res$betavcov) = bn
-      #
-      colnames(res$beta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
-      #
-      out <- list(draws=with(res,list(betadraws=betadraws)), 
-                  coefs=with(res,list(betavcov=betavcov,beta=beta,sigmasquarexi=sigmasquarexi)))
-      
-    } else if(binary==FALSE & sel==TRUE){
-      # parameter draws
-      rownames(res$alphadraws) = an
-      rownames(res$betadraws) = bn
-      rownames(res$deltadraws) = "delta"
-      rownames(res$sigmasquarexidraws) = "sigma"
-      # posterior means
-      rownames(res$alpha) = an
-      rownames(res$beta) = bn
-      rownames(res$delta) = "delta"
-      rownames(res$sigmasquarexi) = "sigma"
-      colnames(res$eta) = "eta"
-      # vcov
-      rownames(res$alphavcov) = colnames(res$alphavcov) = an
-      rownames(res$betavcov) = colnames(res$betavcov) = bn
-      #
-      colnames(res$alpha) = colnames(res$beta) = colnames(res$delta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
-      #
-      out <- list(draws=with(res,list(alphadraws=alphadraws,betadraws=betadraws,deltadraws=deltadraws,sigmasquarexidraws=sigmasquarexidraws)), 
-                  coefs=with(res,list(eta=eta,alphavcov=alphavcov,betavcov=betavcov,alpha=alpha,beta=beta,
-                                      delta=delta,sigmasquarexi=sigmasquarexi)))
-      
-    } else if(binary==FALSE & sel==FALSE){
-      # parameter draws
-      rownames(res$betadraws) = bn
-      rownames(res$sigmasquarexidraws) = "sigma"
-      # posterior means
-      rownames(res$beta) = bn
-      rownames(res$sigmasquarexi) = "sigma"
-      # vcov
-      rownames(res$betavcov) = colnames(res$betavcov) = bn
-      #
-      colnames(res$beta) = colnames(res$sigmasquarexi) = c("coef","s.e.")
-      #
-      out <- list(draws=with(res,list(betadraws=betadraws,sigmasquarexidraws=sigmasquarexidraws)), 
-                  coefs=with(res,list(betavcov=betavcov,beta=beta,sigmasquarexi=sigmasquarexi)))
+    
+    ## variable names
+    
+    an <- colnames(X[[1]])
+    bn <- colnames(W[[1]])
+    
+    # parameter draws
+    
+    rownames(est$alphadraws) = an
+    if(sel==TRUE){
+      est$alphadraws <- with(est, rbind(alphadraws, deltadraws))
+      rownames(est$alphadraws) <- c(an,"delta")
+      est$deltadraws <- NULL
+      rownames(est$betadraws) = bn
     }
+    
+    # posterior means
+    
+    ## The last half of all draws are used in approximating the posterior means and the posterior standard deviations.
+    niter <- ncol(est$alphadraws)
+    startiter <- floor(niter/2)
+    
+    posMeans <- function(x){
+      sapply(1:nrow(x), function(z) mean(x[z,startiter:niter]))
+    }
+    
+    est$alpha <- posMeans(est$alphadraws) 
+    names(est$alpha) <- rownames(est$alphadraws)
+    
+    if(sel==TRUE){
+      est$beta <- posMeans(est$betadraws)
+      names(est$beta) <- bn  
+    } 
+    if(binary==FALSE){
+      est$sigma <- sqrt(posMeans(est$sigmasquarexidraws))
+      est$sigmasquarexidraws <- NULL
+    }
+    
+    ## error terms
+    
+    if(sel==TRUE){
+      est$eta <- posMeans(est$etadraws)
+      est$etadraws <- NULL
+    }
+    
+    ## vcov
+    
+    est$vcov$alpha <- var(t(est$alphadraws))
+    if(sel==TRUE){
+      est$vcov$beta <- var(t(est$betadraws))
+    }
+    
+    ## variables
+    
+    est$X <- do.call(rbind, X)
+    est$Y <- do.call(c, R)
+    if(sel==TRUE){
+      est$X <- cbind(est$X, eta=c(est$eta, rep(0,nrow(est$X)-length(est$eta))) )
+      est$W <- do.call(rbind, W)
+      est$D <- do.call(c, D)
+    }
+    
+    ## coefficients
+    
+    if(sel==TRUE){
+      est$coefficients <- unlist(with(est, list(o=alpha, s=beta)))  
+    } else{
+      est$coefficients <- est$alpha
+    }
+    
+    est$fitted.values <- with(est, as.vector(X %*% alpha))
+    est$residuals <- est$Y - est$fitted.values
+    est$df <- n-ncol(est$X)
+    
+    est$call <- match.call()
+    est$method <- ifelse(sel==FALSE, "Outcome-only", "Selection")
+    est$binary <- binary
+    #est$formula <- ???
+    
+    ## consolidate
+    
+    h <- est[grep(pattern="draws",x=names(est))]
+    est[grep(pattern="draws",x=names(est))] <- NULL
+    est$draws <- h
+    
+    h <- est[which(names(est) %in% c("alpha","beta","delta"))]
+    est[which(names(est) %in% c("alpha","beta","delta"))] <- NULL
+    est$coefs <- h
+    
+    h <- est[which(names(est) %in% c("X","W","Y","D"))]
+    est[which(names(est) %in% c("X","W","Y","D"))] <- NULL
+    est$variables <- h
+    
+    h <- NULL
     
     # -----------------------------------------------------------------------------
     # Returns .
     # ----------------------------------------------------------------------------- 
-    model.frame <- unlistData(x=data)
-    return(list(model.list=data, model.frame=model.frame, draws=out$draws, coefs=out$coefs))
+    
+    class(est) <- "stabit2"
+    return(est)
     
   } else{ ## if method == "model.frame"
     
     # -----------------------------------------------------------------------------
     # Returns .
     # ----------------------------------------------------------------------------- 
+    
     model.frame <- unlistData(x=data)
     return(list(model.list=data, model.frame=model.frame))
     
@@ -1147,7 +1174,7 @@ designmatrix <- function(selection, outcome, x, simulation=FALSE, assignment,
       ncombs <- dim(combs[[i]])[1]
       thiscmat <- combs[[i]]
       l      <- dim(thiscmat)[1]
-
+      
       if(i <= dim(spec)[1]){  ## 2-GROUP MARKETS
         
         # Note: numA <= numB

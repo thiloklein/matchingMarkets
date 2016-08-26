@@ -449,63 +449,35 @@ List stabitCpp(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
   //Rcout << std::endl;
   
   // ---------------------------------------------  
-  // The last half of all draws are used in approximating the posterior means and the posterior standard deviations.
+  // Return the parameter draws.
   // ---------------------------------------------  
-  
-  int startiter = niter/2;
-  
+
   if((binary==TRUE) & (selection==TRUE)){
     return List::create(  
       // parameter draws
-      Named("alphadraws") = alphadraws,
-      Named("betadraws") = betadraws,
+      Named("betadraws") = alphadraws,
+      Named("alphadraws") = betadraws,
       Named("deltadraws") = deltadraws,
-      // posterior means
-      Named("eta") = mean(etadraws.cols(startiter,niter-1),1),
-      Named("alpha") = join_rows( mean(alphadraws.cols(startiter,niter-1),1), stddev(alphadraws.cols(startiter,niter-1),0,1) ),
-      Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
-      Named("delta") = join_rows( mean(deltadraws.cols(startiter,niter-1),1), stddev(deltadraws.cols(startiter,niter-1),0,1) ),
-      Named("sigmasquarexi") = join_rows( arma::ones(1,1) , arma::zeros(1,1) ),
-      // vcov
-      Named("alphavcov") = cov(trans(alphadraws.cols(startiter,niter-1))),
-      Named("betavcov") = cov(trans(betadraws.cols(startiter,niter-1)))
+      Named("etadraws") = etadraws
     );  
   } else if((binary==TRUE) & (selection==FALSE)){
     return List::create(  
-      Named("betadraws") = betadraws,
-      // posterior means
-      Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
-      Named("sigmasquarexi") = join_rows( arma::ones(1,1) , arma::zeros(1,1) ),
-      // vcov
-      Named("betavcov") = cov(trans(betadraws.cols(startiter,niter-1)))
+      Named("alphadraws") = betadraws
     );  
   } else if((binary==FALSE) & (selection==TRUE)){
         return List::create(  
       // parameter draws
-      Named("alphadraws") = alphadraws,
-      Named("betadraws") = betadraws,
+      Named("betadraws") = alphadraws,
+      Named("alphadraws") = betadraws,
       Named("deltadraws") = deltadraws,
-      Named("sigmasquarexidraws") = sigmasquarexidraws,
-      // posterior means
-      Named("eta") = mean(etadraws.cols(startiter,niter-1),1),
-      Named("alpha") = join_rows( mean(alphadraws.cols(startiter,niter-1),1), stddev(alphadraws.cols(startiter,niter-1),0,1) ),
-      Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
-      Named("delta") = join_rows( mean(deltadraws.cols(startiter,niter-1),1), stddev(deltadraws.cols(startiter,niter-1),0,1) ),
-      Named("sigmasquarexi") = join_rows( mean(sigmasquarexidraws.cols(startiter,niter-1),1), stddev(sigmasquarexidraws.cols(startiter,niter-1),0,1) ),
-      // vcov
-      Named("alphavcov") = cov(trans(alphadraws.cols(startiter,niter-1))),
-      Named("betavcov") = cov(trans(betadraws.cols(startiter,niter-1)))
+      Named("etadraws") = etadraws,
+      Named("sigmasquarexidraws") = sigmasquarexidraws
     );
   } else if((binary==FALSE) & (selection==FALSE)){
     return List::create(  
       // parameter draws
-      Named("betadraws") = betadraws,
-      Named("sigmasquarexidraws") = sigmasquarexidraws,
-      // posterior means
-      Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
-      Named("sigmasquarexi") = join_rows( mean(sigmasquarexidraws.cols(startiter,niter-1),1), stddev(sigmasquarexidraws.cols(startiter,niter-1),0,1) ),
-      // vcov
-      Named("betavcov") = cov(trans(betadraws.cols(startiter,niter-1)))
+      Named("alphadraws") = betadraws,
+      Named("sigmasquarexidraws") = sigmasquarexidraws
     );      
   } else{
       return 0;

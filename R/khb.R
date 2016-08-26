@@ -54,6 +54,9 @@ khb <- function(X,y,z){
   ## z : confounding variable
   ## -------------------------------------------------------
   
+  ## --- Preliminaries
+  X <- as.data.frame(X)
+  
   ## --- Reduced and Full model, Equations (1) and (2) on page 289 ---
   glmR <- glm(y ~ -1 + ., family=binomial(link="probit"),data=X[,-which(names(X)==z)])
   glmF <- glm(y ~ -1 + ., family=binomial(link="probit"),data=X)

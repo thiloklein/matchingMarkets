@@ -381,11 +381,8 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   //Rcout << std::endl;
   
   // ---------------------------------------------  
-  // The last half of all draws are used in approximating the posterior means and the posterior standard deviations.
+  // Return the parameter draws.
   // ---------------------------------------------  
-  
-  niter = (niter-(niter % thin))/thin; //floor(niter/thin);
-  int startiter = (niter-(niter % 2))/2; //floor(niter/2);
   
   if(binary == TRUE){
     return List::create(  
@@ -393,15 +390,7 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
       Named("alphadraws") = alphadraws,
       Named("betadraws") = betadraws,
       Named("kappadraws") = kappadraws,
-      // posterior means
-      Named("eta") = mean(etadraws.cols(startiter,niter-1),1),
-      Named("alpha") = join_rows( mean(alphadraws.cols(startiter,niter-1),1), stddev(alphadraws.cols(startiter,niter-1),0,1) ),
-      Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
-      Named("kappa") = join_rows( mean(kappadraws.cols(startiter,niter-1),1), stddev(kappadraws.cols(startiter,niter-1),0,1) ),
-      Named("sigmasquarenu") = join_rows( arma::ones(1,1) , arma::zeros(1,1) ),
-      // vcov
-      Named("alphavcov") = cov(trans(alphadraws.cols(startiter,niter-1))),
-      Named("betavcov") = cov(trans(betadraws.cols(startiter,niter-1)))
+      Named("etadraws") = etadraws
     );  
   } else if(binary == FALSE){
     return List::create(  
@@ -409,16 +398,8 @@ List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
       Named("alphadraws") = alphadraws,
       Named("betadraws") = betadraws,
       Named("kappadraws") = kappadraws,
-      Named("sigmasquarenudraws") = sigmasquarenudraws,
-      // posterior means
-      Named("eta") = mean(etadraws.cols(startiter,niter-1),1),
-      Named("alpha") = join_rows( mean(alphadraws.cols(startiter,niter-1),1), stddev(alphadraws.cols(startiter,niter-1),0,1) ),
-      Named("beta") = join_rows( mean(betadraws.cols(startiter,niter-1),1), stddev(betadraws.cols(startiter,niter-1),0,1) ),
-      Named("kappa") = join_rows( mean(kappadraws.cols(startiter,niter-1),1), stddev(kappadraws.cols(startiter,niter-1),0,1) ),
-      Named("sigmasquarenu") = join_rows( mean(sigmasquarenudraws.cols(startiter,niter-1),1), stddev(sigmasquarenudraws.cols(startiter,niter-1),0,1) ),
-      // vcov
-      Named("alphavcov") = cov(trans(alphadraws.cols(startiter,niter-1))),
-      Named("betavcov") = cov(trans(betadraws.cols(startiter,niter-1)))
+      Named("etadraws") = etadraws,
+      Named("sigmasquarenudraws") = sigmasquarenudraws
     );
   } else{
       return 0;
