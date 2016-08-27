@@ -117,55 +117,6 @@ Operators for variable transformations in \code{selection} and \code{outcome} ar
 \item{\code{dst}}{sum over all possible two-way distances between players and divide by number of those, where distance is defined as \eqn{e^{-|x-y|}}{exp(-|x-y|)}.}
 }
 }
-\section{Values of model.list}{
-
-\describe{
-\item{\code{D}}{vector that indicates -- for all feasible groups in the market -- whether a group is observed in the data \code{D=1} or not \code{D=0}.}
-\item{\code{R}}{list of group-level outcome vectors for equilibrium groups.}
-\item{\code{W}}{list with data.frame \code{W[[t]][G,]} containing characteristics of group \code{G} in market \code{t} (all feasible groups).}
-\item{\code{X}}{list with data.frame \code{X[[t]][G,]} containing characteristics of group \code{G} in market \code{t} (equilibrium groups only).}
-\item{\code{V}}{vector of group valuations for all feasible groups in the market.}
-\item{\code{P}}{vector that gives for each group the index of the group comprised of residual individuals in the market (for 2-group markets).}
-\item{\code{epsilon}}{if \code{simulation!="none"}, the errors in the outcome equation, given by \code{delta*eta + xi}.}
-\item{\code{eta}}{if \code{simulation!="none"}, the standard normally distributed errors in the selection equation.}
-\item{\code{xi}}{if \code{simulation!="none"}, the standard normally distributed component of the errors in the selection equation that is independent of \code{eta}.}
-\item{\code{combs}}{partitions matrix that gives all feasible partitions of the market into groups of the observed sizes.}
-\item{\code{E}}{matrix that gives the indices of equilibrium group members for each group in the market. Only differs from the first two rows in \code{combs} if \code{simulation!="none"}.}
-
-\item{\code{sigmasquareximean}}{variance estimate of the error term \code{xi} in the outcome equation.}
-}
-}
-
-\section{Values of model.frame}{
-
-\describe{
-\item{\code{SEL}}{data frame comprising variables in selection equation and number of observations equal to the number of feasible groups.}
-\item{\code{OUT}}{data frame comprising variables in outcome equation and number of observations equal to the number of equilibrium groups.}
-}
-}
-
-\section{Values of draws}{
-
-\describe{
-\item{\code{alphadraws}}{matrix of dimension \code{ncol(W)} \code{x} \code{niter} comprising all paramter draws for the selection equation.}
-\item{\code{betadraws}}{matrix of dimension \code{ncol(X)} \code{x} \code{niter} comprising all paramter draws for the outcome equation.}
-\item{\code{deltadraws}}{vector of length \code{niter} comprising all draws for the \code{delta} parameter.}
-\item{\code{sigmasquarexidraws}}{.}
-}
-}
-
-\section{Values of coefs}{
-
-\describe{
-\item{\code{eta}}{vector containing the mean of all \code{eta} draws for each observed group.}
-\item{\code{alphavcov}}{variance-covariance matrix of draws in alphadraws.}
-\item{\code{betavcov}}{variance-covariance matrix of draws in betadraws.}
-\item{\code{alpha}}{matrix comprising the coefficient estimates of alpha and their standard errors.}
-\item{\code{beta}}{matrix comprising the coefficient estimates of beta and their standard errors.}
-\item{\code{delta}}{coefficient estimate of delta and its standard error.}
-\item{\code{sigmasquarexi}}{variance estimate of the error term \code{xi} in the outcome equation and its standard error.}
-}
-}
 \examples{
 
 \dontrun{
