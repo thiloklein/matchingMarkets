@@ -2,12 +2,11 @@
 % Please edit documentation in R/hri.R
 \name{hri}
 \alias{hri}
-\title{Constraint model to produce all stable matchings in the hospital/residents problem with 
-incomplete lists}
+\title{All stable matchings in the hospital/residents problem with incomplete lists}
 \usage{
 hri(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs), nSlots = rep(1,
-  nColleges), s.prefs = NULL, c.prefs = NULL, seed = NULL, s.min = NULL,
-  c.min = NULL)
+  nColleges), s.prefs = NULL, c.prefs = NULL, seed = NULL,
+  s.range = NULL, c.range = NULL, ...)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem) 
@@ -29,11 +28,15 @@ preference (i.e. most preferred first).}
 
 \item{seed}{integer setting the state for random number generation.}
 
-\item{s.min}{integer, when specified produces incomplete preference lists with the length of each 
-student's list randomly sampled from the range [s.min, nrow(s.prefs)].}
+\item{s.range}{range of two intergers \code{s.range = c(s.min, s.max)}, where \code{s.min < s.max}. 
+Produces incomplete preference lists with the length of each student's list randomly sampled from 
+the range \code{[s.min, s.max]}. Note: interval is only correct if either c.range or s.range is used.}
 
-\item{c.min}{integer, when specified produces incomplete preference lists with the length of each 
-college's list randomly sampled from the range [c.min, nrow(c.prefs)].}
+\item{c.range}{range of two intergers \code{c.range = c(c.min, c.max)}, where \code{c.min < c.max}. 
+Produces incomplete preference lists with the length of each college's list randomly sampled from 
+the range \code{[c.min, c.max]}. Note: interval is only correct if either c.range or s.range is used.}
+
+\item{...}{.}
 }
 \value{
 \code{hri} returns a list of the following elements.
@@ -67,30 +70,39 @@ either given or randomly generated preferences.
 }
 }
 \examples{
-######################
-## Marriage problem ## 
-######################
+## -----------------------
+## --- Marriage problem 
 
 ## 3 men, 2 women, random preferences:
-hri(nStudents=7, nColleges=6, seed=4)
+ hri(nStudents=7, nColleges=6, seed=4)
 
 ## 3 men, 2 women, given preferences:
-s.prefs <- matrix(c(1,2, 1,2, 1,2), 2,3)
-c.prefs <- matrix(c(1,2,3, 1,2,3), 3,2)
-hri(s.prefs=s.prefs, c.prefs=c.prefs)
+ s.prefs <- matrix(c(1,2, 1,2, 1,2), 2,3)
+ c.prefs <- matrix(c(1,2,3, 1,2,3), 3,2)
+ hri(s.prefs=s.prefs, c.prefs=c.prefs)
 
-###############################
-## College admission problem ##
-###############################
+## --------------------------------
+## --- College admission problem 
 
 ## 7 students, 2 colleges with 3 slots each, random preferences:
-hri(nStudents=7, nSlots=c(3,3), seed=21)
+ hri(nStudents=7, nSlots=c(3,3), seed=21)
 
 ## 7 students, 2 colleges with 3 slots each, given preferences:
-s.prefs <- matrix(c(1,2, 1,2, 1,NA, 1,2, 1,2, 1,2, 1,2), 2,7)
-c.prefs <- matrix(c(1,2,3,4,5,6,7, 1,2,3,4,5,NA,NA), 7,2)
-hri(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=c(3,3))
+ s.prefs <- matrix(c(1,2, 1,2, 1,NA, 1,2, 1,2, 1,2, 1,2), 2,7)
+ c.prefs <- matrix(c(1,2,3,4,5,6,7, 1,2,3,4,5,NA,NA), 7,2)
+ hri(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=c(3,3))
+ 
+## 7 students, 3 colleges with 3 slots each, incomplete preferences:
+ hri(nStudents=7, nSlots=c(3,3,3), seed=21, s.range=c(1,3))
+ 
+## --------------------
+## --- Summary plots
 
+## 200 students, 200 colleges with 1 slot each
+ res <- hri(nStudents=200, nColleges=200, seed=12)
+ plot(res)
+ plot(res, energy=TRUE)
+ 
 }
 \author{
 Thilo Klein
@@ -98,6 +110,9 @@ Thilo Klein
 \references{
 Gale, D. and L.S. Shapley (1962). College admissions and the stability 
 of marriage. \emph{The American Mathematical Monthly}, 69(1):9--15.
+
+Morizumi, Y., T. Hayashi and Y. Ishida (2011). A network visualization of stable matching in the stable 
+marriage problem. \emph{Artificial Life Robotics}, 16:40--43.
 
 Prosser, P. (2014). Stable Roommates and Constraint Programming. \emph{Lecture Notes in Computer Science, CPAIOR 2014 Edition}. 
 Springer International Publishing, 8451: 15--28.

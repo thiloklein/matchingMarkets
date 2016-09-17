@@ -35,6 +35,7 @@
 }
 
 \begin{document}
+%\SweaveOpts{concordance=TRUE}
 
 % Initialisation
 %\VignetteIndexEntry{Analysis of Stable Matchings}

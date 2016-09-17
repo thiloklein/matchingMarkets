@@ -2,7 +2,7 @@
 \docType{data}
 \alias{klein15a}
 
-\title{MCMC results in Klein (2015a).}
+\title{MCMC results in Klein (2015a)}
 
 \description{
    MCMC results in Klein (2015a).

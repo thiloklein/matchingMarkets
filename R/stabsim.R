@@ -9,7 +9,7 @@
 #
 # ----------------------------------------------------------------------------
 
-#' @title Simulate individual-level data for one-sided matching markets
+#' @title Simulated data for group formation problem
 #'
 #' @description Simulate individual-level data for one-sided matching markets.
 #'
@@ -78,23 +78,10 @@ stabsim <- function(m, ind, seed=123, singles=NULL, gpm=2){
   Ncols <- max(table(m.id))
   i.id  <- 1:Nrows
 
-  #pi  <- runif(n=Nrows,min=0.5,max=1)
-  
-  #wst <- unlist(c(by(m.id, m.id, function(i){
-  #  l <- length(i) # market size
-  #  s <- 0.3 # share
-  #  r <- round(s*l,0) # size of smaller share
-  #  sample(c(rep(0,r),rep(1,l-r)),l,replace=FALSE)
-  #})))
-  wst <- sample(0:1,Nrows,replace=TRUE)
-  
-  #occ1 <- runif(Nrows); occ2 <- runif(Nrows,max=1-occ1); occ3 <- runif(Nrows,max=1-occ1-occ2)
-  #sat <- rnorm(Nrows); mot <- rnorm(Nrows)
+  wst <- rnorm(Nrows)
+
   R <- rep(NA,Nrows)
-  
-  #xi.i  <- rnorm(n=Nrows, sd=sqrt(max(ind)))
-  #eta.i <- rnorm(n=Nrows, sd=sqrt(max(ind)))
-  
+
   x <- data.frame(m.id, g.id, wst, R)
   
   if(is.null(singles)){

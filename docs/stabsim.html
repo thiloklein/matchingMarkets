@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<title>stabsim. matchingMarkets 0.3-3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="
+Thilo Klein
+">
+
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/highlight.css" rel="stylesheet">
+<link href="css/staticdocs.css" rel="stylesheet">
+
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-67989-15']);
+  _gaq.push(['_setDomainName', 'ggplot2.org']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+  </head>
+
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="index.html">matchingMarkets 0.3-3</a>
+      <div class="nav">
+        <ul class="nav">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="reference.html">Reference</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="container">
+      <header>
+        
+      </header>
+      
+      <h1>Simulated data for group formation problem</h1>
+
+<div class="row">
+  <div class="span8">
+    <h2>Usage</h2>
+    <pre><span class="functioncall"><a href='stabsim.html'>stabsim</a></span><span class="keyword">(</span><span class="symbol">m</span><span class="keyword">,</span> <span class="symbol">ind</span><span class="keyword">,</span> <span class="argument">seed</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="number">123</span><span class="keyword">,</span> <span class="argument">singles</span>&nbsp;<span class="argument">=</span>&nbsp;NULL<span class="keyword">,</span> <span class="argument">gpm</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="number">2</span><span class="keyword">)</span></pre>
+    
+    <h2>Arguments</h2>
+    <dl>
+      <dt>m</dt>
+      <dd>integer indicating the number of markets to be simulated.</dd>
+      <dt>ind</dt>
+      <dd>integer (or vector) indicating the number of individuals per group.</dd>
+      <dt>seed</dt>
+      <dd>integer setting the state for random number generation. Defaults to <code>set.seed(123)</code>.</dd>
+      <dt>singles</dt>
+      <dd>integer giving the number of one-group markets.</dd>
+      <dt>gpm</dt>
+      <dd>integer giving the number of groups per market.</dd>
+    </dl>
+    
+    <div class="Value">
+      <h2>Value</h2>
+
+      <p><dl>
+<code>stabsim</code> returns a data frame with the randomly generated variables 
+mimicking those in dataset <code><a href='baac00.html'>baac00</a></code>.
+<dt>m.id</dt><dd>categorical: market identifier.</dd></p>
+
+      <p><dt>g.id</dt><dd>categorical: group identifier.</dd></p>
+
+      <p><dt>wst</dt><dd>binary: indicator taking the value 1 if last year was worse than the year before; 0 otherwise.</dd></p>
+
+      <p><dt>R</dt><dd>NA: group outcome is not simulated. It can be obtained using the  <code>simulation</code> argument 
+in function <code>stabit</code>.</dd></p>
+
+      <p></dl></p>
+
+    </div>
+
+    <div class="Description">
+      <h2>Description</h2>
+
+      <p>Simulate individual-level data for one-sided matching markets.</p>
+
+    </div>
+    
+    <h2 id="examples">Examples</h2>
+    <pre class="examples"><div class='input'><span class="comment">## Coalitions [gpm := 2 !]</span>
+<span class="comment">## Simulate one-sided matching data for 4 markets (m=4) with 2 groups</span>
+<span class="comment">## per market (gpm=2) and 2 to 4 individuals per group (ind=2:4)</span>
+ <span class="symbol">idata</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='stabsim.html'>stabsim</a></span><span class="keyword">(</span><span class="argument">m</span><span class="argument">=</span><span class="number">4</span><span class="keyword">,</span> <span class="argument">ind</span><span class="argument">=</span><span class="number">2</span><span class="keyword">:</span><span class="number">4</span><span class="keyword">,</span> <span class="argument">seed</span><span class="argument">=</span><span class="number">124</span><span class="keyword">,</span> <span class="argument">singles</span><span class="argument">=</span><span class="number">2</span><span class="keyword">,</span> <span class="argument">gpm</span><span class="argument">=</span><span class="number">2</span><span class="keyword">)</span>
+
+<span class="comment">## Rommmates [ind := 2 !]</span>
+<span class="comment">## Simulate one-sided matching data for 3 markets (m=3) with 3 groups</span>
+<span class="comment">## per market (gpm=3) and 2 individuals per group (ind=2)</span>
+ <span class="symbol">idata</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='stabsim.html'>stabsim</a></span><span class="keyword">(</span><span class="argument">m</span><span class="argument">=</span><span class="number">3</span><span class="keyword">,</span> <span class="argument">ind</span><span class="argument">=</span><span class="number">2</span><span class="keyword">,</span> <span class="argument">seed</span><span class="argument">=</span><span class="number">124</span><span class="keyword">,</span> <span class="argument">gpm</span><span class="argument">=</span><span class="number">3</span><span class="keyword">)</span></div></pre>
+  </div>
+  <div class="span4 sidebar">
+    <!-- <ul>
+      <li>stabsim</li>
+    </ul>
+    <ul>
+      <li>generate</li>
+    </ul> -->
+
+
+
+    <h2>Author</h2>
+    
+Thilo Klein
+
+
+  </div>
+</div>
+      
+      <footer>
+      <p class="pull-right"><a href="#">Back to top</a></p>
+
+<p class='feedback'>What do you think of the package functionalities?  <a href='http://klein.uk'>Please suggest improvements by sending me a message</a>.</p>
+
+
+      </footer>
+    </div>
+  </body>
+</html>

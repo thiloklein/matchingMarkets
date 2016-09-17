@@ -2,7 +2,7 @@
 % Please edit documentation in R/stabsim.R
 \name{stabsim}
 \alias{stabsim}
-\title{Simulate individual-level data for one-sided matching markets}
+\title{Simulated data for group formation problem}
 \usage{
 stabsim(m, ind, seed = 123, singles = NULL, gpm = 2)
 }

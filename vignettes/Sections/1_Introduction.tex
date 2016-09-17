@@ -24,6 +24,101 @@ These processes determine which matches are observed -- and which are not -- and
 \end{enumerate}
 
 
+
+
+\begin{table}
+\centering
+\small
+\caption{Implemented likelihood estimators for structural matching models}
+\begin{tabular}{l|lllll}
+\hline\hline
+          &                &           & \multicolumn{3}{c}{Equilibrium assumptions} \\
+\cline{4-6}
+Market    & Functions      & Equations & Type 1         & Type 2                 & Type 3 \\
+\hline
+&&&&&\\
+Two-sided & \code{stabit2} & matching  & Klein (2017)   & \multicolumn{1}{c}{--} & Logan et al.\ (2008)  \\
+&&&&&\\
+          &                & selection & Klein (2017)   & Sorensen (2007)        & \multicolumn{1}{c}{--} \\
+          &                &           &                & Park (2013)            & \multicolumn{1}{c}{--} \\
+&&&&&\\
+\hline
+&&&&&\\
+One-sided & \code{stabit}  & selection & \multicolumn{1}{c}{--}& Klein (2015) & \multicolumn{1}{c}{--} \\
+&&&&&\\
+\hline\hline
+\end{tabular}
+\end{table}
+%\footnote{Chen (2013) and Park (2012).}
+
+Characterisation of model vis-a-vis the literature:
+\begin{itemize}
+ \item non-transferable utility. not equal: transferable utility
+ \item full likelihood models. not equal: inequality methods (Fox); logit methods (Dagsvik; Choo/Siow)
+ \item allows for selection-correction of outcome equations
+\end{itemize}
+
+Definition of types of equilibrium assumptions:
+\begin{itemize}
+ \item Type 1: matching is based on Gale Shapley algorithm and either Rank Order List (ROL) or an edgelist of all feasible equilibrium matchings is observed. This guarantes estimation of the observed matching when there are multiple equilibria.
+ \item Type 2: assumes that preferences are aligned, which guarantees the existence of a unique equilibrium. If this assumption holds then the method is equivalent to Type 1. However, in order to impose this assumption, preferences need to be estimated jointly and it is not possible to obtain separate student and college preferences.
+ \item Type 3: Large market assumption in Menzel (Econometrica, 2013).
+\end{itemize}
+
+Improvements over \code{matchingMarkets} package:
+\begin{enumerate}
+ \item estimators
+ \item allows for incomplete lists (some agents find certain agents unacceptable), which is crucial for the algorithm to be applicable to real data and realistic simulations
+ \item computes all stable matchings (not only the student and college optimal).
+ \item can generate preferences based on underlying stochastic models (not only purely random)
+\end{enumerate}
+
+
+\begin{table}
+\centering
+\small
+\caption{Implemented algorithms by type of matching market and application}
+\begin{tabular}{lc|llll}
+\hline\hline
+          &           &            & \multicolumn{3}{c}{Matching application}  \\
+\cline{4-6}
+Market    & Transfers & Functions  & One-to-one       & Many-to-one        & Many-to-many  \\
+\hline
+&&&&&\\
+Two-sided & no        & \multicolumn{4}{l}{\code{hri}: Hospital/Residents problem with Incomplete preferences (Prosser, 2014)} \\
+          &           &            & $\checkmark$ stable marriage  & $\checkmark$ college admissions & \multicolumn{1}{c}{--} \\
+&&&&&\\
+%\cline{3-6}
+          & no        & \multicolumn{4}{l}{\code{iaa}: Immediate Acceptance Algorithm (a.k.a.\ `Boston' mechanism) and} \\
+          &           & \multicolumn{4}{l}{\textcolor{white}{\code{iaa}:} Deferred Acceptance Algortihm (Gale/Shapley, 1962)}  \\
+          &           &            & \multicolumn{1}{c}{--} & $\checkmark$ college admissions & \multicolumn{1}{c}{--} \\
+&&&&&\\
+%\cline{2-6}
+%          & yes       & \multicolumn{4}{l}{\code{asg}: Assignment Game (Shapley/Shubik, 1971)}\\
+%          &           &            & \multicolumn{1}{c}{--} & $\checkmark$ assignment game  & \multicolumn{1}{c}{--} \\
+%&&&&&\\          
+\hline
+&&&&&\\
+One-sided & no        & \multicolumn{4}{l}{\code{sri}: Stable Roommates problem with Incomplete preferences (Prosser, 2014)} \\
+          &           &            & $\checkmark$ stable roommates & \multicolumn{1}{c}{--} & $\checkmark$ stable fixtures \\
+&&&&&\\
+%\cline{3-6}
+          & no        & \multicolumn{4}{l}{\code{ttc}: Top-Trading-Cycles algorithm (Shapley/Scarf, 1974)} \\
+          &           &            & $\checkmark$ housing market   & $\checkmark$ college admissions & \multicolumn{1}{c}{--} \\
+          &           &            & $\checkmark$ kidney exchange  &    &  \\
+&&&&&\\
+%\cline{2-6}
+          & yes       & \multicolumn{4}{l}{\code{plp}: Partitioning Linear Programme (Quint, 1991)} \\
+          &           &            & $\checkmark$stable roommates & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+&&&&&\\
+\hline\hline
+\end{tabular}
+\end{table}
+
+
+
+
+
 \noindent Frequently Asked Questions
 \begin{itemize}
 \item \textit{Why can I not use the classic Heckman correction?}

@@ -26,16 +26,6 @@
       \item{R}{repayment outcome: BAAC never raised interest rate as a penalty for late repayment.}
       \item{pi}{success probability: measure of group members' project success probability.}
       \item{wst}{worst year: indicator of economically worst year. 1:last year; 2:year before last year; 101-168:neither.}
-      %\item{occ1}{occupation: fraction of total household revenue accounted for by each one of 10 agriculture-related revenue categories. Category 1: Rice Farming.}
-      %\item{occ2}{Category 2: Corn Farming.}
-      %\item{occ3}{Category 3: Vegetable Farming.}
-      %\item{occ4}{Category 4: Orchard Farming.}
-      %\item{occ5}{Category 5: Other Crop.}
-      %\item{occ6}{Category 6: Raising Shrimp.}
-      %\item{occ7}{Category 7: Raising Fish.}
-      %\item{occ8}{Category 8: Raising Chickens or Ducks.}
-      %\item{occ9}{Category 9: Raising Pigs, Cows or Buffalo.}
-      %\item{occ10}{Category 10: Raising other Livestock.}
       \item{loan_size}{loan size: average loan size borrowed by the group.}
       \item{loan_size2}{loan size squared.}
       \item{lngroup_agei}{log group age: log of number of years group has existed.}

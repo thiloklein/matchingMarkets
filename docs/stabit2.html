@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<title>stabit2. matchingMarkets 0.3-3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="
+Thilo Klein
+">
+
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/highlight.css" rel="stylesheet">
+<link href="css/staticdocs.css" rel="stylesheet">
+
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-67989-15']);
+  _gaq.push(['_setDomainName', 'ggplot2.org']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+  </head>
+
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="index.html">matchingMarkets 0.3-3</a>
+      <div class="nav">
+        <ul class="nav">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="reference.html">Reference</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="container">
+      <header>
+        
+      </header>
+      
+      <h1>Matching model and selection correction for college admissions</h1>
+
+<div class="row">
+  <div class="span8">
+    <h2>Usage</h2>
+    <pre><span class="functioncall"><a href='stabit2.html'>stabit2</a></span><span class="keyword">(</span><span class="argument">OUT</span>&nbsp;<span class="argument">=</span>&nbsp;NULL<span class="keyword">,</span> <span class="argument">SEL</span>&nbsp;<span class="argument">=</span>&nbsp;NULL<span class="keyword">,</span> <span class="argument">colleges</span>&nbsp;<span class="argument">=</span>&nbsp;NULL<span class="keyword">,</span> <span class="argument">students</span>&nbsp;<span class="argument">=</span>&nbsp;NULL<span class="keyword">,</span>
+  <span class="argument">outcome</span>&nbsp;<span class="argument">=</span>&nbsp;NULL<span class="keyword">,</span> <span class="symbol">selection</span><span class="keyword">,</span> <span class="argument">binary</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="number">FALSE</span><span class="keyword">,</span> <span class="symbol">niter</span><span class="keyword">,</span> <span class="argument">gPrior</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="number">FALSE</span><span class="keyword">,</span>
+  <span class="argument">censored</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="number">1</span><span class="keyword">,</span> <span class="argument">thin</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="number">1</span><span class="keyword">,</span> <span class="argument">nCores</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/Extremes'>max</a></span><span class="keyword">(</span><span class="number">1</span><span class="keyword">,</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/parallel/topics/detectCores'>detectCores</a></span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">-</span> <span class="number">1</span><span class="keyword">)</span><span class="keyword">,</span> <span class="symbol">...</span><span class="keyword">)</span></pre>
+    
+    <h2>Arguments</h2>
+    <dl>
+      <dt>OUT</dt>
+      <dd>data frame with characteristics of all observed matches, including
+market identifier <code>m.id</code>, college identifier <code>c.id</code> and student identifier <code>s.id</code>.</dd>
+      <dt>SEL</dt>
+      <dd>optional: data frame with characteristics of all observed and unobserved matches, including 
+market identifier <code>m.id</code>, college identifier <code>c.id</code> and student identifier <code>s.id</code>.</dd>
+      <dt>colleges</dt>
+      <dd>character vector of variable names for college characteristics. These variables carry the same value for any college.</dd>
+      <dt>students</dt>
+      <dd>character vector of variable names for student characteristics. These variables carry the same value for any student.</dd>
+      <dt>outcome</dt>
+      <dd>formula for match outcomes.</dd>
+      <dt>selection</dt>
+      <dd>formula for match valuations.</dd>
+      <dt>binary</dt>
+      <dd>logical: if <code>TRUE</code> outcome variable is taken to be binary; if <code>FALSE</code> outcome variable is taken to be continuous.</dd>
+      <dt>niter</dt>
+      <dd>number of iterations to use for the Gibbs sampler.</dd>
+      <dt>gPrior</dt>
+      <dd>logical: if <code>TRUE</code> the g-prior (Zellner, 1986) is used for the variance-covariance matrix. (Not yet implemented)</dd>
+      <dt>censored</dt>
+      <dd>draws of the <code>kappa</code> parameter that estimates the covariation between the error terms in selection and outcome equation are 0:not censored, 1:censored from below, 2:censored from above.</dd>
+      <dt>thin</dt>
+      <dd>integer indicating the level of thinning in the MCMC draws. The default <code>thin=1</code> saves every draw, <code>thin=2</code> every second, etc.</dd>
+      <dt>nCores</dt>
+      <dd>number of cores to be used in parallel Gibbs sampling.</dd>
+      <dt>...</dt>
+      <dd>.</dd>
+    </dl>
+    
+    <div class="Description">
+      <h2>Description</h2>
+
+      <p>The function provides a Gibbs sampler for a structural matching model that 
+estimates preferences and corrects for sample selection bias when the selection process 
+is a two-sided matching game; i.e., a matching of students to colleges.</p>
+
+      <p>The structural model consists of a selection and an outcome equation. The <em>Selection Equation</em> 
+determines which matches are observed ($D=1$) and which are not ($D=0$).
+$$ \begin{array}{lcl}
+       D &amp;= &amp; 1[V \in \Gamma] \\
+       V &amp;= &amp; W\beta + \eta
+       \end{array}
+     $$
+Here, $V$ is a vector of latent valuations of <em>all feasible</em> matches, ie observed and 
+unobserved, and $1[.]$ is the Iverson bracket. 
+A match is observed if its match valuation is in the set of valuations $\Gamma$
+that satisfy the equilibrium condition (see Sorensen, 2007). 
+The match valuation $V$ is a linear function of $W$, a matrix of characteristics for 
+<em>all feasible</em> matches, and $\eta$, a vector of random errors. $\beta$ is a paramter 
+vector to be estimated.</p>
+
+      <p>The <em>Outcome Equation</em> determines the outcome for <em>observed</em> matches. The dependent
+variable can either be continuous or binary, dependent on the value of the <code>binary</code>
+argument. In the binary case, the dependent variable $R$ is determined by a threshold 
+rule for the latent variable $Y$.
+$$ \begin{array}{lcl}
+       R &amp;= &amp; 1[Y &gt; c] \\
+       Y &amp;= &amp; X\alpha + \epsilon
+       \end{array}
+     $$
+Here, $Y$ is a linear function of $X$, a matrix of characteristics for <em>observed</em> 
+matches, and $\epsilon$, a vector of random errors. $\alpha$ is a paramter vector to 
+be estimated.</p>
+
+      <p>The structural model imposes a linear relationship between the error terms of both equations 
+as $\epsilon = \kappa\eta + \nu$, where $\nu$ is a vector of random errors and $\kappa$
+is the covariance paramter to be estimated. If $\kappa$ were zero, the marginal distributions
+of $\epsilon$ and $\eta$ would be independent and the selection problem would vanish.
+That is, the observed outcomes would be a random sample from the population of interest.</p>
+
+    </div>
+
+    <div class="References">
+      <h2>References</h2>
+
+      <p>Sorensen, M. (2007). How Smart is Smart Money? A Two-Sided Matching Model of Venture Capital.
+<em>Journal of Finance</em>, 62 (6): 2725-2762.</p>
+
+    </div>
+    
+    <h2 id="examples">Examples</h2>
+    <pre class="examples"><div class='input'><span class="comment">## --- SIMULATED EXAMPLE ---</span>
+
+<span class="comment">## 1. Simulate two-sided matching data for 20 markets (m=20) with 100 students</span>
+<span class="comment">##    (nStudents=100) per market and 20 colleges with quotas of 5 students, each</span>
+<span class="comment">##    (nSlots=rep(5,20)). True parameters in selection and outcome equations are </span>
+<span class="comment">##    all equal to 1.</span>
+
+<span class="symbol">xdata</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='stabsim2.html'>stabsim2</a></span><span class="keyword">(</span><span class="argument">m</span><span class="argument">=</span><span class="number">20</span><span class="keyword">,</span> <span class="argument">nStudents</span><span class="argument">=</span><span class="number">100</span><span class="keyword">,</span> <span class="argument">nSlots</span><span class="argument">=</span><span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span><span class="keyword">(</span><span class="number">5</span><span class="keyword">,</span><span class="number">20</span><span class="keyword">)</span><span class="keyword">,</span> <span class="argument">verbose</span><span class="argument">=</span><span class="number">FALSE</span><span class="keyword">,</span>
+  <span class="argument">colleges</span> <span class="argument">=</span> <span class="string">"c1"</span><span class="keyword">,</span> <span class="argument">students</span> <span class="argument">=</span> <span class="string">"s1"</span><span class="keyword">,</span>
+  <span class="argument">outcome</span> <span class="argument">=</span> <span class="keyword">~</span> <span class="symbol">c1</span><span class="keyword">:</span><span class="symbol">s1</span> <span class="keyword">+</span> <span class="symbol">eta</span> <span class="keyword">+</span> <span class="symbol">nu</span><span class="keyword">,</span>
+  <span class="argument">selection</span> <span class="argument">=</span> <span class="keyword">~</span> <span class="keyword">-</span><span class="number">1</span> <span class="keyword">+</span> <span class="symbol">c1</span><span class="keyword">:</span><span class="symbol">s1</span> <span class="keyword">+</span> <span class="symbol">eta</span>
+<span class="keyword">)</span></div>
+<div class='output'>Generating data for 20 matching markets... 
+</div>
+<div class='input'><span class="functioncall"><a href='http://www.rdocumentation.org/packages/utils/topics/head'>head</a></span><span class="keyword">(</span><span class="symbol">xdata</span><span class="keyword">$</span><span class="symbol">OUT</span><span class="keyword">)</span></div>
+<div class='output'>  m.id        y (Intercept)      eta         nu       c1:s1         c1         s1
+1    1 4.043161           1 1.843862  1.0241395  0.17515964 -0.3963161 -0.4419695
+2    1 4.252354           1 3.241040 -0.2741297  0.28544335 -0.3963161 -0.7202416
+3    1 1.837553           1 2.128452 -1.4896441  0.19874488 -0.3963161 -0.5014807
+4    1 4.400099           1 1.997213  1.2346701  0.16821544 -0.3963161 -0.4244476
+5    1 5.679860           1 2.198810  2.2819670  0.19908279 -0.3963161 -0.5023333
+6    1 1.889756           1 1.955294 -1.0164562 -0.04908123 -0.1627601  0.3015557
+  c.id s.id
+1    1    5
+2    1   44
+3    1   54
+4    1   76
+5    1   81
+6    2   11
+</div>
+<div class='input'>
+
+<span class="comment">## 2. Correction for sorting bias when match valuations V are observed</span>
+
+<span class="comment">## 2-a. Bias from sorting</span>
+ <span class="symbol">lm1</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/stats/topics/lm'>lm</a></span><span class="keyword">(</span><span class="symbol">y</span> <span class="keyword">~</span> <span class="symbol">c1</span><span class="keyword">:</span><span class="symbol">s1</span><span class="keyword">,</span> <span class="argument">data</span><span class="argument">=</span><span class="symbol">xdata</span><span class="keyword">$</span><span class="symbol">OUT</span><span class="keyword">)</span>
+ <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span><span class="keyword">(</span><span class="symbol">lm1</span><span class="keyword">)</span></div>
+<div class='output'>
+Call:
+lm(formula = y ~ c1:s1, data = xdata$OUT)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-5.1032 -0.8373  0.0570  0.8745  3.2334 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.69375    0.03142   85.75   &lt;2e-16 ***
+c1:s1        0.75852    0.04717   16.08   &lt;2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.248 on 1998 degrees of freedom
+Multiple R-squared:  0.1146,	Adjusted R-squared:  0.1141 
+F-statistic: 258.6 on 1 and 1998 DF,  p-value: &lt; 2.2e-16
+
+</div>
+<div class='input'>
+<span class="comment">## 2-b. Cause of the bias</span>
+ <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/with'>with</a></span><span class="keyword">(</span><span class="symbol">xdata</span><span class="keyword">$</span><span class="symbol">OUT</span><span class="keyword">,</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/stats/topics/cor'>cor</a></span><span class="keyword">(</span><span class="symbol">c1</span><span class="keyword">*</span><span class="symbol">s1</span><span class="keyword">,</span> <span class="symbol">eta</span><span class="keyword">)</span><span class="keyword">)</span></div>
+<div class='output'>[1] -0.2062932
+</div>
+<div class='input'>
+<span class="comment">## 2-c. Correction for sorting bias</span>
+ <span class="symbol">lm2a</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/stats/topics/lm'>lm</a></span><span class="keyword">(</span><span class="symbol">V</span> <span class="keyword">~</span> <span class="keyword">-</span><span class="number">1</span> <span class="keyword">+</span> <span class="symbol">c1</span><span class="keyword">:</span><span class="symbol">s1</span><span class="keyword">,</span> <span class="argument">data</span><span class="argument">=</span><span class="symbol">xdata</span><span class="keyword">$</span><span class="symbol">SEL</span><span class="keyword">)</span><span class="keyword">;</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span><span class="keyword">(</span><span class="symbol">lm2a</span><span class="keyword">)</span></div>
+<div class='output'>
+Call:
+lm(formula = V ~ -1 + c1:s1, data = xdata$SEL)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.9728 -0.6657 -0.0007  0.6792  3.9280 
+
+Coefficients:
+      Estimate Std. Error t value Pr(&gt;|t|)    
+c1:s1  1.00548    0.00985   102.1   &lt;2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.003 on 39999 degrees of freedom
+Multiple R-squared:  0.2067,	Adjusted R-squared:  0.2067 
+F-statistic: 1.042e+04 on 1 and 39999 DF,  p-value: &lt; 2.2e-16
+
+</div>
+<div class='input'> <span class="symbol">etahat</span> <span class="assignement">&lt;-</span> <span class="symbol">lm2a</span><span class="keyword">$</span><span class="symbol">residuals</span><span class="keyword">[</span><span class="symbol">xdata</span><span class="keyword">$</span><span class="symbol">SEL</span><span class="keyword">$</span><span class="symbol">D</span>==<span class="number">1</span><span class="keyword">]</span>
+
+ <span class="symbol">lm2b</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/stats/topics/lm'>lm</a></span><span class="keyword">(</span><span class="symbol">y</span> <span class="keyword">~</span> <span class="symbol">c1</span><span class="keyword">:</span><span class="symbol">s1</span> <span class="keyword">+</span> <span class="symbol">etahat</span><span class="keyword">,</span> <span class="argument">data</span><span class="argument">=</span><span class="symbol">xdata</span><span class="keyword">$</span><span class="symbol">OUT</span><span class="keyword">)</span>
+ <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span><span class="keyword">(</span><span class="symbol">lm2b</span><span class="keyword">)</span></div>
+<div class='output'>
+Call:
+lm(formula = y ~ c1:s1 + etahat, data = xdata$OUT)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.5938 -0.6990  0.0384  0.7078  2.9276 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  1.00160    0.05774   17.35   &lt;2e-16 ***
+etahat       0.98683    0.03025   32.63   &lt;2e-16 ***
+c1:s1        1.02606    0.03898   26.32   &lt;2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.008 on 1997 degrees of freedom
+Multiple R-squared:  0.4225,	Adjusted R-squared:  0.4219 
+F-statistic: 730.4 on 2 and 1997 DF,  p-value: &lt; 2.2e-16
+
+</div>
+<div class='input'>
+
+<span class="comment">## 3. Correction for sorting bias when match valuations V are unobserved</span>
+
+<span class="comment">## 3-a. Run Gibbs sampler (when SEL is given)</span>
+ <span class="symbol">fit2</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='stabit2.html'>stabit2</a></span><span class="keyword">(</span><span class="argument">OUT</span> <span class="argument">=</span> <span class="symbol">xdata</span><span class="keyword">$</span><span class="symbol">OUT</span><span class="keyword">,</span>
+           <span class="argument">SEL</span> <span class="argument">=</span> <span class="symbol">xdata</span><span class="keyword">$</span><span class="symbol">SEL</span><span class="keyword">,</span>
+           <span class="argument">outcome</span> <span class="argument">=</span> <span class="symbol">y</span> <span class="keyword">~</span> <span class="symbol">c1</span><span class="keyword">:</span><span class="symbol">s1</span><span class="keyword">,</span>
+           <span class="argument">selection</span> <span class="argument">=</span> <span class="keyword">~</span> <span class="keyword">-</span><span class="number">1</span> <span class="keyword">+</span> <span class="symbol">c1</span><span class="keyword">:</span><span class="symbol">s1</span><span class="keyword">,</span>
+           <span class="argument">niter</span><span class="argument">=</span><span class="number">1000</span>
+ <span class="keyword">)</span></div>
+<div class='output'>Drawing 1000 MCMC samples...
+</div>
+<div class='input'>
+<span class="comment">## 3-b. Alternatively: Run Gibbs sampler (when SEL is not given)</span>
+ <span class="symbol">fit2</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='stabit2.html'>stabit2</a></span><span class="keyword">(</span><span class="argument">OUT</span> <span class="argument">=</span> <span class="symbol">xdata</span><span class="keyword">$</span><span class="symbol">OUT</span><span class="keyword">,</span>
+           <span class="argument">colleges</span> <span class="argument">=</span> <span class="string">"c1"</span><span class="keyword">,</span>
+           <span class="argument">students</span> <span class="argument">=</span> <span class="string">"s1"</span><span class="keyword">,</span>
+           <span class="argument">outcome</span> <span class="argument">=</span> <span class="symbol">y</span> <span class="keyword">~</span> <span class="symbol">c1</span><span class="keyword">:</span><span class="symbol">s1</span><span class="keyword">,</span>
+           <span class="argument">selection</span> <span class="argument">=</span> <span class="keyword">~</span> <span class="keyword">-</span><span class="number">1</span> <span class="keyword">+</span> <span class="symbol">c1</span><span class="keyword">:</span><span class="symbol">s1</span><span class="keyword">,</span>
+           <span class="argument">niter</span><span class="argument">=</span><span class="number">1000</span>
+ <span class="keyword">)</span></div>
+<div class='output'>Drawing 1000 MCMC samples...
+</div>
+<div class='input'>
+
+<span class="comment">## 4. Implemented methods</span>
+
+<span class="comment">## 4-a. Get coefficients</span>
+ <span class="symbol">fit2</span></div>
+<div class='output'>Call:
+stabit2.default(OUT = xdata$OUT, colleges = &quot;c1&quot;, students = &quot;s1&quot;, 
+    outcome = y ~ c1:s1, selection = ~-1 + c1:s1, niter = 1000)
+
+Coefficients:
+o.(Intercept)       o.c1:s1       o.kappa       s.c1:s1 
+    0.8087482     1.0707257     1.1027574     1.0035737 
+</div>
+<div class='input'>
+<span class="comment">## 4-b. Coefficient table</span>
+ <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span><span class="keyword">(</span><span class="symbol">fit2</span><span class="keyword">)</span></div>
+<div class='output'>
+Coefficients for multi-index sample selection model.
+Method: Sorensen (2007), two-sided matching market
+
+Call:
+stabit2.default(OUT = xdata$OUT, colleges = &quot;c1&quot;, students = &quot;s1&quot;, 
+    outcome = y ~ c1:s1, selection = ~-1 + c1:s1, niter = 1000)
+
+Selection equation:
+      Estimate   StdErr t.value   p.value    
+c1:s1 1.003574 0.096276  10.424 &lt; 2.2e-16 ***
+
+Outcome equation:
+            Estimate   StdErr t.value   p.value    
+(Intercept) 0.808748 0.500689  1.6153 0.1064103    
+c1:s1       1.070726 0.096949 11.0442 &lt; 2.2e-16 ***
+kappa       1.102757 0.290144  3.8007 0.0001486 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</div>
+<div class='input'>
+<span class="comment">## 4-c. Get marginal effects</span>
+ <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span><span class="keyword">(</span><span class="symbol">fit2</span><span class="keyword">,</span> <span class="argument">mfx</span><span class="argument">=</span><span class="number">TRUE</span><span class="keyword">)</span></div>
+<div class='output'>
+Marginal effects for multi-index sample selection model.
+Method: Sorensen (2007), two-sided matching market
+
+Call:
+stabit2.default(OUT = xdata$OUT, colleges = &quot;c1&quot;, students = &quot;s1&quot;, 
+    outcome = y ~ c1:s1, selection = ~-1 + c1:s1, niter = 1000)
+
+Selection equation:
+      Estimate   StdErr t.value   p.value    
+c1:s1 0.283103 0.027159  10.424 &lt; 2.2e-16 ***
+
+Outcome equation:
+            Estimate   StdErr t.value   p.value    
+(Intercept) 0.808748 0.500689  1.6153 0.1064103    
+c1:s1       1.070726 0.096949 11.0442 &lt; 2.2e-16 ***
+kappa       1.102757 0.290144  3.8007 0.0001486 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</div>
+<div class='input'>
+<span class="comment">## 4-d. Also try the following functions</span>
+ <span class="comment">#coef(fit2)</span>
+ <span class="comment">#fitted(fit2)</span>
+ <span class="comment">#residuals(fit2)</span>
+ <span class="comment">#predict(fit2, newdata=NULL)</span>
+
+
+<span class="comment">## 5. Plot MCMC draws for coefficients</span>
+ <span class="functioncall"><a href='http://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span><span class="keyword">(</span><span class="symbol">fit2</span><span class="keyword">)</span></div>
+<p><img src='stabit2-24.png' alt='' width='540' height='400' /></p>
+<p><img src='stabit2-25.png' alt='' width='540' height='400' /></p>
+<div class='input'></div></pre>
+  </div>
+  <div class="span4 sidebar">
+    <!-- <ul>
+      <li>stabit2</li><li>stabit2Mat1</li><li>stabit2Sel1</li><li>stabit2Sel2</li>
+    </ul>
+    <ul>
+      <li>regression</li>
+    </ul> -->
+
+
+
+    <h2>Author</h2>
+    
+Thilo Klein
+
+
+  </div>
+</div>
+      
+      <footer>
+      <p class="pull-right"><a href="#">Back to top</a></p>
+
+<p class='feedback'>What do you think of the package functionalities?  <a href='http://klein.uk'>Please suggest improvements by sending me a message</a>.</p>
+
+
+      </footer>
+    </div>
+  </body>
+</html>

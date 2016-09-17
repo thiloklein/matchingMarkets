@@ -2,21 +2,22 @@
 % Please edit documentation in R/sri.R
 \name{sri}
 \alias{sri}
-\title{Constraint model to produce all stable matchings in the stable roommates problem with 
-incomplete lists}
+\title{All stable matchings in the stable roommates problem with incomplete lists}
 \usage{
-sri(prefs = NULL, nAgents = NULL, seed = NULL, p.min = NULL)
+sri(prefs = NULL, nAgents = NULL, seed = NULL, p.range = NULL)
 }
 \arguments{
 \item{prefs}{valuation matrix of dimension \code{nAgents x nAgents} that gives column-players' 
-valuation over row players.}
+ranking over other players in decreasing order of preference (i.e. most preferred first).}
 
 \item{nAgents}{integer that gives the number of players in the market.}
 
 \item{seed}{integer setting the state for random number generation.}
 
-\item{p.min}{integer, when specified produces incomplete preference lists with the length of each 
-player's list randomly sampled from the range [p.min, nrow(prefs)].}
+\item{p.range}{range of two intergers \code{p.range = c(p.min, p.max)}, where \code{p.min < p.max}. 
+Produces incomplete preference lists with the length of each player's list randomly sampled from 
+the range \code{[p.min, p.max]}. Note: interval is always too small because non-permissible matches 
+are automatically deleted.}
 }
 \value{
 \code{sri} returns a list with the following items.
@@ -25,22 +26,22 @@ player's list randomly sampled from the range [p.min, nrow(prefs)].}
 }
 \description{
 Finds all stable matchings (if one exists) in the 
-\href{http://en.wikipedia.org/wiki/Stable_roommates_problem}{stable roommates problem} with incomplete lists
-using the Prosser (2014) constraint encoding based on either given or randomly generated preferences.
+\href{http://en.wikipedia.org/wiki/Stable_roommates_problem}{stable roommates problem} with incomplete 
+lists using the Prosser (2014) constraint encoding based on either given or randomly generated preferences.
 }
 \examples{
 ## Roommate problem with 10 players, given preferences:
-prefs <- matrix(rep(1:10, 10), 10, 10)
-sri(prefs=prefs)
+ prefs <- matrix(rep(1:10, 10), 10, 10)
+ sri(prefs=prefs)
 
 ## Roommate problem with 10 players, random preferences:
-sri(nAgents=10, seed=1)
+ sri(nAgents=10, seed=1)
 
 ## Roommate problem with no equilibrium matching:
-sri(nAgents=10, seed=2)
+ sri(nAgents=10, seed=2)
 
 ## Roommate problem with 3 equilibria:
-sri(nAgents=10, seed=3)
+ sri(nAgents=10, seed=3)
 
 }
 \author{
@@ -52,6 +53,9 @@ Structure and Algorithms, MIT Press.
 
 Prosser, P. (2014). Stable Roommates and Constraint Programming. \emph{Lecture Notes in Computer Science, CPAIOR 2014 Edition}. 
 Springer International Publishing, 8451: 15--28.
+
+Irving, R.W. and S. Scott (2007). The stable fixtures problem: A many-to-many extension of stable roommates. 
+\emph{Discrete Applied Mathematics}, 155: 2118--2129.
 }
 \keyword{algorithms}
 

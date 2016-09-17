@@ -9,8 +9,7 @@
 #
 # ----------------------------------------------------------------------------
 
-#' @title Constraint model to produce all stable matchings in the hospital/residents problem with 
-#' incomplete lists
+#' @title All stable matchings in the hospital/residents problem with incomplete lists
 #'
 #' @description Finds \emph{all} stable matchings in either the 
 #' \href{http://en.wikipedia.org/wiki/Hospital_resident}{hospital/residents} problem (a.k.a. college 
@@ -35,12 +34,20 @@
 #' column containing college \code{i}'s ranking over students in decreasing order of 
 #' preference (i.e. most preferred first).
 #' @param seed integer setting the state for random number generation. 
-#' @param s.min integer, when specified produces incomplete preference lists with the length of each 
-#' student's list randomly sampled from the range [s.min, nrow(s.prefs)].
-#' @param c.min integer, when specified produces incomplete preference lists with the length of each 
-#' college's list randomly sampled from the range [c.min, nrow(c.prefs)].
+#' @param s.range range of two intergers \code{s.range = c(s.min, s.max)}, where \code{s.min < s.max}. 
+#' Produces incomplete preference lists with the length of each student's list randomly sampled from 
+#' the range \code{[s.min, s.max]}. Note: interval is only correct if either c.range or s.range is used.
+#' @param c.range range of two intergers \code{c.range = c(c.min, c.max)}, where \code{c.min < c.max}. 
+#' Produces incomplete preference lists with the length of each college's list randomly sampled from 
+#' the range \code{[c.min, c.max]}. Note: interval is only correct if either c.range or s.range is used.
+#' @param ... .
+#' 
 #' @export
+#' 
 #' @import stats rJava
+#' @importFrom grDevices rgb
+#' @importFrom graphics legend
+#' 
 #' @section Minimum required arguments:
 #' \code{hri} requires the following combination of arguments, subject to the matching problem.
 #' \describe{
@@ -49,6 +56,7 @@
 #' \item{\code{nStudents, nSlots}}{College admissions problem with random preferences.}
 #' \item{\code{s.prefs, c.prefs, nSlots}}{College admissions problem with given preferences.}
 #' }
+#' 
 #' @return
 #' \code{hri} returns a list of the following elements.
 #' \item{s.prefs.smi}{student-side preference matrix for the stable marriage problem with incomplete lists (SMI).}
@@ -58,41 +66,60 @@
 #' \item{matchings}{edgelist of matched students and colleges, inculding the number of the match
 #' (\code{matching}) and two variables that indicate the student-optimal match (\code{sOptimal}) and 
 #' college-optimal match (\code{cOptimal})}.
+#' 
 #' @author Thilo Klein 
+#' 
 #' @keywords algorithms
+#' 
 #' @references Gale, D. and L.S. Shapley (1962). College admissions and the stability 
 #' of marriage. \emph{The American Mathematical Monthly}, 69(1):9--15.
+#' 
+#' Morizumi, Y., T. Hayashi and Y. Ishida (2011). A network visualization of stable matching in the stable 
+#' marriage problem. \emph{Artificial Life Robotics}, 16:40--43.
 #' 
 #' Prosser, P. (2014). Stable Roommates and Constraint Programming. \emph{Lecture Notes in Computer Science, CPAIOR 2014 Edition}. 
 #' Springer International Publishing, 8451: 15--28.
 #' 
 #' @examples
-#' ######################
-#' ## Marriage problem ## 
-#' ######################
+#' ## -----------------------
+#' ## --- Marriage problem 
 #' 
 #' ## 3 men, 2 women, random preferences:
-#' hri(nStudents=7, nColleges=6, seed=4)
+#'  hri(nStudents=7, nColleges=6, seed=4)
 #' 
 #' ## 3 men, 2 women, given preferences:
-#' s.prefs <- matrix(c(1,2, 1,2, 1,2), 2,3)
-#' c.prefs <- matrix(c(1,2,3, 1,2,3), 3,2)
-#' hri(s.prefs=s.prefs, c.prefs=c.prefs)
+#'  s.prefs <- matrix(c(1,2, 1,2, 1,2), 2,3)
+#'  c.prefs <- matrix(c(1,2,3, 1,2,3), 3,2)
+#'  hri(s.prefs=s.prefs, c.prefs=c.prefs)
 #' 
-#' ###############################
-#' ## College admission problem ##
-#' ###############################
+#' ## --------------------------------
+#' ## --- College admission problem 
 #' 
 #' ## 7 students, 2 colleges with 3 slots each, random preferences:
-#' hri(nStudents=7, nSlots=c(3,3), seed=21)
+#'  hri(nStudents=7, nSlots=c(3,3), seed=21)
 #' 
 #' ## 7 students, 2 colleges with 3 slots each, given preferences:
-#' s.prefs <- matrix(c(1,2, 1,2, 1,NA, 1,2, 1,2, 1,2, 1,2), 2,7)
-#' c.prefs <- matrix(c(1,2,3,4,5,6,7, 1,2,3,4,5,NA,NA), 7,2)
-#' hri(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=c(3,3))
+#'  s.prefs <- matrix(c(1,2, 1,2, 1,NA, 1,2, 1,2, 1,2, 1,2), 2,7)
+#'  c.prefs <- matrix(c(1,2,3,4,5,6,7, 1,2,3,4,5,NA,NA), 7,2)
+#'  hri(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=c(3,3))
+#'  
+#' ## 7 students, 3 colleges with 3 slots each, incomplete preferences:
+#'  hri(nStudents=7, nSlots=c(3,3,3), seed=21, s.range=c(1,3))
+#'  
+#' ## --------------------
+#' ## --- Summary plots
 #' 
+#' ## 200 students, 200 colleges with 1 slot each
+#'  res <- hri(nStudents=200, nColleges=200, seed=12)
+#'  plot(res)
+#'  plot(res, energy=TRUE)
+#'  
 hri <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), 
-                s.prefs=NULL, c.prefs=NULL, seed=NULL, s.min=NULL, c.min=NULL){
+                s.prefs=NULL, c.prefs=NULL, seed=NULL, s.range=NULL, c.range=NULL, ...) UseMethod("hri")
+
+#' @export
+hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), 
+                s.prefs=NULL, c.prefs=NULL, seed=NULL, s.range=NULL, c.range=NULL, ...){
   
   ## ------------------------
   ## --- 1. Preliminaries ---
@@ -116,11 +143,11 @@ hri <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
   }
   
   ## consistency checks:
-  if( dim(s.prefs)[1] != dim(c.prefs)[2] | dim(s.prefs)[2] != dim(c.prefs)[1] | 
-       dim(s.prefs)[2] != nStudents | dim(c.prefs)[2] != nColleges | 
-       dim(c.prefs)[1] != nStudents | dim(s.prefs)[1] != nColleges ){
-    stop("'s.prefs' and 'c.prefs' must be of dimensions 'nColleges x nStudents' and 'nStudents x nColleges'!")
-  }
+  #if( dim(s.prefs)[1] != dim(c.prefs)[2] | dim(s.prefs)[2] != dim(c.prefs)[1] | 
+  #     dim(s.prefs)[2] != nStudents | dim(c.prefs)[2] != nColleges | 
+  #     dim(c.prefs)[1] != nStudents | dim(s.prefs)[1] != nColleges ){
+  #  stop("'s.prefs' and 'c.prefs' must be of dimensions 'nColleges x nStudents' and 'nStudents x nColleges'!")
+  #}
   if( length(nSlots) != nColleges | length(nSlots) != dim(c.prefs)[2] ){
     stop("Length of 'nSlots' must equal 'nColleges' and the number of columns of 'c.prefs'!")
   }
@@ -129,15 +156,15 @@ hri <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
   ## --- 2. Incomplete preferences (and consistency check) ---
   
   ## make complete preference lists incomplete
-  if(!is.null(s.min)){
-    s.range <- c(s.min, nrow(s.prefs))
-    thre.s <- sample(x=s.range, size=ncol(s.prefs), replace=TRUE)
-    s.prefs <- sapply(1:ncol(s.prefs), function(z) c(s.prefs[1:thre.s[z],z], rep(NA,s.range[2]-thre.s[z])) )
+  if(!is.null(s.range)){
+    #s.range <- c(s.min, nrow(s.prefs))
+    thre.s <- sample(x=s.range[1]:s.range[2], size=ncol(s.prefs), replace=TRUE)
+    s.prefs <- sapply(1:ncol(s.prefs), function(z) c(s.prefs[1:thre.s[z],z], rep(NA,nrow(s.prefs)-thre.s[z])) )
   }
-  if(!is.null(c.min)){
-    c.range <- c(c.min, nrow(c.prefs))
-    thre.c <- sample(x=c.range, size=ncol(c.prefs), replace=TRUE)
-    c.prefs <- sapply(1:ncol(c.prefs), function(z) c(c.prefs[1:thre.c[z],z], rep(NA,c.range[2]-thre.c[z])) )
+  if(!is.null(c.range)){
+    #c.range <- c(c.min, nrow(c.prefs))
+    thre.c <- sample(x=c.range[1]:c.range[2], size=ncol(c.prefs), replace=TRUE)
+    c.prefs <- sapply(1:ncol(c.prefs), function(z) c(c.prefs[1:thre.c[z],z], rep(NA,nrow(c.prefs)-thre.c[z])) )
   }
   
   ## make preference lists consistent (include only mutual preferences)
@@ -203,18 +230,21 @@ hri <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
   ## obtain sum of colleges' (and students') rankings over assigned matches in each equailibrium
   A <- split(out, out$matching)
   for(j in 1:length(A)){
-    A[[j]]$srank <- sapply(1:nrow(A[[j]]), function(z) which(s.prefs[,A[[j]]$student[z]] == A[[j]]$college[z]) )
-    A[[j]]$crank <- sapply(1:nrow(A[[j]]), function(z) which(c.prefs[,A[[j]]$college[z]] == A[[j]]$student[z]) )
+    A[[j]]$sRank <- sapply(1:nrow(A[[j]]), function(z) which(s.prefs[,A[[j]]$student[z]] == A[[j]]$college[z]) )
+    A[[j]]$cRank <- sapply(1:nrow(A[[j]]), function(z) which(c.prefs[,A[[j]]$college[z]] == A[[j]]$student[z]) )
   }
-  sums <- unlist(lapply(A, function(z) sum(z$srank))) # sum students' preference rankings
+  sums <- unlist(lapply(A, function(z) sum(z$sRank))) # sum students' preference rankings
   sopt.id <- which(sums == min(sums)) # s-optimal matching minimises students' ranks (i.e. maximises utility)
-  sums <- unlist(lapply(A, function(z) sum(z$crank))) # # sum colleges' preference rankings
+  sums <- unlist(lapply(A, function(z) sum(z$cRank))) # # sum colleges' preference rankings
   copt.id <- which(sums == min(sums)) # c-optimal matching minimises colleges' ranks (i.e. maximises utility)
   
   ## add sOptimal and cOptimal to results
   out <- with(out, data.frame(out, sOptimal=0, cOptimal=0))
   out$sOptimal[out$matching==sopt.id] <- 1
   out$cOptimal[out$matching==copt.id] <- 1
+
+  ## add student/college ranking (sRank, cRank)
+  out <- cbind(out, do.call("rbind",A)[,c("sRank","cRank")])
   
   ## ----------------------------------------------------------
   ## --- 5. For hospital-residents problem: add college ids ---
@@ -222,10 +252,12 @@ hri <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
   if(sum(nSlots) != length(nSlots)){ # hospital-residents problem
     out <- merge(x=out, y=collegeSlots, by.x="college", by.y="slots")
     out <- with(out, data.frame(matching=matching, college=colleges, slots=college, 
-                                student=student, sOptimal=sOptimal, cOptimal=cOptimal))
+                                student=student, sOptimal=sOptimal, cOptimal=cOptimal,
+                                sRank=sRank, cRank=cRank))
   } else{
-    out <- with(out, data.frame(matching=matching, college=college,  
-                                student=student, sOptimal=sOptimal, cOptimal=cOptimal))
+    out <- with(out, data.frame(matching=matching, college=college, slots=college,
+                                student=student, sOptimal=sOptimal, cOptimal=cOptimal,
+                                sRank=sRank, cRank=cRank))
   }
   
   ## ----------------------------------
@@ -237,11 +269,19 @@ hri <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
   
   ## return results
   if(sum(nSlots) != length(nSlots)){ # hospital-residents problem
-    return(list(s.prefs.smi=s.prefs, c.prefs.smi=c.prefs, s.prefs.hri=s.prefs.hri,
-                c.prefs.hri=c.prefs.hri, matchings=out))
+    res <- list(s.prefs.smi = s.prefs[rowSums(is.na(s.prefs))<ncol(s.prefs),], 
+                c.prefs.smi = c.prefs[rowSums(is.na(c.prefs))<ncol(c.prefs),], 
+                s.prefs.hri = s.prefs.hri[rowSums(is.na(s.prefs.hri))<ncol(s.prefs.hri),],
+                c.prefs.hri = c.prefs.hri[rowSums(is.na(c.prefs.hri))<ncol(c.prefs.hri),], 
+                matchings = out)
   } else{ # stable-marriage problem
-    return(list(s.prefs.smi=s.prefs, c.prefs.smi=c.prefs, matchings=out))
+    res <- list(s.prefs.smi = s.prefs[rowSums(is.na(s.prefs))<ncol(s.prefs),], 
+                c.prefs.smi = c.prefs[rowSums(is.na(c.prefs))<ncol(c.prefs),], 
+                matchings = out)
   }
+  #res$call <- match.call()
+  class(res) <- "hri"
+  return(res)
 }
 
 
@@ -284,4 +324,77 @@ c2m <- function(s.prefs, c.prefs, nSlots){
   return(list(s.prefs=s.prefs, c.prefs=c.prefs, collegeSlots=collegeSlots))
   
 }
+
+
+
+
+#' @export
+plot.hri <- function(x, energy=FALSE, ...){
+  
+  ## obtain edgelist of stable matchings
+  x <- x$matchings
+  
+  ## add satisfaction and energy measure
+  n <- nrow(x[x$matching==1,])
+  x <- with(x, data.frame(x, sSatisf = n + 1 - sRank, cSatisf = n +1 - cRank))
+  x$energy <- with(x, sSatisf*cSatisf)
+  
+  ## aggregate by matching
+  x <- aggregate(x, by=list(x$matching), sum)
+  x$csSatisf <- with(x, sSatisf - cSatisf)
+  
+  ## sort by student net satisfaction
+  x <- with(x, x[order(csSatisf),])
+  
+  ## set graphic parameters
+  par(mar = c(5.1, 4.1, 1.8, 0.5))
+  lightgray <- rgb(84,84,84, 50, maxColorValue=255) 
+  
+  add_legend <- function(...) {
+    opar <- par(fig=c(0, 1, 0, 1), oma=c(0, 0, 0, 0), 
+                mar=c(0, 0, 0, 0), new=TRUE)
+    on.exit(par(opar))
+    plot(0, 0, type='n', bty='n', xaxt='n', yaxt='n')
+    legend(...)
+  }
+  
+  ## plots
+  if(energy==TRUE){
+    
+    with(x, plot(energy ~ csSatisf, col="gray80", type="l", 
+                 xlab=expression(paste("net satisfaction: ",P[s]-P[c])), ylab=expression(paste("energy: ",E))))
+    with(x, points(energy ~ csSatisf, col=lightgray, pch=16))
+    with(x, points(energy ~ csSatisf, col=lightgray))
+    with(x, points(energy ~ csSatisf, data=x[sOptimal>0,], pch=16, col="black"))
+    with(x, points(energy ~ csSatisf, data=x[sOptimal>0,], col="black"))
+    with(x, points(energy ~ csSatisf, data=x[cOptimal>0,], pch=16, col="white"))
+    with(x, points(energy ~ csSatisf, data=x[cOptimal>0,], col="black"))
+
+  } else{
+    
+    with(x, plot(cSatisf ~ sSatisf, col="gray80", type="l", 
+                 xlab=expression(paste("student satisfaction: ",P[s])), 
+                 ylab=expression(paste("college satisfaction: ",P[c]))))
+    with(x, points(cSatisf ~ sSatisf, col=lightgray, pch=16))
+    with(x, points(cSatisf ~ sSatisf, col=lightgray))
+    with(x, points(cSatisf ~ sSatisf, data=x[sOptimal>0,], pch=16, col="black"))
+    with(x, points(cSatisf ~ sSatisf, data=x[sOptimal>0,], col="black"))
+    with(x, points(cSatisf ~ sSatisf, data=x[cOptimal>0,], pch=16, col="white"))
+    with(x, points(cSatisf ~ sSatisf, data=x[cOptimal>0,], col="black"))
+  }
+  
+  ## legend
+  add_legend("topright", legend=c("c-optimal", "s-optimal", "stable"), 
+             pch=c(16,16,16), col=c("white","black",lightgray), 
+             text.col="white", horiz=TRUE, bty='n')
+  add_legend("topright", legend=c("c-optimal", "s-optimal", "stable"), 
+             pch=c(1,1,1), col=c("black","black",lightgray), 
+             horiz=TRUE, bty='n')
+  
+  ## reset R default
+  par(mar=c(5.1, 4.1, 4.1, 2.1)) 
+  
+}
+
+
 

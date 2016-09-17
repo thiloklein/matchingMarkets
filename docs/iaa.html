@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<title>iaa. matchingMarkets 0.3-3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="
+Thilo Klein
+">
+
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/highlight.css" rel="stylesheet">
+<link href="css/staticdocs.css" rel="stylesheet">
+
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-67989-15']);
+  _gaq.push(['_setDomainName', 'ggplot2.org']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+  </head>
+
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="index.html">matchingMarkets 0.3-3</a>
+      <div class="nav">
+        <ul class="nav">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="reference.html">Reference</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="container">
+      <header>
+        
+      </header>
+      
+      <h1>Immediate Acceptance Algorithm (a.k.a. Boston mechanism) for two-sided matching markets</h1>
+
+<div class="row">
+  <div class="span8">
+    <h2>Usage</h2>
+    <pre><span class="functioncall"><a href='iaa.html'>iaa</a></span><span class="keyword">(</span><span class="argument">nStudents</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span><span class="keyword">(</span><span class="symbol">s.prefs</span><span class="keyword">)</span><span class="keyword">,</span> <span class="argument">nColleges</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span><span class="keyword">(</span><span class="symbol">c.prefs</span><span class="keyword">)</span><span class="keyword">,</span> <span class="argument">nSlots</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span><span class="keyword">(</span><span class="number">1</span><span class="keyword">,</span>
+  <span class="symbol">nColleges</span><span class="keyword">)</span><span class="keyword">,</span> <span class="argument">s.prefs</span>&nbsp;<span class="argument">=</span>&nbsp;NULL<span class="keyword">,</span> <span class="argument">c.prefs</span>&nbsp;<span class="argument">=</span>&nbsp;NULL<span class="keyword">,</span> <span class="argument">acceptance</span>&nbsp;<span class="argument">=</span>&nbsp;<span class="string">"immediate"</span><span class="keyword">)</span></pre>
+    
+    <h2>Arguments</h2>
+    <dl>
+      <dt>nStudents</dt>
+      <dd>integer indicating the number of students (in the college admissions problem) 
+or men (in the stable marriage problem) in the market. Defaults to <code>ncol(s.prefs)</code>.</dd>
+      <dt>nColleges</dt>
+      <dd>integer indicating the number of colleges (in the college admissions problem) 
+or women (in the stable marriage problem) in the market. Defaults to <code>ncol(c.prefs)</code>.</dd>
+      <dt>nSlots</dt>
+      <dd>vector of length <code>nColleges</code> indicating the number of places (i.e. 
+quota) of each college. Defaults to <code>rep(1,nColleges)</code> for the marriage problem.</dd>
+      <dt>s.prefs</dt>
+      <dd>matrix of dimension <code>nColleges</code> <code>x</code> <code>nStudents</code> with the <code>j</code>th 
+column containing student <code>j</code>&#39;s ranking over colleges in decreasing order of 
+preference (i.e. most preferred first).</dd>
+      <dt>c.prefs</dt>
+      <dd>matrix of dimension <code>nStudents</code> <code>x</code> <code>nColleges</code> with the <code>i</code>th 
+column containing college <code>i</code>&#39;s ranking over students in decreasing order of 
+preference (i.e. most preferred first).</dd>
+      <dt>acceptance</dt>
+      <dd>if <code>acceptance=&quot;deferred&quot;</code> returns the solution found by the student-proposing Gale-Shapley deferred acceptance algorithm; if <code>acceptance=&quot;immediate&quot;</code> (the default) returns the solution found by the Boston mechanism.</dd>
+    </dl>
+    
+    <div class="Value">
+      <h2>Value</h2>
+
+      <p><dl>
+<code>iaa</code> returns a list with the following elements.
+<dt>s.prefs</dt><dd>student-side preference matrix.</dd></p>
+
+      <p><dt>c.prefs</dt><dd>college-side preference matrix.</dd></p>
+
+      <p><dt>iterations</dt><dd>number of interations required to find the stable matching.</dd></p>
+
+      <p><dt>matchings</dt><dd>edgelist of matches</dd></p>
+
+      <p><dt>singles</dt><dd>identifier of single (or unmatched) students/men.</dd></p>
+
+      <p></dl></p>
+
+    </div>
+
+    <div class="Description">
+      <h2>Description</h2>
+
+      <p>Finds the optimal assignment of students to colleges in the 
+<a href = 'http://en.wikipedia.org/wiki/Hospital_resident'>college admissions</a> problem
+based on the Boston mechanism. The option <code>acceptance=&quot;deferred&quot;</code> instead uses the Gale-Shapley 
+(1962) Deferred Acceptance Algorithm with male offer. The function works with either 
+given or randomly generated preferences.</p>
+
+    </div>
+
+    <div class="Minimum required arguments">
+      <h2>Minimum required arguments</h2>
+
+      <p></p>
+
+      <p><code>iaa</code> requires the following combination of arguments, subject to the matching problem.
+<dl>
+<dt><code>nStudents, nColleges</code></dt><dd>Marriage problem with random preferences.</dd></p>
+
+      <p><dt><code>s.prefs, c.prefs</code></dt><dd>Marriage problem with given preferences.</dd></p>
+
+      <p><dt><code>nStudents, nSlots</code></dt><dd>College admissions problem with random preferences.</dd></p>
+
+      <p><dt><code>s.prefs, c.prefs, nSlots</code></dt><dd>College admissions problem with given preferences.</dd></p>
+
+      <p></dl></p>
+
+      <p></p>
+
+    </div>
+
+    <div class="References">
+      <h2>References</h2>
+
+      <p>Gale, D. and Shapley, L.S. (1962). College admissions and the stability 
+of marriage. <em>The American Mathematical Monthly</em>, 69(1):9--15.</p>
+
+      <p>Kojima, F. and M.U. Unver (2014). The &quot;Boston&quot; school-choice mechanism. <em>Economic Theory</em>, 55(3): 515--544.</p>
+
+    </div>
+    
+    <h2 id="examples">Examples</h2>
+    <pre class="examples"><div class='input'><span class="comment">## --------------------------------</span>
+<span class="comment">## --- College admission problem</span>
+
+<span class="comment">## Boston mechanism for 7 students, 2 colleges with 3 slots each</span>
+ <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span><span class="keyword">(</span><span class="number">123</span><span class="keyword">)</span>
+ <span class="functioncall"><a href='iaa.html'>iaa</a></span><span class="keyword">(</span><span class="argument">nStudents</span><span class="argument">=</span><span class="number">7</span><span class="keyword">,</span> <span class="argument">nSlots</span><span class="argument">=</span><span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">3</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">)</span><span class="keyword">)</span></div>
+<div class='output'>$s.prefs
+     [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+[1,]    1    1    2    2    2    2    2
+[2,]    2    2    1    1    1    1    1
+
+$c.prefs
+     [,1] [,2]
+[1,]    1    5
+[2,]    6    4
+[3,]    2    7
+[4,]    7    3
+[5,]    4    6
+[6,]    5    2
+[7,]    3    1
+
+$iterations
+[1] 3
+
+$matchings
+  college student
+1       1       1
+2       1       2
+3       1       6
+4       2       3
+5       2       4
+6       2       5
+
+$singles
+[1] 7
+
+</div>
+<div class='input'>
+<span class="comment">## Gale-Shapley algorithm</span>
+ <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span><span class="keyword">(</span><span class="number">123</span><span class="keyword">)</span>
+ <span class="functioncall"><a href='iaa.html'>iaa</a></span><span class="keyword">(</span><span class="argument">nStudents</span><span class="argument">=</span><span class="number">7</span><span class="keyword">,</span> <span class="argument">nSlots</span><span class="argument">=</span><span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">3</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">)</span><span class="keyword">,</span> <span class="argument">acceptance</span><span class="argument">=</span><span class="string">"deferred"</span><span class="keyword">)</span></div>
+<div class='output'>$s.prefs
+     [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+[1,]    1    1    2    2    2    2    2
+[2,]    2    2    1    1    1    1    1
+
+$c.prefs
+     [,1] [,2]
+[1,]    1    5
+[2,]    6    4
+[3,]    2    7
+[4,]    7    3
+[5,]    4    6
+[6,]    5    2
+[7,]    3    1
+
+$iterations
+[1] 3
+
+$matchings
+  college student
+1       1       1
+2       1       2
+3       1       6
+5       2       4
+6       2       5
+4       2       7
+
+$singles
+[1] 3
+
+</div>
+<div class='input'>
+<span class="comment">## Same results for the Gale-Shapley algorithm with hri() function</span>
+ <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span><span class="keyword">(</span><span class="number">123</span><span class="keyword">)</span>
+ <span class="functioncall"><a href='hri.html'>hri</a></span><span class="keyword">(</span><span class="argument">nStudents</span><span class="argument">=</span><span class="number">7</span><span class="keyword">,</span> <span class="argument">nSlots</span><span class="argument">=</span><span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">3</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">)</span><span class="keyword">)</span></div>
+<div class='output'>$s.prefs.smi
+     [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+[1,]    1    1    4    4    4    4    4
+[2,]    2    2    5    5    5    5    5
+[3,]    3    3    6    6    6    6    6
+[4,]    4    4    1    1    1    1    1
+[5,]    5    5    2    2    2    2    2
+[6,]    6    6    3    3    3    3    3
+
+$c.prefs.smi
+     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    1    1    5    5    5
+[2,]    6    6    6    4    4    4
+[3,]    2    2    2    7    7    7
+[4,]    7    7    7    3    3    3
+[5,]    4    4    4    6    6    6
+[6,]    5    5    5    2    2    2
+[7,]    3    3    3    1    1    1
+
+$s.prefs.hri
+     [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+[1,]    1    1    2    2    2    2    2
+[2,]    2    2    1    1    1    1    1
+
+$c.prefs.hri
+     [,1] [,2]
+[1,]    1    5
+[2,]    6    4
+[3,]    2    7
+[4,]    7    3
+[5,]    4    6
+[6,]    5    2
+[7,]    3    1
+
+$matchings
+  matching college slots student sOptimal cOptimal sRank cRank
+1        1       1     1       1        1        1     1     1
+2        1       1     3       2        1        1     3     3
+3        1       1     2       6        1        1     5     2
+4        1       2     5       4        1        1     2     2
+5        1       2     4       5        1        1     1     1
+6        1       2     6       7        1        1     3     3
+
+attr(,&quot;class&quot;)
+[1] &quot;hri&quot;
+</div>
+<div class='input'>
+<span class="comment">## 7 students, 2 colleges with 3 slots each, given preferences:</span>
+ <span class="symbol">s.prefs</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/gmp/topics/matrix'>matrix</a></span><span class="keyword">(</span><span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">1</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">,</span> <span class="number">1</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">,</span> <span class="number">1</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">,</span> <span class="number">1</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">,</span> <span class="number">1</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">,</span> <span class="number">1</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">,</span> <span class="number">1</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">)</span><span class="keyword">,</span> <span class="number">2</span><span class="keyword">,</span><span class="number">7</span><span class="keyword">)</span>
+ <span class="symbol">c.prefs</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/gmp/topics/matrix'>matrix</a></span><span class="keyword">(</span><span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">1</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">,</span><span class="number">4</span><span class="keyword">,</span><span class="number">5</span><span class="keyword">,</span><span class="number">6</span><span class="keyword">,</span><span class="number">7</span><span class="keyword">,</span> <span class="number">1</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">,</span><span class="number">4</span><span class="keyword">,</span><span class="number">5</span><span class="keyword">,</span><span class="number">6</span><span class="keyword">,</span><span class="number">7</span><span class="keyword">)</span><span class="keyword">,</span> <span class="number">7</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">)</span>
+ <span class="functioncall"><a href='iaa.html'>iaa</a></span><span class="keyword">(</span><span class="argument">s.prefs</span><span class="argument">=</span><span class="symbol">s.prefs</span><span class="keyword">,</span> <span class="argument">c.prefs</span><span class="argument">=</span><span class="symbol">c.prefs</span><span class="keyword">,</span> <span class="argument">nSlots</span><span class="argument">=</span><span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">3</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">)</span><span class="keyword">)</span></div>
+<div class='output'>$s.prefs
+     [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+[1,]    1    1    1    1    1    1    1
+[2,]    2    2    2    2    2    2    2
+
+$c.prefs
+     [,1] [,2]
+[1,]    1    1
+[2,]    2    2
+[3,]    3    3
+[4,]    4    4
+[5,]    5    5
+[6,]    6    6
+[7,]    7    7
+
+$iterations
+[1] 3
+
+$matchings
+  college student
+1       1       1
+2       1       2
+3       1       3
+4       2       4
+5       2       5
+6       2       6
+
+$singles
+[1] 7
+
+</div></pre>
+  </div>
+  <div class="span4 sidebar">
+    <!-- <ul>
+      <li>iaa</li>
+    </ul>
+    <ul>
+      <li>algorithms</li>
+    </ul> -->
+
+
+
+    <h2>Author</h2>
+    
+Thilo Klein
+
+
+  </div>
+</div>
+      
+      <footer>
+      <p class="pull-right"><a href="#">Back to top</a></p>
+
+<p class='feedback'>What do you think of the package functionalities?  <a href='http://klein.uk'>Please suggest improvements by sending me a message</a>.</p>
+
+
+      </footer>
+    </div>
+  </body>
+</html>

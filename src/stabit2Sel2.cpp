@@ -16,7 +16,7 @@ double truncn2(double mu, double sigma, double lower, double upper);
 
 //' @export
 // [[Rcpp::export]]
-List stabitCpp2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr, 
+List stabit2Sel2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr, 
   Rcpp::List Cmatchr, Rcpp::List Dr, Rcpp::List dr, Rcpp::List Mr, Rcpp::List Hr, 
   arma::colvec nCollegesr, arma::colvec nStudentsr, Rcpp::List XXmatchr,
   Rcpp::List CCr, Rcpp::List CCmatchr, 

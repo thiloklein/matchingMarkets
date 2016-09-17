@@ -15,8 +15,9 @@ ttc(P = NULL, X = NULL)
 \code{ttc} returns a 2-column matrix of the stable matching solution for the housing market problem based on the Top-Trading-Cycles algorithm.
 }
 \description{
-Finds the stable matching in the \href{http://en.wikipedia.org/wiki/Herbert_Scarf#8._The_Housing_Market}{house allocation problem} with existing tenants.
-Uses the Top-Trading-Cycles Algorithm proposed in Abdulkadiroglu and Sonmez (1999).
+Finds the stable matching in the 
+\href{https://en.wikipedia.org/wiki/Top_trading_cycle}{house allocation problem} 
+with existing tenants. Uses the Top-Trading-Cycles Algorithm proposed in Abdulkadiroglu and Sonmez (1999).
 }
 \examples{
 ## generate list of individuals' preference rankings over objects

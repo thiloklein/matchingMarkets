@@ -9,10 +9,11 @@
 #
 # ----------------------------------------------------------------------------
 
-#' @title Simulate data for two-sided matching markets
+#' @title Simulated data for college admissions problem
 #'
-#' @description Simulate data for two-sided matching markets. In the simulation for the Sorensen (2007) with one
-#' selection equation (\code{selection}), an equal sharing rule of \eqn{\lambda = 0.5} is used.
+#' @description Simulate data for two-sided matching markets. In the simulation for the 
+#' Sorensen (2007) model with one selection equation, an equal sharing rule of 
+#' \eqn{\lambda = 0.5} is used.
 #'
 #' @param m integer indicating the number of markets to be simulated.
 #' @param nStudents integer indicating the number of students per market.
@@ -27,10 +28,12 @@
 #' @param students character vector of variable names for student characteristics. These variables carry the same value for any student.
 #' @param binary logical: if \code{TRUE} outcome variable is binary; if \code{FALSE} outcome variable is continuous.
 #' @param seed integer setting the state for random number generation. Defaults to \code{set.seed(123)}.
+#' @param verbose .
 #' 
 #' @export
 #' 
 #' @import stats
+#' @importFrom utils setTxtProgressBar txtProgressBar
 #' 
 #' @return
 #' 
@@ -46,23 +49,22 @@
 #' @keywords generate
 #' 
 #' @examples
-#' \dontrun{
+#' 
 #' ## Simulate two-sided matching data for 2 markets (m=2) with 10 students
 #' ## (nStudents=10) per market and 3 colleges (nColleges=3) with quotas of
 #' ## 2, 3, and 5 students, respectively.
 #' 
-#' xdata <- stabsim2(m=2, nStudents=10, nSlots=c(2,3,5), 
-#'   colleges = "c1",
-#'   students = "s1",
+#' xdata <- stabsim2(m=2, nStudents=10, nSlots=c(2,3,5), verbose=FALSE,
+#'   colleges = "c1", students = "s1",
 #'   outcome = ~ c1:s1 + eta + nu,
 #'   selection = ~ -1 + c1:s1 + eta
 #' )
 #' head(xdata$OUT)
 #' head(xdata$SEL)
-#' }
+#' 
 stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots, 
                      colleges, students, outcome, selection, 
-                     binary=FALSE, seed=123){
+                     binary=FALSE, seed=123, verbose=TRUE){
 
   set.seed(seed)
   
@@ -181,16 +183,30 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
     
     if(method == "Klein"){
       
-      SELc <- cbind(m.id=mi, Vc=Vc[indx], Cmtch[indx,], #apply(Cmtch,2,function(i) i[indx]),
-                         Xexp[indx,setdiff(names(Xexp),names(Xmtch))], indices[indx,])
-      SELs <- cbind(m.id=mi, Vs=Vs[indx], Smtch[indx,], #apply(Smtch,2,function(i) i[indx]), 
-                         Xexp[indx,setdiff(names(Xexp),names(Xmtch))], indices[indx,])
+      ## for colleges: add main effects for all interation terms
+      college.terms <- attr( attr(terms.formula(selection.college), "factors"), "dimnames")[[1]]
+      college.terms <- college.terms[! college.terms %in% names(Cmtch)]
+      addvars <- as.data.frame(Xexp[indx,college.terms]); names(addvars) <- college.terms
+      
+      SELc <- cbind(m.id=mi, Vc=Vc[indx], Cmtch[indx,], addvars, indices[indx,])
+      
+      ## for students: add main effects for all interation terms
+      student.terms <- attr( attr(terms.formula(selection.student), "factors"), "dimnames")[[1]]
+      student.terms <- student.terms[! student.terms %in% names(Smtch)]
+      addvars <- as.data.frame(Xexp[indx,student.terms]); names(addvars) <- student.terms
+      
+      SELs <- cbind(m.id=mi, Vs=Vs[indx], Smtch[indx,], addvars, indices[indx,])
+      
       list(OUT=OUT, SELc=SELc, SELs=SELs)
             
     } else if(method == "Sorensen"){
       
-      SEL <- cbind(m.id=mi, V=Vc[indx]+Vs[indx], Wmtch[indx,], #apply(Wmtch,2,function(i) i[indx]), 
-                        Xexp[indx,setdiff(names(Xexp),names(Xmtch))], indices[indx,])
+      selection.terms <- attr( attr(terms.formula(selection), "factors"), "dimnames")[[1]]
+      selection.terms <- selection.terms[! selection.terms %in% names(Wmtch)]
+      addvars <- as.data.frame(Xexp[indx,selection.terms]); names(addvars) <- selection.terms
+      
+      SEL <- cbind(m.id=mi, V=Vc[indx]+Vs[indx], Wmtch[indx,], addvars, indices[indx,]) #Xexp[indx,setdiff(names(Xexp),names(Xmtch))]
+      
       list(OUT=OUT, SEL=SEL)
     }
   }
@@ -199,6 +215,11 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
     
     RETURN <- list(OUT=list(), SELs=list(), SELc=list())
     
+    cat("Generating data for", m, "matching markets...","\n")
+    if(verbose==TRUE){
+      pb <- txtProgressBar(style = 3)
+    }
+    
     for(i in 1:m){
       X <- stabsim2_inner(mi=i, nStudents=nStudents, nSlots=nSlots, 
                           colleges=colleges, students=students, outcome=outcome, selection=selection,
@@ -206,11 +227,19 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
       RETURN$OUT[[i]]  <- X$OUT
       RETURN$SELs[[i]] <- X$SELs
       RETURN$SELc[[i]] <- X$SELc
+      if(verbose==TRUE){
+        setTxtProgressBar(pb, i/m)
+      }
     }
        
   } else if(method == "Sorensen"){
     
     RETURN <- list(OUT=list(), SEL=list())  
+    
+    cat("Generating data for", m, "matching markets...","\n")
+    if(verbose==TRUE){
+      pb <- txtProgressBar(style = 3)
+    }
     
     for(i in 1:m){
       X <- stabsim2_inner(mi=i, nStudents=nStudents, nSlots=nSlots, 
@@ -218,6 +247,9 @@ stabsim2 <- function(m, nStudents, nColleges=length(nSlots), nSlots,
                           selection.student=selection.student, selection.college=selection.college)  
       RETURN$OUT[[i]] <- X$OUT
       RETURN$SEL[[i]] <- X$SEL
+      if(verbose==TRUE){
+        setTxtProgressBar(pb, i/m)
+      }
     }
   }
   

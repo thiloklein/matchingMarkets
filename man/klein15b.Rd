@@ -2,7 +2,7 @@
 \docType{data}
 \alias{klein15b}
 
-\title{Results of Monte Carlo Simulations in Klein (2015b).}
+\title{Results of Monte Carlo Simulations in Klein (2015b)}
 
 \description{
    Results of Monte Carlo Simulations in Klein (2015b) for 40 two-group markets.
@@ -23,10 +23,38 @@
 }
 
 \examples{
+## Plot of posterior distributions
+
+data(klein15b)
+
+tpe <- c(rep("Benchmark",2), rep("Experiment 1",2), rep("Experiment 2",2))
+
+for(i in seq(1,length(klein15b)-1,2)){
+  ntu <- klein15b[[i]]
+  ols <- klein15b[[i+1]]
+
+  ntu <- ntu[,colnames(ntu) == "beta.wst.ieq"]
+  ols <- ols[,colnames(ols) == "beta.wst.ieq"]
+  
+  if(i == 1){
+    draws <- data.frame(Structural=ntu, OLS=ols, type=tpe[i]) #, stringsAsFactors=FALSE
+  } else{
+    draws <- rbind(draws, data.frame(Structural=ntu, OLS=ols, type=tpe[i]))
+  }
+}
+
+library(lattice)
+lattice.options(default.theme = standard.theme(color = FALSE))
+keys <- list(text=c("Structural model","OLS"), space="top", columns=2, lines=TRUE)
+densityplot( ~ Structural + OLS | type, plot.points=FALSE, auto.key=keys,
+       data = draws, xlab = "coefficient draws", ylab = "density", type = "l",
+       panel = function(x,...) {
+         panel.densityplot(x,...)
+         panel.abline(v=-1, lty=3)
+       })
+
 \dontrun{
-#######################################
-## Modes of posterior distributions  ##
-#######################################
+## Modes of posterior distributions
 
 ## load data
 data(klein15b)
@@ -48,50 +76,13 @@ apply(klein15b$exp.6.5.ols, 2, mode)
 ## Experiment 2
 apply(klein15b$exp.6.6.ntu, 2, mode)
 apply(klein15b$exp.6.6.ols, 2, mode)
-
-#####################################
-## Plot of posterior distributions ##
-#####################################
-
-## load data
-data(klein15b)
-
-par(mfrow=c(3,3))
-tpe <- c(rep("Benchmark",2), rep("Experiment 1",2), rep("Experiment 2",2))
-par(mar=c(5.1,4.6,0.8,2.1))
-
-for(i in seq(1,length(klein15b)-1,2)){
-  ntu <- klein15b[[i]]
-  ols <- klein15b[[i+1]]
-
-  ntu <- ntu[,colnames(ntu) %in% c("alpha","beta.wst.ieq","delta")]
-  ols <- ols[,colnames(ols) == "beta.wst.ieq"]
-
-  plot(density(ntu[,1]), xlab=expression(hat(alpha)), 
-    ylab="density", main="", axes=FALSE, xlim=c(-1,2))
-  axis(2,lwd=2,cex.axis=0.8); axis(1,lwd=2,cex.axis=0.8)
-  legend("topleft","Struct.",lty=1,bty="n")
-  abline(v=1, lty=3)
-
-  plot(density(ntu[,2]), xlab=expression(hat(beta)), 
-    ylab="density", main=tpe[i], axes=FALSE)
-  axis(2,lwd=2,cex.axis=0.8); axis(1,lwd=2,cex.axis=0.8)
-  points(density(ols), type="l", lty=2)
-  legend("topright",c("Struct.","OLS"),lty=c(1,2),bty="n")
-  abline(v=-1, lty=3)
-
-  plot(density(ntu[,3]), xlab=expression(hat(delta)), 
-    ylab="density", main="", axes=FALSE)
-  axis(2,lwd=2,cex.axis=0.8); axis(1,lwd=2,cex.axis=0.8)
-  legend("topleft","Struct.",lty=1,bty="n")
-  abline(v=0.5, lty=3)
 }
-}}
+}
 
 \references{
 Klein, T. (2015a). \href{https://ideas.repec.org/p/cam/camdae/1521.html}{Does Anti-Diversification Pay? A One-Sided Matching Model of Microcredit}. \emph{Cambridge Working Papers in Economics}, #1521.
 
-Klein, T. (2015b). \href{http://cran.r-project.org/package=matchingMarkets}{Analysis of stable matchings in R: Package matchingMarkets}. \emph{Vignette to R package matchingMarkets}, The Comprehensive R Archive Network.
+Klein, T. (2015b). \href{https://cran.r-project.org/package=matchingMarkets}{Analysis of stable matchings in R: Package matchingMarkets}. \emph{Vignette to R package matchingMarkets}, The Comprehensive R Archive Network.
 }
 
 \keyword{datasets}

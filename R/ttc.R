@@ -10,8 +10,9 @@
 
 #' @title Top-Trading-Cycles Algorithm for the house allocation problem
 #'
-#' @description Finds the stable matching in the \href{http://en.wikipedia.org/wiki/Herbert_Scarf#8._The_Housing_Market}{house allocation problem} with existing tenants.
-#' Uses the Top-Trading-Cycles Algorithm proposed in Abdulkadiroglu and Sonmez (1999).
+#' @description Finds the stable matching in the 
+#' \href{https://en.wikipedia.org/wiki/Top_trading_cycle}{house allocation problem} 
+#' with existing tenants. Uses the Top-Trading-Cycles Algorithm proposed in Abdulkadiroglu and Sonmez (1999).
 #'
 #' @param P list of individuals' preference rankings over objects.
 #' @param X 2-column-matrix of objects (\code{obj}) and their owners (\code{ind}).

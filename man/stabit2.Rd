@@ -2,13 +2,14 @@
 % Please edit documentation in R/stabit2.R
 \name{stabit2}
 \alias{stabit2}
-\alias{stabitCpp2}
-\alias{stabitCpp3}
-\title{Structural Matching Model to correct for sample selection bias in two-sided matching markets}
+\alias{stabit2Mat1}
+\alias{stabit2Sel1}
+\alias{stabit2Sel2}
+\title{Matching model and selection correction for college admissions}
 \usage{
-stabit2(OUT, SEL = NULL, colleges = NULL, students = NULL, outcome,
-  selection, binary = FALSE, niter, gPrior = FALSE, censored = 1,
-  thin = 1, ...)
+stabit2(OUT = NULL, SEL = NULL, colleges = NULL, students = NULL,
+  outcome = NULL, selection, binary = FALSE, niter, gPrior = FALSE,
+  censored = 1, thin = 1, nCores = max(1, detectCores() - 1), ...)
 }
 \arguments{
 \item{OUT}{data frame with characteristics of all observed matches, including
@@ -35,12 +36,14 @@ market identifier \code{m.id}, college identifier \code{c.id} and student identi
 
 \item{thin}{integer indicating the level of thinning in the MCMC draws. The default \code{thin=1} saves every draw, \code{thin=2} every second, etc.}
 
+\item{nCores}{number of cores to be used in parallel Gibbs sampling.}
+
 \item{...}{.}
 }
 \description{
-The function provides a Gibbs sampler for a structural matching model that corrects 
-for sample selection bias when the selection process is a two-sided matching game; i.e., 
-a matching of students to colleges.
+The function provides a Gibbs sampler for a structural matching model that 
+estimates preferences and corrects for sample selection bias when the selection process 
+is a two-sided matching game; i.e., a matching of students to colleges.
 
 The structural model consists of a selection and an outcome equation. The \emph{Selection Equation} 
 determines which matches are observed (\eqn{D=1}) and which are not (\eqn{D=0}).
@@ -80,15 +83,14 @@ That is, the observed outcomes would be a random sample from the population of i
 }
 \examples{
 ## --- SIMULATED EXAMPLE ---
-\dontrun{
+
 ## 1. Simulate two-sided matching data for 20 markets (m=20) with 100 students
 ##    (nStudents=100) per market and 20 colleges with quotas of 5 students, each
 ##    (nSlots=rep(5,20)). True parameters in selection and outcome equations are 
 ##    all equal to 1.
 
-xdata <- stabsim2(m=20, nStudents=100, nSlots=rep(5,20), 
-  colleges = "c1",
-  students = "s1",
+xdata <- stabsim2(m=20, nStudents=100, nSlots=rep(5,20), verbose=FALSE,
+  colleges = "c1", students = "s1",
   outcome = ~ c1:s1 + eta + nu,
   selection = ~ -1 + c1:s1 + eta
 )
@@ -144,26 +146,15 @@ head(xdata$OUT)
  summary(fit2, mfx=TRUE)
  
 ## 4-d. Also try the following functions
- coef(fit2)
- fitted(fit2)
- residuals(fit2)
- predict(fit, newdata=NULL)
+ #coef(fit2)
+ #fitted(fit2)
+ #residuals(fit2)
+ #predict(fit2, newdata=NULL)
 
    
-## 5. Plot MCMC draws for coefficients in outcome equation
- res <- as.data.frame(t(fit2$draws$alphadraws))
- res$iteration <- 1:nrow(res)
- library(tidyr)
- res.long <- gather(res, condition, measurement, 1:(ncol(res)-1))
- 
- library(lattice)
- lattice.options(default.args=list(as.table=TRUE), 
-                 default.theme=standard.theme(color=FALSE))
- xyplot(measurement ~ iteration | factor(condition), 
-        data = res.long, scales=list(relation="free"),
-        xlab = "iterations",
-        ylab = "paramter draws", type = "l") 
-}
+## 5. Plot MCMC draws for coefficients
+ plot(fit2)
+
 }
 \author{
 Thilo Klein

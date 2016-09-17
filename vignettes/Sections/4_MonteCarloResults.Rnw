@@ -2,54 +2,47 @@
 
 The first part of this section presents a simple simulation study of sorting bias. The second part presents Monte Carlo evidence of the correction method proposed in \citet{Klein2015a} (see Section \ref{Section:Multi-indexSS}) and implemented in \proglang{R} package \pkg{matchingMarkets}. It further provides Monte Carlo studies on the robustness of the proposed estimator in small samples.
 
+
 \subsection{A simple example}
 
 I first provide a brief overview of the basic functionality of the \pkg{matchingMarkets} package and introduce the model specification used in the Monte Carlo experiments. 
 %The required \proglang{R} packages are installed from the CRAN archive. 
 
 \subsubsection{Individual-level data}
-The \code{stabsim} function simulates individual-level, independent variables. The code below generates data for \code{m=1,000} markets with \code{gpm=2} groups per market and group size \code{ind=5}.
+The \code{stabsim} function simulates individual-level, independent variables. The code below generates data for \code{m=200} markets with \code{gpm=2} groups per market and group size \code{ind=5}.
 
 <<4a>>=
 ## Simulate individual-level, independent variables
 library(matchingMarkets, quietly = TRUE)
-idata <- stabsim(m=1000, ind=5, seed=123, gpm=2)
+idata <- stabsim(m=200, ind=5, seed=123, gpm=2)
 head(idata)
 @
-\noindent The resulting data frame contains a market and group identifiers $m.id$ and $g.id$ and the independent variable $wst\sim B(1,0.5)$. The dependent variable $R$ depends on the error terms and is still undefined at this stage. 
+\noindent The resulting data frame contains a market and group identifiers \code{m.id} and \code{g.id} and the independent variable \code{wst} $\sim N(0,1)$. The dependent variable \code{R} depends on the error terms and is still undefined at this stage. 
 
 \subsubsection{Group-level data}
 
 Next we apply the function \code{stabit} that serves three purposes. 
 \begin{itemize}
-\item First, it specifies the list of variables to be included in \code{selection} and \code{outcome} equations and generates group-level variables based on group members' individual characteristics. For example, the operation \code{ieq="wst"} produces the probability that two randomly drawn group members have the same value of \code{wst}. 
+\item First, it specifies the list of variables to be included in \code{selection} and \code{outcome} equations and generates group-level variables based on group members' individual characteristics. For example, the operation \code{add="wst"} produces the average of variable \code{wst} for all group members. 
 \item Second, if \code{simulation="NTU"}, it draws standard normal, group-level unobservables \code{eta} and \code{xi} to enter selection and outcome equation and selects equilibrium groups based on the group formation game with non-transferable utility, assuming pairwise aligned preferences as in \citet{Klein2015a}. In the case of two groups per market, this selection rule results in one dominant group with the maximum group valuation and one group comprised of the residual agents.
 \item Third, the argument \code{method="model.frame"} specifies that only the group-level model matrices be generated. Other options are estimators using \code{"NTU"} for selection correction using non-transferable utility matching as selection rule or \code{"outcome"} for estimation of the outcome equation only.
 \end{itemize}
 
 <<4b,cache=TRUE,results='hide'>>=
-## Simulate group-level variables (takes a minute to complete...)
+## Simulate group-level variables
 mdata <- stabit(x=idata, simulation="NTU", method="model.frame",
-                selection = list(ieq="wst"), 
-                outcome   = list(ieq="wst"))$model.frame
+                selection = list(add="wst"), 
+                outcome   = list(add="wst"))
 @
-The resulting object \code{mdata} is a list containing data for selection and outcome equations in \code{SEL} and \code{OUT}, respectively. \code{SEL} contains 252,000 rows, one for each of $5 \choose 10$ = 252 feasible groups in each of the 1,000 markets. A group's valuation is given by \code{V = +1*wst.ieq + eta}. The variable \code{D} indicates which groups are observed in equilibrium \code{D=1} and which are not \code{D=0}.
+The resulting object \code{mdata} is a list containing data for selection and outcome equations in \code{SEL} and \code{OUT}, respectively. \code{SEL} contains 252,000 rows, one for each of $5 \choose 10$ = 252 feasible groups in each of the 200 markets. A group's valuation is given by \code{V = +1*wst.add + eta}. The variable \code{D} indicates which groups are observed in equilibrium \code{D=1} and which are not \code{D=0}.
 <<4c1>>=
 head(mdata$OUT, 4)
 @
-The outcome data in \code{OUT} contains 2,000 rows, one for each of 2 equilibrium groups per market. The group outcome is given by \code{R = -1*wst.ieq + epsilon} with \code{epsilon := +0.5*eta + xi}.
+The outcome data in \code{OUT} contains 400 rows, one for each of 2 equilibrium groups per market. The group outcome is given by \code{R = 0*wst.add + epsilon} with \code{epsilon = eta + xi}.
 <<4c2>>=
 head(mdata$SEL, 4)
 @
-% \begin{eqnarray}
-% V &=& \alpha\cdot\text{wst.ieq } + \eta \\ %\text{ with } \eta \sim N(0,1)
-% D &=& 1[V \text{ satisfies equilibrium condition}],
-% \end{eqnarray}
-% The outcome equation determines the group outcome $R$.
-% \begin{eqnarray}
-% R &=& \beta\cdot\text{wst.ieq } + \varepsilon, \text{ with } \varepsilon = \delta\eta + \xi \label{Eqn:outcomeSimulation} %\text{ and } \xi \sim N(0,1) 
-% \end{eqnarray}
-% In the \code{matchingMarkets} package, the true parameters are hardcoded as $\alpha = 1; \ \beta = -1; \ \delta = 0.5$. 
+
 
 \subsubsection{Bias from sorting}
 
@@ -57,9 +50,10 @@ Now, estimating the outcome equation of this model with OLS yields upward biased
 
 <<4d>>=
 ## Naive OLS estimation
-lm(R ~ wst.ieq, data=mdata$OUT)$coefficients
+lm1 <- lm(R ~ wst.add, data=mdata$OUT)
+summary(lm1)
 @
-\noindent The source of this bias is the positive correlation between \code{epsilon} and the exogenous variable \code{wst.ieq} (see Figure \ref{Fig:Matching-on-unobservables}b).
+\noindent The source of this bias is the positive correlation between \code{epsilon} and the exogenous variable \code{wst.add} (see Figure \ref{Fig:Matching-on-unobservables}b).
 
 \begin{figure}[htbp!]
   \caption{Matching on unobservables}
@@ -70,29 +64,28 @@ lm(R ~ wst.ieq, data=mdata$OUT)$coefficients
     <<predictions, echo=FALSE, cache=TRUE, results="hide", fig.height=6>>=
     library(ggplot2)
     #library(gridExtra)
-    lm2 <- lm(R ~ wst.ieq, data=mdata$OUT)
-    lm2$coefficients["wst.ieq"] <- lm2$coefficients["wst.ieq"] + 1 ## !!
-      conf.int <- data.frame(with(mdata$OUT, cbind(wst.ieq, predict(lm2, newdata=mdata$OUT, 
-        interval="confidence", level=.95))))
-    ggplot(conf.int, aes(x = wst.ieq, y = fit)) +
+    lm2 <- lm(R ~ wst.add, data=mdata$OUT)
+    conf.int <- data.frame(with(mdata$OUT, cbind(wst.add, predict(lm2, newdata=mdata$OUT, 
+      interval="confidence", level=.95))))
+    ggplot(conf.int, aes(x = wst.add, y = fit)) +
       theme_bw() +
       theme( axis.text=element_text(size=22), axis.title=element_text(size=26) ) +
       geom_smooth(data = conf.int, aes(ymin = lwr, ymax = upr), stat = "identity") +
-      labs(y = "R.hat - R")
+      labs(y = expression(hat(R)))
     @
   \end{subfigure}
   \quad
   \begin{subfigure}{.46\textwidth}
     \caption{Correlation of independent variable with eta}
     <<error, echo=FALSE, cache=TRUE, results="hide", fig.height=6>>= 
-    lm1 <- lm(epsilon*0.5 ~ wst.ieq, data=mdata$OUT)
-    conf.int <- data.frame(with(mdata$OUT, cbind(wst.ieq, predict(lm1, newdata=mdata$OUT, 
+    lm1 <- lm(epsilon ~ wst.add, data=mdata$OUT)
+    conf.int <- data.frame(with(mdata$OUT, cbind(wst.add, predict(lm1, newdata=mdata$OUT, 
       interval="confidence", level=.95))))
-    ggplot(conf.int, aes(x = wst.ieq, y = fit)) +
+    ggplot(conf.int, aes(x = wst.add, y = fit)) +
       theme_bw() +
       theme( axis.text=element_text(size=22), axis.title=element_text(size=26) ) +
       geom_smooth(data = conf.int, aes(ymin = lwr, ymax = upr), stat = "identity") +
-      labs(y = "delta x eta")
+      labs(y = "eta")
     @
   \end{subfigure}
 \end{figure}
@@ -100,14 +93,14 @@ lm(R ~ wst.ieq, data=mdata$OUT)$coefficients
 
 <<4e>>=
 ## epsilon is correlated with independent variables
-with(mdata$OUT, cor(epsilon, wst.ieq))
+with(mdata$OUT, cor(epsilon, wst.add))
 @
 \noindent The intuition behind this bias is given a formal treatement in \citet{Klein2015a}.
 We know that \code{epsilon = delta*eta}. Thus, conditional on \code{eta}, the unobservables in the outcome equation are independent of the exogenous variables (because \code{xi} does not enter the selection equation). 
 
 <<4f>>=
 ## xi is uncorrelated with independent variables
-with(mdata$OUT, cor(xi, wst.ieq))
+with(mdata$OUT, cor(xi, wst.add))
 @
 
 \subsubsection{Correction of sorting bias}
@@ -116,10 +109,10 @@ with(mdata$OUT, cor(xi, wst.ieq))
 
 <<4g>>=
 ## 1st stage: obtain fitted value for eta
-lm.sel <- lm(V ~ -1 + wst.ieq, data=mdata$SEL); lm.sel$coefficients
+lm.sel <- lm(V ~ -1 + wst.add, data=mdata$SEL); lm.sel$coefficients
 eta <- lm.sel$resid[mdata$SEL$D==1]
 ## 2nd stage: control for eta
-lm(R ~ wst.ieq + eta, data=mdata$OUT)$coefficients
+coefficients( lm(R ~ wst.add + eta, data=mdata$OUT) )
 @
 
 The figure below plots the bias from sorting against the independent variable, for the naive OLS and the selection-correction from the structural model.
@@ -132,35 +125,41 @@ The figure below plots the bias from sorting against the independent variable, f
   ## http://rstudio-pubs-static.s3.amazonaws.com/7024_e3a68a9b35454e74abfe15b621c50502.html
   library(ggplot2)
 
-  lm1 <- lm(R ~ wst.ieq, data=mdata$OUT)
-  lm1$coefficients["wst.ieq"] <- lm1$coefficients["wst.ieq"] + 1 ## !!
-  conf.int1 <- data.frame(with(mdata$OUT, cbind(wst.ieq, predict(lm1, newdata=mdata$OUT, 
+  lm1 <- lm(R ~ wst.add, data=mdata$OUT)
+  conf.int1 <- data.frame(with(mdata$OUT, cbind(wst.add, predict(lm1, newdata=mdata$OUT, 
     interval="confidence", level=.95))))
 
-  lm2 <- lm(R ~ wst.ieq + eta, data=mdata$OUT)
-  lm2$coefficients["wst.ieq"] <- lm2$coefficients["wst.ieq"] + 1 ## !!
-  conf.int2 <- data.frame(with(mdata$OUT, cbind(wst.ieq, predict(lm2, newdata=mdata$OUT, 
+  lm2 <- lm(R ~ wst.add + eta, data=mdata$OUT)
+  conf.int2 <- data.frame(with(mdata$OUT, cbind(wst.add, predict(lm2, newdata=mdata$OUT, 
     interval="confidence", level=.95))))
   conf.int2[,2:4] <- apply(conf.int2[,2:4], 2, function(i) i - lm2$coefficients["eta"]*eta)
 
   conf.int <- rbind(conf.int1, conf.int2)
   conf.int$model <- c(rep("OLS",dim(conf.int1)[1]), rep("Structural",dim(conf.int2)[1]))
 
-  ggplot(conf.int, aes(x = wst.ieq, y = fit, colour=model)) +
+  ggplot(conf.int, aes(x = wst.add, y = fit, colour=model)) +
     theme_bw() +
     geom_smooth(data = conf.int, aes(ymin = lwr, ymax = upr), stat = "identity") +
-    labs(y = "R.hat - R")
+    labs(y = expression(hat(R)))
 @
 \end{figure}
 
 \noindent In most real-world applications, however, the match valuations $V$ are unobserved. The solution is to estimate the selection equation by imposing equilibrium bounds (as derived in Proposition \ref{Prop:EquConditionTU}) on the latent match valuations and this is the procedure I follow in the Monte Carlo experiments below.
 
 
+<<4g2,cache=TRUE,results='hide'>>=
+## 4. Run Gibbs sampler
+fit1 <- stabit(x=idata, method="NTU", simulation="NTU", censored=1, niter=2000,
+                selection = list(add="wst"), outcome = list(add="wst"))
+@
+<<4g3>>=
+summary(fit1)
+@
 
 
 \subsection{Simulation results}
 
-The Monte Carlo experiments are designed to test for the validity of the estimator. I continue to use the variable \code{wst.ieq} from the original model. The true parameters are defined as seen in the first row of Table \ref{Tab:MCresults}. The table is composed of three blocks, each representing a different market setting and sampling strategy. The first block gives the results of a benchmark experiment that aims to see whether the structural model 
+The Monte Carlo experiments are designed to test for the validity of the estimator. I continue to use the variable \code{wst.add} from the original model. The true parameters are defined as seen in the first row of Table \ref{Tab:MCresults}. The table is composed of three blocks, each representing a different market setting and sampling strategy. The first block gives the results of a benchmark experiment that aims to see whether the structural model 
 can reduce the bias of standard OLS estimates. Experiment 1 tests the robustness of the estimator when applied to a random sample of the groups' members. Experiment 2 works with the full population of group members but uses random samples from the counterfactual groups to reduce the computational burden arising from the combinatorics of large groups. I discuss motivation, set-up, implementation and results of each experiment in turn. 
 
 
@@ -193,8 +192,8 @@ idata <- stabsim(m=40, ind=5, seed=123, gpm=2)
 \item[a)] Draw group-level unobservables $\xi$ and $\eta$ that determine both (i) which groups are observed in equilibrium and (ii) the equilibrium group outcomes.
 %## 2.a. Simulate group-level data for ith iteration
 <<4i,eval=FALSE>>=
-mdata <- stabit(x=idata, selection=list(ieq="wst"), outcome=
-list(ieq="wst"), simulation="NTU", method="model.frame", seed=i)
+mdata <- stabit(x=idata, selection=list(add="wst"), outcome=
+list(add="wst"), simulation="NTU", method="model.frame", seed=i)
 @
 \item[b)] Obtain parameter estimates using (i) OLS and (ii) the structural model. %using the \code{smm} function.
 %## 2.b. Run Gibbs sampler for OLS and structural model
