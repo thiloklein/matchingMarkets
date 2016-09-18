@@ -29,7 +29,7 @@ These processes determine which matches are observed -- and which are not -- and
 \begin{table}
 \centering
 \small
-\caption{Implemented likelihood estimators for structural matching models}
+\caption{Implemented full likelihood estimators for structural matching models}
 \begin{tabular}{l|lllll}
 \hline\hline
           &                &           & \multicolumn{3}{c}{Equilibrium assumptions} \\
@@ -38,18 +38,26 @@ Market    & Functions      & Equations & Type 1         & Type 2                
 \hline
 &&&&&\\
 Two-sided & \code{stabit2} & matching  & Klein (2017)   & \multicolumn{1}{c}{--} & Logan et al.\ (2008)  \\
-&&&&&\\
+%&&&&&\\
+\cline{3-6}
           &                & selection & Klein (2017)   & Sorensen (2007)        & \multicolumn{1}{c}{--} \\
-          &                &           &                & Park (2013)            & \multicolumn{1}{c}{--} \\
-&&&&&\\
+          &                &           &                & Park (2013)            &  \\
+          &                &           &                & Chen (2013)            &  \\
+%&&&&&\\
 \hline
 &&&&&\\
 One-sided & \code{stabit}  & selection & \multicolumn{1}{c}{--}& Klein (2015) & \multicolumn{1}{c}{--} \\
-&&&&&\\
+%&&&&&\\
 \hline\hline
 \end{tabular}
 \end{table}
-%\footnote{Chen (2013) and Park (2012).}
+
+
+\citet{Sorensen2007};
+\citet{Chen2013}; 
+\citet{Park2013};
+\citet{Logan2008}
+
 
 Characterisation of model vis-a-vis the literature:
 \begin{itemize}
@@ -87,12 +95,12 @@ Market    & Transfers & Functions  & One-to-one       & Many-to-one        & Man
 &&&&&\\
 Two-sided & no        & \multicolumn{4}{l}{\code{hri}: Hospital/Residents problem with Incomplete preferences (Prosser, 2014)} \\
           &           &            & $\checkmark$ stable marriage  & $\checkmark$ college admissions & \multicolumn{1}{c}{--} \\
-&&&&&\\
-%\cline{3-6}
+%&&&&&\\
+\cline{3-6}
           & no        & \multicolumn{4}{l}{\code{iaa}: Immediate Acceptance Algorithm (a.k.a.\ `Boston' mechanism) and} \\
           &           & \multicolumn{4}{l}{\textcolor{white}{\code{iaa}:} Deferred Acceptance Algortihm (Gale/Shapley, 1962)}  \\
           &           &            & \multicolumn{1}{c}{--} & $\checkmark$ college admissions & \multicolumn{1}{c}{--} \\
-&&&&&\\
+%&&&&&\\
 %\cline{2-6}
 %          & yes       & \multicolumn{4}{l}{\code{asg}: Assignment Game (Shapley/Shubik, 1971)}\\
 %          &           &            & \multicolumn{1}{c}{--} & $\checkmark$ assignment game  & \multicolumn{1}{c}{--} \\
@@ -101,23 +109,24 @@ Two-sided & no        & \multicolumn{4}{l}{\code{hri}: Hospital/Residents proble
 &&&&&\\
 One-sided & no        & \multicolumn{4}{l}{\code{sri}: Stable Roommates problem with Incomplete preferences (Prosser, 2014)} \\
           &           &            & $\checkmark$ stable roommates & \multicolumn{1}{c}{--} & $\checkmark$ stable fixtures \\
-&&&&&\\
-%\cline{3-6}
+%&&&&&\\
+\cline{3-6}
           & no        & \multicolumn{4}{l}{\code{ttc}: Top-Trading-Cycles algorithm (Shapley/Scarf, 1974)} \\
           &           &            & $\checkmark$ housing market   & $\checkmark$ college admissions & \multicolumn{1}{c}{--} \\
           &           &            & $\checkmark$ kidney exchange  &    &  \\
-&&&&&\\
-%\cline{2-6}
+%&&&&&\\
+\cline{3-6}
           & yes       & \multicolumn{4}{l}{\code{plp}: Partitioning Linear Programme (Quint, 1991)} \\
           &           &            & $\checkmark$stable roommates & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
-&&&&&\\
+%&&&&&\\
 \hline\hline
 \end{tabular}
 \end{table}
 
-
-
-
+\citet{Quint1991}; 
+\citet{Prosser2014};
+\citet{Gale1962};
+\citet{Shapley1974}
 
 \noindent Frequently Asked Questions
 \begin{itemize}
