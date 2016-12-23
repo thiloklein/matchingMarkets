@@ -10,6 +10,8 @@ Imports:
     partitions,
     parallel,
     stats
+Suggests:
+    ggplot2
 SystemRequirements: Java
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress (>= 0.2)
 Suggests:
