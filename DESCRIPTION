@@ -11,11 +11,10 @@ Imports:
     parallel,
     stats
 Suggests:
+    knitr,
     ggplot2
 SystemRequirements: Java
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress (>= 0.2)
-Suggests:
-    knitr
 VignetteBuilder: knitr
 Title: Analysis of Stable Matchings
 Author: Thilo Klein
