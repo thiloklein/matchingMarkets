@@ -182,11 +182,11 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
   ## consistency checks
   drop <- which( apply(s.prefs, 2, function(z) sum(!is.na(z))) == 0)
   if( length(drop)>0 ){
-    stop(paste("Need to drop s.prefs column(s):",drop))
+    stop(paste("Need to drop s.prefs column(s):", paste(drop, collapse=", ")))
   }
   drop <- which( apply(c.prefs, 2, function(z) sum(!is.na(z))) == 0)
   if( length(drop)>0 ){
-    stop(paste("Need to drop c.prefs column(s):",drop))
+    stop(paste("Need to drop c.prefs column(s):", paste(drop, collapse=", ")))
   }
   
   ## -------------------------------------------------------
@@ -308,7 +308,8 @@ c2m <- function(s.prefs, c.prefs, nSlots){
       #c(x, rep(NA, ncol(s.prefs)-length(x)))
       c(x, rep(NA, sum(nSlots)-length(x)))
     } else{
-      c(x)
+      #c(x)
+      c(x, rep(NA, sum(nSlots)-length(x)))
     }    
   }
   s.prefs <- sapply(1:ncol(s.prefs), function(i) fun1(i) )

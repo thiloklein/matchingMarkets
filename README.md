@@ -55,8 +55,12 @@ install.packages("matchingMarkets", repos="http://R-Forge.R-project.org")
 library(matchingMarkets)
 ```
 
+Note: If you get a Java error such as `JAVA_HOME cannot be determined from the Registry`, this can be resolved by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See [this post](https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/) and download the Java version from the [Oracle website](http://www.java.com/en/download/manual.jsp).
+
 
 ## Documentation
 
 Package documentation is available at [matchingMarkets.org](http://matchingMarkets.org) and the [vignette](https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf) is available from the [CRAN page](https://cran.r-project.org/package=matchingMarkets). An application of the estimator in function `stabit` is in [Klein (2015)](https://ideas.repec.org/p/cam/camdae/1521.html).
+
+
 

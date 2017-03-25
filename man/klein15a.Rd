@@ -11,7 +11,7 @@
 \usage{data(klein15a)}
 
 \format{
-   This list contains the following elements:
+   A list containing the following elements:
    \describe{
       \item{model.list}{.}
       \item{coefs}{.}

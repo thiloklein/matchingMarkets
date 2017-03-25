@@ -51,7 +51,6 @@
       <div class="nav">
         <ul class="nav">
           <li><a href="index.html">Home</a></li>
-          <li><a href="reference.html">Reference</a></li>
         </ul>
       </div>
     </div>
@@ -84,12 +83,13 @@
 <li><p><code>stabit2</code>: Implements the Bayes estimator for a two-sided matching game (i.e. the <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems">college admissions</a> and <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem">stable marriage</a> problems).</p></li>
 </ul>
 
-<p>and four algorithms that can be used to simulate matching data:</p>
+<p>and five algorithms that can be used to simulate matching data:</p>
 
 <ul>
 <li><p><code>hri</code>: Constraint model for the hospital/residents problem. Finds <em>all</em> stable matchings in two-sided matching markets. Implemented for both the <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem">stable marriage problem</a> (one-to-one matching) and the <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems">hospital/residents problem</a>, also known as college admissions problem (many-to-one matching). </p></li>
-<li><p><code>iaa</code>: Immediate Acceptance Algorithm (a.k.a. Boston mechanism): First-preference-first algorithm used for school choice in many countries.</p></li>
+<li><p><code>iaa</code>: Immediate Acceptance Algorithm (a.k.a. Boston mechanism): First-preference-first algorithm used for school choice in many countries. And Gale-Shapley Deferred Acceptance Algorithm.</p></li>
 <li><p><code>sri</code>: Constraint model for the stable roommates problem. Finds all stable matchings in the <a href="https://en.wikipedia.org/wiki/Stable_roommates_problem">roommates problem</a> (one-sided matching market).</p></li>
+<li><p><code>plp</code>: Partitioning Linear Programme. Finds stable matchings in the <a href="https://en.wikipedia.org/wiki/Stable_roommates_problem">roommates problem</a> (one-sided matching market) with transferable utility.</p></li>
 <li><p><code>ttc</code>: Top-Trading-Cycles Algorithm. Finds stable matchings in the <a href="https://en.wikipedia.org/wiki/Top_trading_cycle">housing market problem</a>.</p></li>
 </ul>
 
@@ -120,9 +120,116 @@ library(matchingMarkets)
 library(matchingMarkets)
 </code></pre>
 
+<p>Note: If you get a Java error such as <code>JAVA_HOME cannot be determined from the Registry</code>, this can be resolved by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See <a href="https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/">this post</a> and download the Java version from the <a href="http://www.java.com/en/download/manual.jsp">Oracle website</a>.</p>
+
 <h2>Documentation</h2>
 
 <p>Package documentation is available at <a href="http://matchingMarkets.org">matchingMarkets.org</a> and the <a href="https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf">vignette</a> is available from the <a href="https://cran.r-project.org/package=matchingMarkets">CRAN page</a>. An application of the estimator in function <code>stabit</code> is in <a href="https://ideas.repec.org/p/cam/camdae/1521.html">Klein (2015)</a>.</p>
+
+
+
+
+    <h2>Function reference</h2>
+
+    <h3>Package</h3>
+    <p>Gives an overview of the various functions used in the matchingMarkets package.</p>
+
+
+    <ul class="index">
+        
+      <li>
+        <code><a href="matchingMarkets-package.html">matchingMarkets-package</a></code>(matchingMarkets)<br />An R package for the analysis of stable matchings.</li>
+    
+    </ul>
+    <h3>Algorithms</h3>
+    <p>Documentation for the most common matching algorithms.</p>
+
+
+    <ul class="index">
+    
+      <li class = "icon">
+        <a href="hri.html"><img src="icons/hri.png" width = "40" height = "40" /></a><code><a href="hri.html">hri</a></code><br />
+        All stable matchings in the hospital/residents problem with incomplete lists</li>
+            
+      <li class = "icon">
+        <a href="iaa.html"><img src="icons/iaa.png" width = "40" height = "40" /></a><code><a href="iaa.html">iaa</a></code><br />
+        Immediate Acceptance Algorithm (a.k.a. Boston mechanism) for two-sided matching markets</li>
+            
+      <li class = "icon">
+        <a href="sri.html"><img src="icons/sri.png" width = "40" height = "40" /></a><code><a href="sri.html">sri</a></code><br />
+        All stable matchings in the stable roommates problem with incomplete lists</li>
+            
+      <li class = "icon">
+        <a href="plp.html"><img src="icons/plp.png" width = "40" height = "40" /></a><code><a href="plp.html">plp</a></code><br />
+        Partitioning Linear Programme for the stable roommates problem</li>
+            
+      <li class = "icon">
+        <a href="ttc.html"><img src="icons/ttc.png" width = "40" height = "40" /></a><code><a href="ttc.html">ttc</a></code><br />
+        Top-Trading-Cycles Algorithm for the house allocation problem</li>
+        
+    </ul>
+    <h3>Estimators</h3>
+    <p>Two structural estimators for one-sided and two-sided matching markets.</p>
+
+
+    <ul class="index">
+    
+      <li class = "icon">
+        <a href="stabit.html"><img src="icons/stabit.png" width = "40" height = "40" /></a><code><a href="stabit.html">stabit</a></code>(stabitSel2)<br />
+        Matching model and selection correction for group formation</li>
+            
+      <li class = "icon">
+        <a href="stabit2.html"><img src="icons/stabit2.png" width = "40" height = "40" /></a><code><a href="stabit2.html">stabit2</a></code>(stabit2Mat1, stabit2Sel1, stabit2Sel2)<br />
+        Matching model and selection correction for college admissions</li>
+        
+    </ul>
+    <h3>Data generation</h3>
+    <p>Two functions to produce simulated data for one-sided and two-sided matching markets.</p>
+
+
+    <ul class="index">
+    
+      <li class = "icon">
+        <a href="stabsim.html"><img src="icons/stabsim.png" width = "40" height = "40" /></a><code><a href="stabsim.html">stabsim</a></code><br />
+        Simulated data for group formation problem</li>
+            
+      <li class = "icon">
+        <a href="stabsim2.html"><img src="icons/stabsim2.png" width = "40" height = "40" /></a><code><a href="stabsim2.html">stabsim2</a></code><br />
+        Simulated data for college admissions problem</li>
+        
+    </ul>
+    <h3>Datasets</h3>
+    <p>Description of three datasets for matching markets contained in the package.</p>
+
+
+    <ul class="index">
+        
+      <li>
+        <code><a href="baac00.html">baac00</a></code><br />Townsend Thai Project BAAC Annual Resurvey, 2000</li>
+            
+      <li>
+        <code><a href="klein15a.html">klein15a</a></code><br />MCMC results in Klein (2015a)</li>
+            
+      <li>
+        <code><a href="klein15b.html">klein15b</a></code><br />Results of Monte Carlo Simulations in Klein (2015b)</li>
+    
+    </ul>
+    <h3>Other</h3>
+    
+
+    <ul class="index">
+        
+      <li>
+        <code><a href="khb.html">khb</a></code><br />Karlson-Holm-Breen method for comparing probit coefficients</li>
+            
+      <li>
+        <code><a href="mce.html">mce</a></code><br />MC Experiments</li>
+    
+    </ul>
+
+
+
+
 
   </div>
 

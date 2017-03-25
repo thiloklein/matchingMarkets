@@ -53,7 +53,6 @@ Thilo Klein
       <div class="nav">
         <ul class="nav">
           <li><a href="index.html">Home</a></li>
-          <li><a href="reference.html">Reference</a></li>
         </ul>
       </div>
     </div>
@@ -76,7 +75,7 @@ Thilo Klein
     <h2>Arguments</h2>
     <dl>
       <dt>P</dt>
-      <dd>list of individuals&#39; preference rankings over objects.</dd>
+      <dd>matrix of individuals&#39; preference rankings (Rank Order Lists) over objects.</dd>
       <dt>X</dt>
       <dd>2-column-matrix of objects (<code>obj</code>) and their owners (<code>ind</code>).</dd>
     </dl>
@@ -85,7 +84,7 @@ Thilo Klein
       <h2>Value</h2>
 
       <p><dl>
-<code>ttc</code> returns a 2-column matrix of the stable matching solution for the housing market problem based on the Top-Trading-Cycles algorithm.
+<code>ttc</code> returns a 2-column matrix of the matching solution for the housing market problem based on the Top-Trading-Cycles algorithm.
 </dl></p>
 
     </div>
@@ -109,48 +108,39 @@ with existing tenants. Uses the Top-Trading-Cycles Algorithm proposed in Abdulka
     </div>
     
     <h2 id="examples">Examples</h2>
-    <pre class="examples"><div class='input'><span class="comment">## generate list of individuals' preference rankings over objects</span>
-<span class="symbol">P</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/list'>list</a></span><span class="keyword">(</span><span class="keyword">)</span>
-<span class="symbol">P</span><span class="keyword">[[</span><span class="number">1</span><span class="keyword">]</span><span class="keyword">]</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">2</span><span class="keyword">,</span><span class="number">5</span><span class="keyword">,</span><span class="number">1</span><span class="keyword">,</span><span class="number">4</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">)</span>    <span class="comment"># individual 1</span>
-<span class="symbol">P</span><span class="keyword">[[</span><span class="number">2</span><span class="keyword">]</span><span class="keyword">]</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">1</span><span class="keyword">,</span><span class="number">5</span><span class="keyword">,</span><span class="number">4</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">)</span>    <span class="comment"># individual 2</span>
-<span class="symbol">P</span><span class="keyword">[[</span><span class="number">3</span><span class="keyword">]</span><span class="keyword">]</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">2</span><span class="keyword">,</span><span class="number">1</span><span class="keyword">,</span><span class="number">4</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">,</span><span class="number">5</span><span class="keyword">)</span>    <span class="comment"># individual 3</span>
-<span class="symbol">P</span><span class="keyword">[[</span><span class="number">4</span><span class="keyword">]</span><span class="keyword">]</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">2</span><span class="keyword">,</span><span class="number">4</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">,</span><span class="number">1</span><span class="keyword">,</span><span class="number">5</span><span class="keyword">)</span>    <span class="comment"># individual 4</span>
-<span class="symbol">P</span><span class="keyword">[[</span><span class="number">5</span><span class="keyword">]</span><span class="keyword">]</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">4</span><span class="keyword">,</span><span class="number">3</span><span class="keyword">,</span><span class="number">1</span><span class="keyword">,</span><span class="number">2</span><span class="keyword">,</span><span class="number">5</span><span class="keyword">)</span><span class="keyword">;</span> <span class="symbol">P</span> <span class="comment"># individual 5</span></div>
-<div class='output'>[[1]]
-[1] 2 5 1 4 3
-
-[[2]]
-[1] 1 5 4 3 2
-
-[[3]]
-[1] 2 1 4 3 5
-
-[[4]]
-[1] 2 4 3 1 5
-
-[[5]]
-[1] 4 3 1 2 5
-
+    <pre class="examples"><div class='input'><span class="comment">## generate matrix of individuals' preference rankings over objects, a.k.a. Rank Order Lists (ROL)</span>
+<span class="symbol">P</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/gmp/topics/matrix'>matrix</a></span><span class="keyword">(</span><span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/c'>c</a></span><span class="keyword">(</span><span class="number">2</span><span class="keyword">,</span> <span class="number">5</span><span class="keyword">,</span> <span class="number">1</span><span class="keyword">,</span> <span class="number">4</span><span class="keyword">,</span> <span class="number">3</span><span class="keyword">,</span>  <span class="comment"># ROL of individual 1</span>
+              <span class="number">1</span><span class="keyword">,</span> <span class="number">5</span><span class="keyword">,</span> <span class="number">4</span><span class="keyword">,</span> <span class="number">3</span><span class="keyword">,</span> <span class="number">2</span><span class="keyword">,</span>  <span class="comment"># ind 2</span>
+              <span class="number">2</span><span class="keyword">,</span> <span class="number">1</span><span class="keyword">,</span> <span class="number">4</span><span class="keyword">,</span> <span class="number">3</span><span class="keyword">,</span> <span class="number">5</span><span class="keyword">,</span>  <span class="comment"># ind 3</span>
+              <span class="number">2</span><span class="keyword">,</span> <span class="number">4</span><span class="keyword">,</span> <span class="number">3</span><span class="keyword">,</span><span class="number">NA</span><span class="keyword">,</span><span class="number">NA</span><span class="keyword">,</span>  <span class="comment"># ind 4</span>
+              <span class="number">4</span><span class="keyword">,</span> <span class="number">3</span><span class="keyword">,</span> <span class="number">1</span><span class="keyword">,</span> <span class="number">2</span><span class="keyword">,</span><span class="number">NA</span><span class="keyword">)</span><span class="keyword">,</span> <span class="comment"># ind 5</span>
+            <span class="argument">byrow</span><span class="argument">=</span><span class="number">FALSE</span><span class="keyword">,</span> <span class="argument">nrow</span><span class="argument">=</span><span class="number">5</span><span class="keyword">)</span><span class="keyword">;</span> <span class="symbol">P</span></div>
+<div class='output'>     [,1] [,2] [,3] [,4] [,5]
+[1,]    2    1    2    2    4
+[2,]    5    5    1    4    3
+[3,]    1    4    4    3    1
+[4,]    4    3    3   NA    2
+[5,]    3    2    5   NA   NA
 </div>
 <div class='input'>
 <span class="comment">## generate 2-column-matrix of objects ('obj') and their owners ('ind')</span>
-<span class="symbol">X</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span><span class="keyword">(</span><span class="argument">ind</span><span class="argument">=</span><span class="number">1</span><span class="keyword">:</span><span class="number">5</span><span class="keyword">,</span> <span class="argument">obj</span><span class="argument">=</span><span class="number">1</span><span class="keyword">:</span><span class="number">5</span><span class="keyword">)</span><span class="keyword">;</span> <span class="symbol">X</span></div>
+<span class="symbol">X</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span><span class="keyword">(</span><span class="argument">ind</span><span class="argument">=</span><span class="number">1</span><span class="keyword">:</span><span class="number">5</span><span class="keyword">,</span> <span class="argument">obj</span><span class="argument">=</span><span class="number">5</span><span class="keyword">:</span><span class="number">1</span><span class="keyword">)</span><span class="keyword">;</span> <span class="symbol">X</span></div>
 <div class='output'>  ind obj
-1   1   1
-2   2   2
+1   1   5
+2   2   4
 3   3   3
-4   4   4
-5   5   5
+4   4   2
+5   5   1
 </div>
 <div class='input'>
 <span class="comment">## find assignment based on TTC algorithm</span>
 <span class="functioncall"><a href='ttc.html'>ttc</a></span><span class="keyword">(</span><span class="argument">P</span><span class="argument">=</span><span class="symbol">P</span><span class="keyword">,</span><span class="argument">X</span><span class="argument">=</span><span class="symbol">X</span><span class="keyword">)</span></div>
 <div class='output'>   ind obj
-1    1   2
-2    2   1
-21   4   4
-11   3   3
-12   5   5
+1    1   5
+11   2   1
+12   3   3
+2    4   2
+21   5   4
 </div></pre>
   </div>
   <div class="span4 sidebar">

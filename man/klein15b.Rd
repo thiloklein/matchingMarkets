@@ -11,7 +11,7 @@
 \usage{data(klein15b)}
 
 \format{
-   This list contains the following elements:
+   A list containing the following elements:
    \describe{
       \item{exp.5.5.ols}{Benchmark study, OLS: coefficient estimates for 40 markets with groups of 5. Data for all 5 group members is observed.}
       \item{exp.5.5.ntu}{Benchmark study, structural model.}

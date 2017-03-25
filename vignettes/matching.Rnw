@@ -6,6 +6,7 @@
 \usepackage{enumitem}
 \usepackage{hvfloat}
 \usepackage{subcaption}
+\usepackage{verbatim}
 
 \newtheorem{myprop}{Proposition}[section]
 \newtheorem{proof}{Proof}[section]

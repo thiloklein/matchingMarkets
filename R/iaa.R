@@ -133,6 +133,7 @@ iaa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
     
     for(j in approached){
       proposers   <- temp.singles[offers==j]
+      proposers   <- c.prefs[,j][c.prefs[,j] %in% proposers]
       stay.single <- temp.singles[offers==0]	# students who prefer remaining unassigned at current history
       
       for (k in 1:length(proposers)){

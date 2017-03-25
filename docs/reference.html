@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-<title>Function reference. matchingMarkets 0.3-3</title>
+<title>Home. matchingMarkets 0.3-3</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="Thilo Klein">
 
@@ -51,7 +51,6 @@
       <div class="nav">
         <ul class="nav">
           <li><a href="index.html">Home</a></li>
-          <li><a href="reference.html">Reference</a></li>
         </ul>
       </div>
     </div>
@@ -66,6 +65,70 @@
       
       <div class="row">
   <div class="span8">
+    <h1>matchingMarkets</h1>
+
+<blockquote>
+<p>Analysis of Stable Matchings in R</p>
+</blockquote>
+
+<p><a href="https://cran.r-project.org/package=matchingMarkets"><img src="http://www.r-pkg.org/badges/version/matchingMarkets?color=blue" alt="CRAN_Status_Badge"/></a>
+<a href="https://cran.r-project.org/package=matchingMarkets"><img src="http://cranlogs.r-pkg.org/badges/grand-total/matchingMarkets?color=blue" alt="CRAN_Downloads"/></a></p>
+
+<h2>Functions</h2>
+
+<p><code>matchingMarkets</code> comes with two estimators:</p>
+
+<ul>
+<li><p><code>stabit</code>: Implements a Bayes estimator that corrects for sample selection in matching markets when the selection process is a one-sided matching game (i.e. group formation).</p></li>
+<li><p><code>stabit2</code>: Implements the Bayes estimator for a two-sided matching game (i.e. the <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems">college admissions</a> and <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem">stable marriage</a> problems).</p></li>
+</ul>
+
+<p>and five algorithms that can be used to simulate matching data:</p>
+
+<ul>
+<li><p><code>hri</code>: Constraint model for the hospital/residents problem. Finds <em>all</em> stable matchings in two-sided matching markets. Implemented for both the <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem">stable marriage problem</a> (one-to-one matching) and the <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems">hospital/residents problem</a>, also known as college admissions problem (many-to-one matching). </p></li>
+<li><p><code>iaa</code>: Immediate Acceptance Algorithm (a.k.a. Boston mechanism): First-preference-first algorithm used for school choice in many countries. And Gale-Shapley Deferred Acceptance Algorithm.</p></li>
+<li><p><code>sri</code>: Constraint model for the stable roommates problem. Finds all stable matchings in the <a href="https://en.wikipedia.org/wiki/Stable_roommates_problem">roommates problem</a> (one-sided matching market).</p></li>
+<li><p><code>plp</code>: Partitioning Linear Programme. Finds stable matchings in the <a href="https://en.wikipedia.org/wiki/Stable_roommates_problem">roommates problem</a> (one-sided matching market) with transferable utility.</p></li>
+<li><p><code>ttc</code>: Top-Trading-Cycles Algorithm. Finds stable matchings in the <a href="https://en.wikipedia.org/wiki/Top_trading_cycle">housing market problem</a>.</p></li>
+</ul>
+
+<p>Functions <code>hri</code> and <code>sri</code> are based on Patrick Prosser&#39;s n-ary <a href="http://www.dcs.gla.ac.uk/%7Epat/roommates/distribution/papers/cpaior2014.pdf">constraint encoding</a> model. They allow for <em>incomplete preference lists</em> (some agents find certain agents unacceptable) and <em>unbalanced instances</em> (unequal number of agents on both sides).  </p>
+
+<h2>Installation</h2>
+
+<p>Get started by installing the <a href="https://www.r-project.org/">R software</a> for statistical computing.</p>
+
+<p>To get the latest <em>stable version</em> of the package from <a href="https://cran.r-project.org/package=matchingMarkets">CRAN</a>:</p>
+
+<pre><code class="R">install.packages(&quot;matchingMarkets&quot;)
+library(matchingMarkets)
+</code></pre>
+
+<p>Under Linux, the dependency package <code>gmp</code> requires that you have GNU MP (&gt; 4.1.4) installed, see <a href="http://gmplib.org">http://gmplib.org</a>.</p>
+
+<p>To get the most recent <em>development version</em> from <a href="https://github.com/thiloklein/matchingMarkets">GitHub</a>:</p>
+
+<pre><code class="R">install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;thiloklein/matchingMarkets&quot;)
+library(matchingMarkets)
+</code></pre>
+
+<p>or from <a href="https://r-forge.r-project.org/R/?group_id=1906">R-Forge</a>:</p>
+
+<pre><code class="R">install.packages(&quot;matchingMarkets&quot;, repos=&quot;http://R-Forge.R-project.org&quot;)
+library(matchingMarkets)
+</code></pre>
+
+<p>Note: If you get a Java error such as <code>JAVA_HOME cannot be determined from the Registry</code>, this can be resolved by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See <a href="https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/">this post</a> and download the Java version from the <a href="http://www.java.com/en/download/manual.jsp">Oracle website</a>.</p>
+
+<h2>Documentation</h2>
+
+<p>Package documentation is available at <a href="http://matchingMarkets.org">matchingMarkets.org</a> and the <a href="https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf">vignette</a> is available from the <a href="https://cran.r-project.org/package=matchingMarkets">CRAN page</a>. An application of the estimator in function <code>stabit</code> is in <a href="https://ideas.repec.org/p/cam/camdae/1521.html">Klein (2015)</a>.</p>
+
+
+
+
     <h2>Function reference</h2>
 
     <h3>Package</h3>
@@ -162,6 +225,29 @@
       <li>
         <code><a href="mce.html">mce</a></code><br />MC Experiments</li>
     
+    </ul>
+
+
+
+
+
+  </div>
+
+  <div class="span3 offset1 sidebar">
+    <h2>Vignettes</h2>
+    <ul>
+      <li><a href="https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf">Analysis of Stable Matchings</a></li>
+    </ul>
+    <h2>Dependencies</h2>
+    <ul>
+    <li><b>Imports</b>: Rcpp, rJava, lpSolve, lattice, parallel, partitions, stats</li>
+    <li><b>SystemRequirements</b>: Java</li>
+    <li><b>LinkingTo</b>: Rcpp, RcppArmadillo, RcppProgress</li>
+    <li><b>Suggests</b>: knitr</li>
+    </ul>
+    <h2>Author</h2>
+    <ul>
+    <li><a href="http://klein.uk">Thilo Klein</a> [aut, cre]</li>
     </ul>
   </div>
 </div>
