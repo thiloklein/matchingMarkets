@@ -95,7 +95,7 @@
 #' 
 #' @export
 #' 
-#' @useDynLib matchingMarkets
+#' @useDynLib matchingMarkets, .registration = TRUE 
 #' 
 #' @import partitions stats
 #' @importFrom Rcpp evalCpp 

@@ -60,7 +60,7 @@ Note: If you get a Java error such as `JAVA_HOME cannot be determined from the R
 
 ## Documentation
 
-Package documentation is available at [matchingMarkets.org](http://matchingMarkets.org) and the [vignette](https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf) is available from the [CRAN page](https://cran.r-project.org/package=matchingMarkets). An application of the estimator in function `stabit` is in [Klein (2015)](https://ideas.repec.org/p/cam/camdae/1521.html).
+Package documentation is available at [matchingMarkets.org](http://matchingMarkets.org) and the [vignette](https://CRAN.R-project.org/package=matchingMarkets/vignettes/matching.pdf) is available from the [CRAN page](https://cran.r-project.org/package=matchingMarkets). An application of the estimator in function `stabit` is in [Klein (2015)](https://ideas.repec.org/p/cam/camdae/1521.html).
 
 
 

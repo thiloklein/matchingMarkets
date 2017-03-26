@@ -78,7 +78,7 @@
 #' 
 #' @export
 #' 
-#' @useDynLib matchingMarkets
+#' @useDynLib matchingMarkets, .registration = TRUE 
 #' 
 #' @import stats lattice parallel
 #' @importFrom Rcpp evalCpp 

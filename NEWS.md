@@ -6,6 +6,13 @@ on [R-Forge](https://r-forge.r-project.org/scm/viewvc.php/?root=matchingmarkets)
 and on [GitHub](https://github.com/thiloklein/matchingMarkets).
 
 
+## matchingMarkets 0.3-3 (2017-03-27)
+
+This is a minor update
+
+* Implemented multi-core parrallel processing for estimators in function `stabit2`, which can be specified using the `nCores` argument.
+* Updated immediate acceptance algorithm `iaa` and top-trading-cycles `ttc` functions. Thanks to [Sándor Sóvágó](http://www.tinbergen.nl/phd-student/sandor-s-sovago-2/) at Tinbergen Institute and [Kevin Breuer](http://economicdesign.uni-koeln.de/en/home/researchers/kevin-breuer/) at University of Cologne for the reports.
+
 ## matchingMarkets 0.3-1 (2016-08-21)
 
 This is a major update
@@ -32,7 +39,7 @@ This is a major update
 
 This is a major update
 
-* Added [package vignette](https://cran.r-project.org/web/packages/matchingMarkets/vignettes/matching.pdf). 
+* Added [package vignette](https://CRAN.R-project.org/package=matchingMarkets/vignettes/matching.pdf). 
 
 
 ## matchingMarkets 0.1-5 (2015-07-08)
