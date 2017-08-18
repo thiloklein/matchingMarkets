@@ -94,6 +94,7 @@
 #' \emph{Journal of Finance}, 62 (6): 2725-2762.
 #' 
 #' @examples
+#' \dontrun{
 #' ## --- SIMULATED EXAMPLE ---
 #' 
 #' ## 1. Simulate two-sided matching data for 20 markets (m=20) with 100 students
@@ -166,7 +167,7 @@
 #'    
 #' ## 5. Plot MCMC draws for coefficients
 #'  plot(fit2)
-#' 
+#' }
 stabit2 <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, outcome=NULL, selection,
                     binary=FALSE, niter, gPrior=FALSE, 
                     censored=1, thin=1, nCores=max(1,detectCores()-1), ...) UseMethod("stabit2")

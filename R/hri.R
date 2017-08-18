@@ -108,12 +108,12 @@
 #'  
 #' ## --------------------
 #' ## --- Summary plots
-#' 
+#' \dontrun{
 #' ## 200 students, 200 colleges with 1 slot each
 #'  res <- hri(nStudents=200, nColleges=200, seed=12)
 #'  plot(res)
 #'  plot(res, energy=TRUE)
-#'  
+#'  }
 hri <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), 
                 s.prefs=NULL, c.prefs=NULL, seed=NULL, s.range=NULL, c.range=NULL, ...) UseMethod("hri")
 

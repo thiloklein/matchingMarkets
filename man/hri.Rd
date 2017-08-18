@@ -97,12 +97,12 @@ either given or randomly generated preferences.
  
 ## --------------------
 ## --- Summary plots
-
+\dontrun{
 ## 200 students, 200 colleges with 1 slot each
  res <- hri(nStudents=200, nColleges=200, seed=12)
  plot(res)
  plot(res, energy=TRUE)
- 
+ }
 }
 \author{
 Thilo Klein

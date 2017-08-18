@@ -130,7 +130,7 @@ Operators for variable transformations in \code{selection} and \code{outcome} ar
 }
 }
 \examples{
-
+\dontrun{
 ## --- SIMULATED EXAMPLE ---
 
 ## 1. Simulate one-sided matching data for 200 markets (m=200) with 2 groups
@@ -185,7 +185,6 @@ eta <- lm.sel$resid[mdata$SEL$D==1]
  plot(fit1)
 
 
-\dontrun{
 ## --- REPLICATION, Klein (2015a) ---
 
 ## 1. Load data 

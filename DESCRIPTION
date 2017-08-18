@@ -22,12 +22,12 @@ Description: Implements structural estimators to correct for
     the sample selection bias from observed outcomes in matching
     markets. This includes one-sided matching of agents into
     groups as well as two-sided matching of students to schools.
-    The package also contains algorithms to find stable matchings 
-    in the three most common matching problems: the stable roommates 
-    problem, the college admissions problem, and the house 
+    The package also contains algorithms to find stable matchings
+    in the three most common matching problems: the stable roommates
+    problem, the college admissions problem, and the house
     allocation problem.
 URL: http://matchingMarkets.org,
-     http://klein.uk
+    http://klein.uk
 BugReports: https://github.com/thiloklein/matchingMarkets/issues
 License: GPL (>= 2) | file LICENSE
 RoxygenNote: 5.0.1

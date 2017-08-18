@@ -124,7 +124,7 @@
 #' volume 6, pages 233--243. North-Holland, Amsterdam.
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' ## --- SIMULATED EXAMPLE ---
 #' 
 #' ## 1. Simulate one-sided matching data for 200 markets (m=200) with 2 groups
@@ -179,7 +179,6 @@
 #'  plot(fit1)
 #' 
 #' 
-#' \dontrun{
 #' ## --- REPLICATION, Klein (2015a) ---
 #' 
 #' ## 1. Load data 
@@ -554,7 +553,7 @@ stabit <- function(x, m.id="m.id", g.id="g.id", R="R", selection=NULL, outcome=N
     # ----------------------------------------------------------------------------- 
     
     model.frame <- unlistData(x=data)
-    model.frame
+    list(OUT=model.frame$OUT, SEL=model.frame$SEL, combs=combs)
     #return(list(model.list=data, model.frame=model.frame))
     
   }
@@ -603,17 +602,17 @@ unlistData <- function(x){
   x$D <- x$D[which(h>1)] # for 2-group markets only
   if(length(unlist(x$V)) == length(g.id)){ # if simulation = TRUE in model.matrix
     if(is.null(dim(x$W[[1]]))){ # only one variable in W
-      SEL <- with(x, data.frame( m.id, g.id, do.call(c,W), D=do.call(c,D),
-                                 V=do.call(c,V), eta=do.call(c,eta) ))
+      SEL <- with(x, data.frame( m.id, g.id, reg.id=na.omit(do.call(c,P)), do.call(c,W), 
+                                 D=do.call(c,D), V=do.call(c,V), eta=do.call(c,eta) ))
     } else{
-      SEL <- with(x, data.frame( m.id, g.id, do.call(rbind,W), D=do.call(c,D),
-                                 V=do.call(c,V), eta=do.call(c,eta) ))      
+      SEL <- with(x, data.frame( m.id, g.id, reg.id=na.omit(do.call(c,P)), do.call(rbind,W), 
+                                 D=do.call(c,D), V=do.call(c,V), eta=do.call(c,eta) ))      
     }
   } else{
     if(is.null(dim(x$W[[1]]))){ # only one variable in W
-      SEL    <- with(x, data.frame( m.id, g.id, do.call(c,W), D=do.call(c,D) ))    
+      SEL    <- with(x, data.frame( m.id, g.id, reg.id=na.omit(do.call(c,P)), do.call(c,W), D=do.call(c,D) ))    
     } else{
-      SEL    <- with(x, data.frame( m.id, g.id, do.call(rbind,W), D=do.call(c,D) ))    
+      SEL    <- with(x, data.frame( m.id, g.id, reg.id=na.omit(do.call(c,P)), do.call(rbind,W), D=do.call(c,D) ))    
     }
   }
   
