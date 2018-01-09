@@ -14,7 +14,6 @@ double unif_rs(double a, double b);
 double exp_rs(double a, double b);
 double truncn2(double mu, double sigma, double lower, double upper);
 
-//' @export
 // [[Rcpp::export]]
 List stabit2Sel1(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr, 
   Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Smatchr, 

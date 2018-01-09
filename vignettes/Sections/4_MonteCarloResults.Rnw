@@ -70,7 +70,7 @@ summary(lm1)
     ggplot(conf.int, aes(x = wst.add, y = fit)) +
       theme_bw() +
       theme( axis.text=element_text(size=22), axis.title=element_text(size=26) ) +
-      geom_smooth(data = conf.int, aes(ymin = lwr, ymax = upr), stat = "identity") +
+      suppressWarnings(geom_smooth(data = conf.int, aes(ymin = lwr, ymax = upr), stat = "identity")) +
       labs(y = expression(hat(R)))
     @
   \end{subfigure}
@@ -84,7 +84,7 @@ summary(lm1)
     ggplot(conf.int, aes(x = wst.add, y = fit)) +
       theme_bw() +
       theme( axis.text=element_text(size=22), axis.title=element_text(size=26) ) +
-      geom_smooth(data = conf.int, aes(ymin = lwr, ymax = upr), stat = "identity") +
+      suppressWarnings(geom_smooth(data = conf.int, aes(ymin = lwr, ymax = upr), stat = "identity")) +
       labs(y = "eta")
     @
   \end{subfigure}
@@ -139,7 +139,7 @@ The figure below plots the bias from sorting against the independent variable, f
 
   ggplot(conf.int, aes(x = wst.add, y = fit, colour=model)) +
     theme_bw() +
-    geom_smooth(data = conf.int, aes(ymin = lwr, ymax = upr), stat = "identity") +
+    suppressWarnings(geom_smooth(data = conf.int, aes(ymin = lwr, ymax = upr), stat = "identity")) +
     labs(y = expression(hat(R)))
 @
 \end{figure}

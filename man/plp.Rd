@@ -31,12 +31,11 @@ plp(N=10)
 V <- matrix(rep(1:10, 10), 10, 10)
 plp(V=V)
 }
-\author{
-Thilo Klein
-}
 \references{
 Quint, T. (1991). Necessary and sufficient conditions for balancedness 
 in partitioning games. \emph{Mathematical Social Sciences}, 22(1):87--91.
 }
+\author{
+Thilo Klein
+}
 \keyword{algorithms}
-

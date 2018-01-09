@@ -25,11 +25,10 @@ Karlson et al (2012), Section 3.4.
 ## 2. apply KHB method
 with(klein15a$variables, khb(X=X, y=Y, z="eta"))
 }
-\author{
-Thilo Klein
-}
 \references{
 Karlson, K.B., A. Holm and R. Breen (2012). Comparing regression coefficients between same-sample nested models using logit and probit: A new method. \emph{Sociological Methodology}, 42(1):286--313.
 }
+\author{
+Thilo Klein
+}
 \keyword{summary}
-

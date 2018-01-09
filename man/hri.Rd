@@ -69,6 +69,7 @@ either given or randomly generated preferences.
 \item{\code{s.prefs, c.prefs, nSlots}}{College admissions problem with given preferences.}
 }
 }
+
 \examples{
 ## -----------------------
 ## --- Marriage problem 
@@ -104,9 +105,6 @@ either given or randomly generated preferences.
  plot(res, energy=TRUE)
  }
 }
-\author{
-Thilo Klein
-}
 \references{
 Gale, D. and L.S. Shapley (1962). College admissions and the stability 
 of marriage. \emph{The American Mathematical Monthly}, 69(1):9--15.
@@ -117,5 +115,7 @@ marriage problem. \emph{Artificial Life Robotics}, 16:40--43.
 Prosser, P. (2014). Stable Roommates and Constraint Programming. \emph{Lecture Notes in Computer Science, CPAIOR 2014 Edition}. 
 Springer International Publishing, 8451: 15--28.
 }
+\author{
+Thilo Klein
+}
 \keyword{algorithms}
-

@@ -13,7 +13,7 @@
 
 
 
-\author{Thilo Klein\thanks{I thank Christian Ahlin, Jiawei Chen, Augustine Kwanashie and Morten S{\o}rensen for their guidance and helpful discussions. All views and errors are mine.}\\OECD}
+\author{Thilo Klein\thanks{I thank Christian Ahlin, Jiawei Chen, Augustine Kwanashie and Morten S{\o}rensen for their guidance and helpful discussions. All views and errors are mine.}\\ZEW Mannheim}
 \Plainauthor{Thilo Klein}
 
 \title{Analysis of Stable Matchings in \proglang{R}: Package~\pkg{matchingMarkets}}
@@ -28,11 +28,11 @@
 
 \Address{
   Thilo Klein\\
-  Organisation for Economic Co-operation and Development\\
-  2 rue Andre Pascal\\
-  75775 Paris, France\\
-  E-mail: \email{thilo.klein@oecd.org}\\
-  URL: \url{http://klein.uk}
+  Centre for European Economic Research\\
+  L7, 1\\
+  68161 Mannheim, Germany\\
+  E-mail: \email{thilo.klein@zew.de}\\
+  URL: \url{https://klein.uk}
 }
 
 \begin{document}

@@ -71,4 +71,3 @@ stopCluster(cl)
 \author{
 Thilo Klein
 }
-

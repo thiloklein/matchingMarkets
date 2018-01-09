@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // stabit2Mat1
 List stabit2Mat1(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Smatchr, Rcpp::List Dr, Rcpp::List dr, Rcpp::List Mr, Rcpp::List Hr, arma::colvec nCollegesr, arma::colvec nStudentsr, Rcpp::List CCr, Rcpp::List SSr, Rcpp::List CCmatchr, Rcpp::List SSmatchr, Rcpp::List Lr, Rcpp::List studentIdsr, Rcpp::List collegeIdr, arma::colvec nEquilibsr, Rcpp::List sopt2equr, Rcpp::List equ2soptr, Rcpp::List copt2equr, Rcpp::List equ2coptr, arma::colvec coptidr, int n, int N, int niter, int T, int thin, bool display_progress);
-RcppExport SEXP matchingMarkets_stabit2Mat1(SEXP CrSEXP, SEXP CmatchrSEXP, SEXP SrSEXP, SEXP SmatchrSEXP, SEXP DrSEXP, SEXP drSEXP, SEXP MrSEXP, SEXP HrSEXP, SEXP nCollegesrSEXP, SEXP nStudentsrSEXP, SEXP CCrSEXP, SEXP SSrSEXP, SEXP CCmatchrSEXP, SEXP SSmatchrSEXP, SEXP LrSEXP, SEXP studentIdsrSEXP, SEXP collegeIdrSEXP, SEXP nEquilibsrSEXP, SEXP sopt2equrSEXP, SEXP equ2soptrSEXP, SEXP copt2equrSEXP, SEXP equ2coptrSEXP, SEXP coptidrSEXP, SEXP nSEXP, SEXP NSEXP, SEXP niterSEXP, SEXP TSEXP, SEXP thinSEXP, SEXP display_progressSEXP) {
+RcppExport SEXP _matchingMarkets_stabit2Mat1(SEXP CrSEXP, SEXP CmatchrSEXP, SEXP SrSEXP, SEXP SmatchrSEXP, SEXP DrSEXP, SEXP drSEXP, SEXP MrSEXP, SEXP HrSEXP, SEXP nCollegesrSEXP, SEXP nStudentsrSEXP, SEXP CCrSEXP, SEXP SSrSEXP, SEXP CCmatchrSEXP, SEXP SSmatchrSEXP, SEXP LrSEXP, SEXP studentIdsrSEXP, SEXP collegeIdrSEXP, SEXP nEquilibsrSEXP, SEXP sopt2equrSEXP, SEXP equ2soptrSEXP, SEXP copt2equrSEXP, SEXP equ2coptrSEXP, SEXP coptidrSEXP, SEXP nSEXP, SEXP NSEXP, SEXP niterSEXP, SEXP TSEXP, SEXP thinSEXP, SEXP display_progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -47,7 +47,7 @@ END_RCPP
 }
 // stabit2Sel1
 List stabit2Sel1(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Smatchr, Rcpp::List Dr, Rcpp::List dr, Rcpp::List Mr, Rcpp::List Hr, arma::colvec nCollegesr, arma::colvec nStudentsr, Rcpp::List XXmatchr, Rcpp::List CCr, Rcpp::List SSr, Rcpp::List CCmatchr, Rcpp::List SSmatchr, Rcpp::List Lr, Rcpp::List studentIdsr, Rcpp::List collegeIdr, arma::colvec nEquilibsr, Rcpp::List sopt2equr, Rcpp::List equ2soptr, Rcpp::List copt2equr, Rcpp::List equ2coptr, arma::colvec coptidr, int n, int N, bool binary, int niter, int T, int censored, int thin, bool display_progress);
-RcppExport SEXP matchingMarkets_stabit2Sel1(SEXP YrSEXP, SEXP XmatchrSEXP, SEXP CrSEXP, SEXP CmatchrSEXP, SEXP SrSEXP, SEXP SmatchrSEXP, SEXP DrSEXP, SEXP drSEXP, SEXP MrSEXP, SEXP HrSEXP, SEXP nCollegesrSEXP, SEXP nStudentsrSEXP, SEXP XXmatchrSEXP, SEXP CCrSEXP, SEXP SSrSEXP, SEXP CCmatchrSEXP, SEXP SSmatchrSEXP, SEXP LrSEXP, SEXP studentIdsrSEXP, SEXP collegeIdrSEXP, SEXP nEquilibsrSEXP, SEXP sopt2equrSEXP, SEXP equ2soptrSEXP, SEXP copt2equrSEXP, SEXP equ2coptrSEXP, SEXP coptidrSEXP, SEXP nSEXP, SEXP NSEXP, SEXP binarySEXP, SEXP niterSEXP, SEXP TSEXP, SEXP censoredSEXP, SEXP thinSEXP, SEXP display_progressSEXP) {
+RcppExport SEXP _matchingMarkets_stabit2Sel1(SEXP YrSEXP, SEXP XmatchrSEXP, SEXP CrSEXP, SEXP CmatchrSEXP, SEXP SrSEXP, SEXP SmatchrSEXP, SEXP DrSEXP, SEXP drSEXP, SEXP MrSEXP, SEXP HrSEXP, SEXP nCollegesrSEXP, SEXP nStudentsrSEXP, SEXP XXmatchrSEXP, SEXP CCrSEXP, SEXP SSrSEXP, SEXP CCmatchrSEXP, SEXP SSmatchrSEXP, SEXP LrSEXP, SEXP studentIdsrSEXP, SEXP collegeIdrSEXP, SEXP nEquilibsrSEXP, SEXP sopt2equrSEXP, SEXP equ2soptrSEXP, SEXP copt2equrSEXP, SEXP equ2coptrSEXP, SEXP coptidrSEXP, SEXP nSEXP, SEXP NSEXP, SEXP binarySEXP, SEXP niterSEXP, SEXP TSEXP, SEXP censoredSEXP, SEXP thinSEXP, SEXP display_progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -91,7 +91,7 @@ END_RCPP
 }
 // stabit2Sel2
 List stabit2Sel2(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Dr, Rcpp::List dr, Rcpp::List Mr, Rcpp::List Hr, arma::colvec nCollegesr, arma::colvec nStudentsr, Rcpp::List XXmatchr, Rcpp::List CCr, Rcpp::List CCmatchr, Rcpp::List Lr, Rcpp::List studentIdsr, Rcpp::List collegeIdr, int n, int N, bool binary, int niter, int T, int censored, int thin, bool display_progress);
-RcppExport SEXP matchingMarkets_stabit2Sel2(SEXP YrSEXP, SEXP XmatchrSEXP, SEXP CrSEXP, SEXP CmatchrSEXP, SEXP DrSEXP, SEXP drSEXP, SEXP MrSEXP, SEXP HrSEXP, SEXP nCollegesrSEXP, SEXP nStudentsrSEXP, SEXP XXmatchrSEXP, SEXP CCrSEXP, SEXP CCmatchrSEXP, SEXP LrSEXP, SEXP studentIdsrSEXP, SEXP collegeIdrSEXP, SEXP nSEXP, SEXP NSEXP, SEXP binarySEXP, SEXP niterSEXP, SEXP TSEXP, SEXP censoredSEXP, SEXP thinSEXP, SEXP display_progressSEXP) {
+RcppExport SEXP _matchingMarkets_stabit2Sel2(SEXP YrSEXP, SEXP XmatchrSEXP, SEXP CrSEXP, SEXP CmatchrSEXP, SEXP DrSEXP, SEXP drSEXP, SEXP MrSEXP, SEXP HrSEXP, SEXP nCollegesrSEXP, SEXP nStudentsrSEXP, SEXP XXmatchrSEXP, SEXP CCrSEXP, SEXP CCmatchrSEXP, SEXP LrSEXP, SEXP studentIdsrSEXP, SEXP collegeIdrSEXP, SEXP nSEXP, SEXP NSEXP, SEXP binarySEXP, SEXP niterSEXP, SEXP TSEXP, SEXP censoredSEXP, SEXP thinSEXP, SEXP display_progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -125,7 +125,7 @@ END_RCPP
 }
 // stabitSel2
 List stabitSel2(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr, arma::colvec One, arma::colvec Two, int T, Rcpp::List offOutr, Rcpp::List offSelr, arma::mat sigmabarbetainverse, arma::mat sigmabaralphainverse, int niter, double n, arma::colvec l, Rcpp::List Pr, arma::colvec p, bool binary, bool selection, int censored, bool ntu, bool gPrior, bool display_progress);
-RcppExport SEXP matchingMarkets_stabitSel2(SEXP XrSEXP, SEXP RrSEXP, SEXP WrSEXP, SEXP OneSEXP, SEXP TwoSEXP, SEXP TSEXP, SEXP offOutrSEXP, SEXP offSelrSEXP, SEXP sigmabarbetainverseSEXP, SEXP sigmabaralphainverseSEXP, SEXP niterSEXP, SEXP nSEXP, SEXP lSEXP, SEXP PrSEXP, SEXP pSEXP, SEXP binarySEXP, SEXP selectionSEXP, SEXP censoredSEXP, SEXP ntuSEXP, SEXP gPriorSEXP, SEXP display_progressSEXP) {
+RcppExport SEXP _matchingMarkets_stabitSel2(SEXP XrSEXP, SEXP RrSEXP, SEXP WrSEXP, SEXP OneSEXP, SEXP TwoSEXP, SEXP TSEXP, SEXP offOutrSEXP, SEXP offSelrSEXP, SEXP sigmabarbetainverseSEXP, SEXP sigmabaralphainverseSEXP, SEXP niterSEXP, SEXP nSEXP, SEXP lSEXP, SEXP PrSEXP, SEXP pSEXP, SEXP binarySEXP, SEXP selectionSEXP, SEXP censoredSEXP, SEXP ntuSEXP, SEXP gPriorSEXP, SEXP display_progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -153,4 +153,17 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(stabitSel2(Xr, Rr, Wr, One, Two, T, offOutr, offSelr, sigmabarbetainverse, sigmabaralphainverse, niter, n, l, Pr, p, binary, selection, censored, ntu, gPrior, display_progress));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_matchingMarkets_stabit2Mat1", (DL_FUNC) &_matchingMarkets_stabit2Mat1, 29},
+    {"_matchingMarkets_stabit2Sel1", (DL_FUNC) &_matchingMarkets_stabit2Sel1, 34},
+    {"_matchingMarkets_stabit2Sel2", (DL_FUNC) &_matchingMarkets_stabit2Sel2, 24},
+    {"_matchingMarkets_stabitSel2", (DL_FUNC) &_matchingMarkets_stabitSel2, 21},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_matchingMarkets(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

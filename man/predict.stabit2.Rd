@@ -26,12 +26,11 @@ Calculate predicted values for matching models fitted with functions \code{stabi
  predict(klein15a)
 
 }
-\author{
-Thilo Klein
-}
 \references{
 Klein, T. (2015a). \href{https://ideas.repec.org/p/cam/camdae/1521.html}{Does Anti-Diversification Pay? A One-Sided Matching Model of Microcredit}.
 \emph{Cambridge Working Papers in Economics}, #1521.
 }
+\author{
+Thilo Klein
+}
 \keyword{summary}
-

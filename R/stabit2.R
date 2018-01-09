@@ -81,10 +81,8 @@
 #' @useDynLib matchingMarkets, .registration = TRUE 
 #' 
 #' @import stats lattice parallel
-#' @importFrom Rcpp evalCpp 
+#' @importFrom Rcpp evalCpp
 #' @importFrom graphics par plot
-#' 
-#' @aliases stabit2Sel2 stabit2Sel1 stabit2Mat1
 #' 
 #' @author Thilo Klein 
 #' 

@@ -98,10 +98,8 @@
 #' @useDynLib matchingMarkets, .registration = TRUE 
 #' 
 #' @import partitions stats
-#' @importFrom Rcpp evalCpp 
+#' @importFrom Rcpp evalCpp
 #' @importFrom utils setTxtProgressBar txtProgressBar
-#' 
-#' @aliases stabitSel2
 #' 
 #' @details 
 #' Operators for variable transformations in \code{selection} and \code{outcome} arguments.

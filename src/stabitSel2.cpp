@@ -10,7 +10,6 @@ using namespace Rcpp;
 arma::colvec mvrnormArma(arma::colvec mu, arma::mat sigma, int ncols);
 double truncn(double bound, bool lb, double mu, double sigma);
 
-//' @export
 // [[Rcpp::export]]
 List stabitSel2(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr, 
   arma::colvec One, arma::colvec Two, int T,

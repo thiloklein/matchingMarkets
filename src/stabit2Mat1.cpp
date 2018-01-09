@@ -14,7 +14,6 @@ double unif_rs(double a, double b);
 double exp_rs(double a, double b);
 double truncn2(double mu, double sigma, double lower, double upper);
 
-//' @export
 // [[Rcpp::export]]
 List stabit2Mat1(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Smatchr, 
   Rcpp::List Dr, Rcpp::List dr, Rcpp::List Mr, Rcpp::List Hr, arma::colvec nCollegesr, 

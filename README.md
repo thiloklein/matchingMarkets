@@ -39,7 +39,7 @@ install.packages("matchingMarkets")
 library(matchingMarkets)
 ```
 
-Under Linux, the dependency package `gmp` requires that you have GNU MP (> 4.1.4) installed, see http://gmplib.org.
+Under Linux, the dependency package `gmp` requires that you have GNU MP (> 4.1.4) installed: `$ sudo apt-get install libgmp-dev`. See http://gmplib.org.
 
 To get the most recent *development version* from [GitHub](https://github.com/thiloklein/matchingMarkets):
 
@@ -55,7 +55,9 @@ install.packages("matchingMarkets", repos="http://R-Forge.R-project.org")
 library(matchingMarkets)
 ```
 
-Note: If you get a Java error such as `JAVA_HOME cannot be determined from the Registry`, this can be resolved by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See [this post](https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/) and download the Java version from the [Oracle website](http://www.java.com/en/download/manual.jsp).
+Java Note 1: If you get a Java error such as `JAVA_HOME cannot be determined from the Registry`, this can be resolved by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See [this post](https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/) and download the Java version from the [Oracle website](http://www.java.com/en/download/manual.jsp).
+
+Java Note 2: If the installation of the dependent `rJava` package fails with [configuration failed for package ‘rJava’](https://stackoverflow.com/questions/3311940/r-rjava-package-install-failing), this can be fixed in Linux by `$ sudo apt-get install r-cran-rjava`.
 
 
 ## Documentation

@@ -76,7 +76,7 @@ sri <- function(prefs=NULL, nAgents=NULL, seed=NULL, p.range=NULL){
   }
 
   ## Consistency checks
-  if(dim(prefs)[1] != dim(prefs)[2]){stop("preference matrix must be symmetric!")}
+  #if(dim(prefs)[1] != dim(prefs)[2]){stop("preference matrix must be symmetric!")}
   
   ## ---------------------------------------------------------
   ## --- 2. Incomplete preferences (and consistency check) ---

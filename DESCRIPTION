@@ -1,5 +1,5 @@
 Package: matchingMarkets
-Version: 0.3-3
+Version: 0.3-4
 Depends:
     R (>= 3.0.2)
 Imports:
@@ -12,8 +12,7 @@ Imports:
     stats
 SystemRequirements: Java
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress (>= 0.2)
-Suggests:
-    knitr
+Suggests: knitr, ggplot2
 VignetteBuilder: knitr
 Title: Analysis of Stable Matchings
 Author: Thilo Klein
@@ -30,4 +29,4 @@ URL: http://matchingMarkets.org,
     http://klein.uk
 BugReports: https://github.com/thiloklein/matchingMarkets/issues
 License: GPL (>= 2) | file LICENSE
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

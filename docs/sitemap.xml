@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!--  Homepage -->
+  <url>
+    <loc>https://matchingmarkets.org/</loc>
+    <lastmod>2017-11-07</lastmod>
+    <changefreq>daily</changefreq>
+		<priority>1.0</priority>
+  </url>
+  <!-- Posts pages -->
+  
+  <url>
+    <loc>https://matchingmarkets.org/matchingMarkets-package.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/hri.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/iaa.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/sri.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/plp.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/ttc.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/stabit.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/stabit2.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/stabsim.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/stabsim2.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/baac00.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/klein15a.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+
+  <url>
+    <loc>https://matchingmarkets.org/klein15b.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/khb.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://matchingmarkets.org/mce.html</loc>
+    
+    <lastmod>2017-11-07</lastmod>
+    
+  </url>    
+
+</urlset>

@@ -52,6 +52,7 @@ given or randomly generated preferences.
 \item{\code{s.prefs, c.prefs, nSlots}}{College admissions problem with given preferences.}
 }
 }
+
 \examples{
 ## --------------------------------
 ## --- College admission problem
@@ -73,14 +74,13 @@ given or randomly generated preferences.
  c.prefs <- matrix(c(1,2,3,4,5,6,7, 1,2,3,4,5,6,7), 7,2)
  iaa(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=c(3,3))
 }
-\author{
-Thilo Klein
-}
 \references{
 Gale, D. and Shapley, L.S. (1962). College admissions and the stability 
 of marriage. \emph{The American Mathematical Monthly}, 69(1):9--15.
 
 Kojima, F. and M.U. Unver (2014). The "Boston" school-choice mechanism. \emph{Economic Theory}, 55(3): 515--544.
 }
+\author{
+Thilo Klein
+}
 \keyword{algorithms}
-

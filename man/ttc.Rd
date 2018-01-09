@@ -34,13 +34,12 @@ X <- data.frame(ind=1:5, obj=5:1); X
 ## find assignment based on TTC algorithm
 ttc(P=P,X=X)
 }
-\author{
-Thilo Klein
-}
 \references{
 Abdulkadiroglu, A. and Sonmez, T. (1999). House Allocation with Existing Tenants. \emph{Journal of Economic Theory}, 88(2):233--260.
 
 Shapley, L. and H. Scarf (1974). On Cores and Indivisibility. \emph{Journal of Mathematical Economics}, 1(1):23--37.
 }
+\author{
+Thilo Klein
+}
 \keyword{algorithms}
-

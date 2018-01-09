@@ -2,9 +2,6 @@
 % Please edit documentation in R/stabit2.R
 \name{stabit2}
 \alias{stabit2}
-\alias{stabit2Mat1}
-\alias{stabit2Sel1}
-\alias{stabit2Sel2}
 \title{Matching model and selection correction for college admissions}
 \usage{
 stabit2(OUT = NULL, SEL = NULL, colleges = NULL, students = NULL,
@@ -157,12 +154,11 @@ head(xdata$OUT)
  plot(fit2)
 }
 }
-\author{
-Thilo Klein
-}
 \references{
 Sorensen, M. (2007). How Smart is Smart Money? A Two-Sided Matching Model of Venture Capital.
 \emph{Journal of Finance}, 62 (6): 2725-2762.
 }
+\author{
+Thilo Klein
+}
 \keyword{regression}
-

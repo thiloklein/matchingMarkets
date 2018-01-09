@@ -44,4 +44,3 @@ Simulate individual-level data for one-sided matching markets.
 Thilo Klein
 }
 \keyword{generate}
-

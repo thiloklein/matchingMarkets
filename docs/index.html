@@ -105,7 +105,7 @@
 library(matchingMarkets)
 </code></pre>
 
-<p>Under Linux, the dependency package <code>gmp</code> requires that you have GNU MP (&gt; 4.1.4) installed, see <a href="http://gmplib.org">http://gmplib.org</a>.</p>
+<p>Under Linux, the dependency package <code>gmp</code> requires that you have GNU MP (&gt; 4.1.4) installed: <code>$ sudo apt-get install libgmp-dev</code>. See <a href="http://gmplib.org">http://gmplib.org</a>.</p>
 
 <p>To get the most recent <em>development version</em> from <a href="https://github.com/thiloklein/matchingMarkets">GitHub</a>:</p>
 
@@ -120,7 +120,9 @@ library(matchingMarkets)
 library(matchingMarkets)
 </code></pre>
 
-<p>Note: If you get a Java error such as <code>JAVA_HOME cannot be determined from the Registry</code>, this can be resolved by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See <a href="https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/">this post</a> and download the Java version from the <a href="http://www.java.com/en/download/manual.jsp">Oracle website</a>.</p>
+<p>Java Note 1: If you get a Java error such as <code>JAVA_HOME cannot be determined from the Registry</code>, this can be resolved by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See <a href="https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/">this post</a> and download the Java version from the <a href="http://www.java.com/en/download/manual.jsp">Oracle website</a>.</p>
+
+<p>Java Note 2: If the installation of the dependent <code>rJava</code> package fails with <a href="https://stackoverflow.com/questions/3311940/r-rjava-package-install-failing">configuration failed for package rJava</a>, this can be fixed in Linux by <code>$ sudo apt-get install r-cran-rjava</code>.</p>
 
 <h2>Documentation</h2>
 

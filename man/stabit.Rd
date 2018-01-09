@@ -2,7 +2,6 @@
 % Please edit documentation in R/stabit.R
 \name{stabit}
 \alias{stabit}
-\alias{stabitSel2}
 \title{Matching model and selection correction for group formation}
 \usage{
 stabit(x, m.id = "m.id", g.id = "g.id", R = "R", selection = NULL,
@@ -203,9 +202,6 @@ eta <- lm.sel$resid[mdata$SEL$D==1]
  plot(klein15a)
 }
 }
-\author{
-Thilo Klein
-}
 \references{
 Klein, T. (2015a). \href{https://ideas.repec.org/p/cam/camdae/1521.html}{Does Anti-Diversification Pay? A One-Sided Matching Model of Microcredit}.
 \emph{Cambridge Working Papers in Economics}, #1521.
@@ -213,5 +209,7 @@ Klein, T. (2015a). \href{https://ideas.repec.org/p/cam/camdae/1521.html}{Does An
 Zellner, A. (1986). \emph{On assessing prior distributions and Bayesian regression analysis with g-prior distributions}, 
 volume 6, pages 233--243. North-Holland, Amsterdam.
 }
+\author{
+Thilo Klein
+}
 \keyword{regression}
-

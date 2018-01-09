@@ -44,9 +44,6 @@ lists using the Prosser (2014) constraint encoding based on either given or rand
  sri(nAgents=10, seed=3)
 
 }
-\author{
-Thilo Klein
-}
 \references{
 Gusfield, D.M. and R.W. Irving (1989). The Stable Marriage Problem: 
 Structure and Algorithms, MIT Press.
@@ -57,5 +54,7 @@ Springer International Publishing, 8451: 15--28.
 Irving, R.W. and S. Scott (2007). The stable fixtures problem: A many-to-many extension of stable roommates. 
 \emph{Discrete Applied Mathematics}, 155: 2118--2129.
 }
+\author{
+Thilo Klein
+}
 \keyword{algorithms}
-
