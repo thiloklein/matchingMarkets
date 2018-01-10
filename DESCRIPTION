@@ -1,18 +1,20 @@
 Package: matchingMarkets
 Version: 0.3-4
 Depends:
-    R (>= 3.0.2)
+    R (>= 3.0.2),
+    Rcpp (>= 0.12.12),
+    RcppProgress (>= 0.2)
 Imports:
-    Rcpp (>= 0.11.2),
     rJava,
     lpSolve,
     lattice,
     partitions,
     parallel,
-    stats
+    stats,
+    utils
 SystemRequirements: Java
-LinkingTo: Rcpp, RcppArmadillo, RcppProgress (>= 0.2)
-Suggests: knitr, ggplot2
+LinkingTo: Rcpp, RcppProgress, RcppArmadillo
+Suggests: knitr, ggplot2, grDevices, graphics
 VignetteBuilder: knitr
 Title: Analysis of Stable Matchings
 Author: Thilo Klein

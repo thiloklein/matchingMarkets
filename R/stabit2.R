@@ -80,7 +80,7 @@
 #' 
 #' @useDynLib matchingMarkets, .registration = TRUE 
 #' 
-#' @import stats lattice parallel
+#' @import stats lattice parallel RcppProgress
 #' @importFrom Rcpp evalCpp
 #' @importFrom graphics par plot
 #' 

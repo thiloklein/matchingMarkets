@@ -97,7 +97,7 @@
 #' 
 #' @useDynLib matchingMarkets, .registration = TRUE 
 #' 
-#' @import partitions stats
+#' @import partitions stats RcppProgress
 #' @importFrom Rcpp evalCpp
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' 
