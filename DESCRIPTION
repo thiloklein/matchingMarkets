@@ -1,5 +1,5 @@
 Package: matchingMarkets
-Version: 0.3-4
+Version: 0.3-5
 Depends:
     R (>= 3.0.2)
 Imports:
@@ -12,12 +12,17 @@ Imports:
     parallel,
     stats,
     utils
-SystemRequirements: Java
+SystemRequirements: Java, C++11
 LinkingTo: Rcpp, RcppProgress, RcppArmadillo
 Suggests: knitr, ggplot2, grDevices, graphics
 VignetteBuilder: knitr
 Title: Analysis of Stable Matchings
-Author: Thilo Klein
+Authors@R: c(person("Thilo", "Klein", role = c("aut", "cre"),
+                     email = "thilo@klein.uk"),
+              person("Sven", "Giegerich", role = "ctb",
+                     email = "sven.giegerich@mailbox.org"))
+Author: Thilo Klein [aut, cre],
+  Sven Giegerich [ctb]
 Maintainer: Thilo Klein <thilo@klein.uk>
 Description: Implements structural estimators to correct for
     the sample selection bias from observed outcomes in matching
@@ -30,5 +35,5 @@ Description: Implements structural estimators to correct for
 URL: http://matchingMarkets.org,
     http://klein.uk
 BugReports: https://github.com/thiloklein/matchingMarkets/issues
-License: GPL (>= 2) | file LICENSE
+License: GPL (>= 2)
 RoxygenNote: 6.0.1

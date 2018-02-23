@@ -6,6 +6,19 @@
 
 using namespace Rcpp;
 
+// runMatch
+List runMatch(Rcpp::List students, Rcpp::List programs, Rcpp::List couples);
+RcppExport SEXP _matchingMarkets_runMatch(SEXP studentsSEXP, SEXP programsSEXP, SEXP couplesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type students(studentsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type programs(programsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type couples(couplesSEXP);
+    rcpp_result_gen = Rcpp::wrap(runMatch(students, programs, couples));
+    return rcpp_result_gen;
+END_RCPP
+}
 // stabit2Mat1
 List stabit2Mat1(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Smatchr, Rcpp::List Dr, Rcpp::List dr, Rcpp::List Mr, Rcpp::List Hr, arma::colvec nCollegesr, arma::colvec nStudentsr, Rcpp::List CCr, Rcpp::List SSr, Rcpp::List CCmatchr, Rcpp::List SSmatchr, Rcpp::List Lr, Rcpp::List studentIdsr, Rcpp::List collegeIdr, arma::colvec nEquilibsr, Rcpp::List sopt2equr, Rcpp::List equ2soptr, Rcpp::List copt2equr, Rcpp::List equ2coptr, arma::colvec coptidr, int n, int N, int niter, int T, int thin, bool display_progress);
 RcppExport SEXP _matchingMarkets_stabit2Mat1(SEXP CrSEXP, SEXP CmatchrSEXP, SEXP SrSEXP, SEXP SmatchrSEXP, SEXP DrSEXP, SEXP drSEXP, SEXP MrSEXP, SEXP HrSEXP, SEXP nCollegesrSEXP, SEXP nStudentsrSEXP, SEXP CCrSEXP, SEXP SSrSEXP, SEXP CCmatchrSEXP, SEXP SSmatchrSEXP, SEXP LrSEXP, SEXP studentIdsrSEXP, SEXP collegeIdrSEXP, SEXP nEquilibsrSEXP, SEXP sopt2equrSEXP, SEXP equ2soptrSEXP, SEXP copt2equrSEXP, SEXP equ2coptrSEXP, SEXP coptidrSEXP, SEXP nSEXP, SEXP NSEXP, SEXP niterSEXP, SEXP TSEXP, SEXP thinSEXP, SEXP display_progressSEXP) {
@@ -156,6 +169,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_matchingMarkets_runMatch", (DL_FUNC) &_matchingMarkets_runMatch, 3},
     {"_matchingMarkets_stabit2Mat1", (DL_FUNC) &_matchingMarkets_stabit2Mat1, 29},
     {"_matchingMarkets_stabit2Sel1", (DL_FUNC) &_matchingMarkets_stabit2Sel1, 34},
     {"_matchingMarkets_stabit2Sel2", (DL_FUNC) &_matchingMarkets_stabit2Sel2, 24},

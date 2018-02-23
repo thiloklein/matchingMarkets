@@ -6,6 +6,12 @@ on [R-Forge](https://r-forge.r-project.org/scm/viewvc.php/?root=matchingmarkets)
 and on [GitHub](https://github.com/thiloklein/matchingMarkets).
 
 
+## matchingMarkets 0.3-5 (2018-02-23)
+
+This is a minor update
+
+* Added R wrapper for Roth-Peranson Algorithm in function `hri2`.
+
 ## matchingMarkets 0.3-3 (2017-03-27)
 
 This is a minor update
@@ -48,4 +54,7 @@ This is a minor update.
 
 * Fixed `daa` function for college admissions problems when number of students exceeds number of colleges. Thanks to [Jan Tilly](http://jtilly.io/) at University of Pennsylvania for the report.
 
+## matchingMarkets 0.1-1 (2015-07-08)
+
+Initial commit.
 

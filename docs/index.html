@@ -83,10 +83,11 @@
 <li><p><code>stabit2</code>: Implements the Bayes estimator for a two-sided matching game (i.e. the <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems">college admissions</a> and <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem">stable marriage</a> problems).</p></li>
 </ul>
 
-<p>and five algorithms that can be used to simulate matching data:</p>
+<p>and six algorithms that can be used to simulate matching data:</p>
 
 <ul>
 <li><p><code>hri</code>: Constraint model for the hospital/residents problem. Finds <em>all</em> stable matchings in two-sided matching markets. Implemented for both the <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem">stable marriage problem</a> (one-to-one matching) and the <a href="http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems">hospital/residents problem</a>, also known as college admissions problem (many-to-one matching). </p></li>
+<li><p><code>hri2</code>: Roth-Peranson Algorithm for the <a href="https://en.wikipedia.org/wiki/National_Resident_Matching_Program">hospital/residents problem with couples</a>. Finds the resident-optimal stable matching (if one exists) in the two-sided matching market. </p></li>
 <li><p><code>iaa</code>: Immediate Acceptance Algorithm (a.k.a. Boston mechanism): First-preference-first algorithm used for school choice in many countries. And Gale-Shapley Deferred Acceptance Algorithm.</p></li>
 <li><p><code>sri</code>: Constraint model for the stable roommates problem. Finds all stable matchings in the <a href="https://en.wikipedia.org/wiki/Stable_roommates_problem">roommates problem</a> (one-sided matching market).</p></li>
 <li><p><code>plp</code>: Partitioning Linear Programme. Finds stable matchings in the <a href="https://en.wikipedia.org/wiki/Stable_roommates_problem">roommates problem</a> (one-sided matching market) with transferable utility.</p></li>
@@ -152,6 +153,10 @@ library(matchingMarkets)
       <li class = "icon">
         <a href="hri.html"><img src="icons/hri.png" width = "40" height = "40" /></a><code><a href="hri.html">hri</a></code><br />
         All stable matchings in the hospital/residents problem with incomplete lists</li>
+
+      <li class = "icon">
+        <a href="#"><img src="icons/hri.png" width = "40" height = "40" /></a><code><a href="#">hri2</a></code><br />
+        Resident-optimal stable matching in the hospital/residents problem with couples and incomplete lists</li>
             
       <li class = "icon">
         <a href="iaa.html"><img src="icons/iaa.png" width = "40" height = "40" /></a><code><a href="iaa.html">iaa</a></code><br />

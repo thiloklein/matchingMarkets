@@ -15,4 +15,5 @@ RootDocument: vignettes/matching.Rnw
 
 BuildType: Package
 PackageInstallArgs: --no-multiarch --with-keep.source
+PackageCheckArgs: --as-cran
 PackageRoxygenize: rd,collate,namespace

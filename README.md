@@ -11,11 +11,13 @@ The `matchingMarkets` R package comes with two estimators:
 
 * `stabit`: Implements a Bayes estimator that corrects for sample selection in matching markets when the selection process is a one-sided matching game (i.e. group formation).
 
-* `stabit2`: Implements the Bayes estimator for a two-sided matching game (i.e. the [college admissions](http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems) and [stable marriage](http://en.wikipedia.org/wiki/Stable_marriage_problem) problems).
+* `stabit2`: Implements the Bayes estimator for a two-sided matching game (i.e. the [college admissions](https://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems) and [stable marriage](https://en.wikipedia.org/wiki/Stable_marriage_problem) problems).
 
-and five algorithms that can be used to simulate matching data:
+and six algorithms that can be used to simulate matching data:
 
-* `hri`: Constraint model for the hospital/residents problem. Finds *all* stable matchings in two-sided matching markets. Implemented for both the [stable marriage problem](http://en.wikipedia.org/wiki/Stable_marriage_problem) (one-to-one matching) and the [hospital/residents problem](http://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems), also known as college admissions problem (many-to-one matching). 
+* `hri`: Constraint model for the hospital/residents problem. Finds *all* stable matchings in two-sided matching markets. Implemented for both the [stable marriage problem](https://en.wikipedia.org/wiki/Stable_marriage_problem) (one-to-one matching) and the [hospital/residents problem](https://en.wikipedia.org/wiki/Stable_marriage_problem#Similar_problems), also known as college admissions problem (many-to-one matching). 
+
+* `hri2`: Roth-Peranson Algorithm for the [hospital/residents problem with couples](https://en.wikipedia.org/wiki/National_Resident_Matching_Program). Finds the resident-optimal stable matching (if one exists) in the two-sided matching market. 
 
 * `iaa`: Immediate Acceptance Algorithm (a.k.a. Boston mechanism): First-preference-first algorithm used for school choice in many countries. And Gale-Shapley Deferred Acceptance Algorithm.
 

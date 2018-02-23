@@ -4,7 +4,7 @@ citEntry(entry = "Article",
   title        = "Analysis of Stable Matchings in {R}: Package {matchingMarkets}",
   author       = personList(as.person("Thilo Klein")),
   journal      = "The Comprehensive R Archive Network",
-  year         = "2016",
+  year         = "2018",
   url          = "https://cran.r-project.org/package=matchingMarkets",
 
   textVersion  =
