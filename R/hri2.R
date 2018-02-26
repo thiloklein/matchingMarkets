@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------------
 #
 #' @title Resident-optimal matching in the hospital/residents problem with couples
-#' @description Implements the Roth Peranson matching algorithm for the \href{https://en.wikipedia.org/wiki/National_Resident_Matching_Program}{hospital/residents problem with couples} as described in Roth and Peranson (1999). The function is based on a adoption of Fahiem Bacchus's \href{https://github.com/aperrau/stable-matching-suite}{stable-matching-suite}.
+#' @description Implements the Roth Peranson matching algorithm for the \href{https://en.wikipedia.org/wiki/National_Resident_Matching_Program}{hospital/residents problem with couples} as described in Roth and Peranson (1999). The function is based on an adoption of Bacchus (2018). 
 #' @param nStudents integer indicating the number of students (in the college admissions problem) 
 #' or men (in the stable marriage problem) in the market. Defaults to \code{ncol(s.prefs)}.
 #' @param nColleges integer indicating the number of colleges (in the college admissions problem) 
@@ -44,14 +44,16 @@
 #' 
 #' @return
 #' \code{hri2} returns a list of the following elements:
-#' \item{matchings}{list of matched students and colleges.}
-#' \item{summary}{detailed report of the matching result, including futher information on ranks. See function: summary.hrci(x)}
+#' \item{matchings}{List of matched students and colleges.}
+#' \item{summary}{Detailed report of the matching result, including futher information on ranks.}
 #' 
 #' @author Sven Giegerich, Thilo Klein 
 #' 
 #' @keywords algorithms, matching
 #' 
-#' @references Gale, D. and L.S. Shapley (1962). College admissions and the stability 
+#' @references Bacchus, F. (2018). Stable matching suite. GitHub repository.
+#' 
+#' Gale, D. and L.S. Shapley (1962). College admissions and the stability 
 #' of marriage. \emph{The American Mathematical Monthly}, 69(1):9--15.
 #' 
 #' Roth, A. E., & Peranson, E. (1999). The redesign of the matching market for American physicians: Some engineering aspects of economic design. \emph{American economic review}, 89(4), 748-780.
@@ -59,22 +61,22 @@
 #' Kojima, F., Pathak, P. A., & Roth, A. E. (2013). Matching with couples: Stability and incentives in large markets. \emph{The Quarterly Journal of Economics}, 128(4), 1585-1632.
 #' 
 #' @examples
-#' # Example I
-#' s.prefs <- matrix(c(4,2,3,5,1, 2,1,3,4,5, 1,2,3,4,5), 5,3)
-#' c.prefs <- matrix(c(1,2,3, 1,2,3, 1,2,3, 1,2,3, 1,2,3), 3,5)
-#' co.prefs <- matrix(c(4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5, 1,2,1,2,3,3,4,3, 1,1,2,2,2,3,3,4), 8,4)
-#' res <- hri2(s.prefs=s.prefs, c.prefs=c.prefs, co.prefs=co.prefs, nSlots=c(1,1,1,1,1))
+#' ## Example with given preferences
+#' (s.prefs <- matrix(c(4,2,3,5, 2,1,3,NA, 1,2,3,4), 4,3))
+#' (c.prefs <- matrix(rep(1:5,5), 5,5))
+#' (co.prefs <- matrix(c(rep(4,3), rep(5,3), 3,3,NA, 3,NA,3), 3,4))
+#' res <- hri2(s.prefs=s.prefs, c.prefs=c.prefs, co.prefs=co.prefs, nSlots=rep(1,5))
 #' res$matchings
-#' #summary(res)
+#' # summary(res)
 #' 
-#' # Example II
+#' ## Example with random preferences
 #' nStudents <- 50
 #' nColleges <- 30
 #' nCouples <- 4
 #' nSlots <- sample(1:nStudents, nColleges)
 #' res <- hri2(nStudents=nStudents, nColleges=nColleges, nCouples=nCouples, nSlots=nSlots)
 #' res$matchings
-#' #summary(res)
+#' # summary(res)
 
 hri2 <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), nCouples=ncol(co.prefs), 
                   s.prefs=NULL, c.prefs=NULL, co.prefs=NULL, seed=NULL, ...) UseMethod("hri2")
@@ -157,7 +159,10 @@ hri2.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlot
   matchResult <- runMatch(s.matrix, c.matrix, co.matrix)
   
   matchResult$matchings <- cbind(matchResult$matchings$ResidentID, matchResult$matchings$matchResultResident)
-  colnames(matchResult$matchings) <- c("resident", "match")
+  colnames(matchResult$matchings) <- c("student", "college")
+  
+  ## drop unmatched students and colleges
+  matchResult$matchings <- matchResult$matchings[(matchResult$matchings[,1] != 0) & (matchResult$matchings[,2] != 0),]
   
   class(matchResult) <- "hri2"
   return(matchResult)

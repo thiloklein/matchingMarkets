@@ -56,22 +56,22 @@ Implements the Roth Peranson matching algorithm for the \href{https://en.wikiped
 }
 
 \examples{
-# Example I
+## Example with given preferences
 s.prefs <- matrix(c(4,2,3,5,1, 2,1,3,4,5, 1,2,3,4,5), 5,3)
 c.prefs <- matrix(c(1,2,3, 1,2,3, 1,2,3, 1,2,3, 1,2,3), 3,5)
 co.prefs <- matrix(c(4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5, 1,2,1,2,3,3,4,3, 1,1,2,2,2,3,3,4), 8,4)
 res <- hri2(s.prefs=s.prefs, c.prefs=c.prefs, co.prefs=co.prefs, nSlots=c(1,1,1,1,1))
 res$matchings
-#summary(res)
+# summary(res)
 
-# Example II
+## Example with random preferences
 nStudents <- 50
 nColleges <- 30
 nCouples <- 4
 nSlots <- sample(1:nStudents, nColleges)
 res <- hri2(nStudents=nStudents, nColleges=nColleges, nCouples=nCouples, nSlots=nSlots)
 res$matchings
-#summary(res)
+# summary(res)
 }
 \references{
 Gale, D. and L.S. Shapley (1962). College admissions and the stability 
