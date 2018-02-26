@@ -39,11 +39,11 @@ preference by rows (i.e. most preferred first).}
 }
 \value{
 \code{hri2} returns a list of the following elements:
-\item{matchings}{list of matched students and colleges.}
-\item{summary}{detailed report of the matching result, including futher information on ranks. See function: summary.hrci(x)}
+\item{matchings}{List of matched students and colleges.}
+\item{summary}{Detailed report of the matching result, including futher information on ranks.}
 }
 \description{
-Implements the Roth Peranson matching algorithm for the \href{https://en.wikipedia.org/wiki/National_Resident_Matching_Program}{hospital/residents problem with couples} as described in Roth and Peranson (1999). The function is based on a adoption of Fahiem Bacchus's \href{https://github.com/aperrau/stable-matching-suite}{stable-matching-suite}.
+Implements the Roth Peranson matching algorithm for the \href{https://en.wikipedia.org/wiki/National_Resident_Matching_Program}{hospital/residents problem with couples} as described in Roth and Peranson (1999). The function is based on an adoption of Bacchus (2018).
 }
 \section{Minimum required arguments}{
 
@@ -57,10 +57,10 @@ Implements the Roth Peranson matching algorithm for the \href{https://en.wikiped
 
 \examples{
 ## Example with given preferences
-s.prefs <- matrix(c(4,2,3,5,1, 2,1,3,4,5, 1,2,3,4,5), 5,3)
-c.prefs <- matrix(c(1,2,3, 1,2,3, 1,2,3, 1,2,3, 1,2,3), 3,5)
-co.prefs <- matrix(c(4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5, 1,2,1,2,3,3,4,3, 1,1,2,2,2,3,3,4), 8,4)
-res <- hri2(s.prefs=s.prefs, c.prefs=c.prefs, co.prefs=co.prefs, nSlots=c(1,1,1,1,1))
+(s.prefs <- matrix(c(4,2,3,5, 2,1,3,NA, 1,2,3,4), 4,3))
+(c.prefs <- matrix(rep(1:5,5), 5,5))
+(co.prefs <- matrix(c(rep(4,3), rep(5,3), 3,3,NA, 3,NA,3), 3,4))
+res <- hri2(s.prefs=s.prefs, c.prefs=c.prefs, co.prefs=co.prefs, nSlots=rep(1,5))
 res$matchings
 # summary(res)
 
@@ -74,6 +74,8 @@ res$matchings
 # summary(res)
 }
 \references{
+Bacchus, F. (2018). Stable matching suite. GitHub repository.
+
 Gale, D. and L.S. Shapley (1962). College admissions and the stability 
 of marriage. \emph{The American Mathematical Monthly}, 69(1):9--15.
 
