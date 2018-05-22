@@ -25,6 +25,7 @@
 #' @param co.prefs matrix of dimension \code{4} \code{x} \code{nCouplesPrefs} in long format with the \code{1}th and \code{2}th
 #' columns containing student couple id's; \code{3}th and \code{4}th is a 2-tuple ranking over college preference for the couple (coupleStudent1.pref, coupleStudent2.pref) in decreasing order of 
 #' preference by rows (i.e. most preferred first).
+#' @param randomization determines at which level and in which order random lottery numbers for student priorities are drawn. The default is \code{randomization = "multiple"}, where a student's priority is determined by a separate lottery at each college (i.e. local tie-breaking). For the second variant, \code{randomization = "single"}, a single lottery number determines a student's priority at all colleges (i.e. global tie breaking). A third variant is common in the context of course allocation, where a "couple" represents a student who submits a preference ranking over single courses (first course) and combinations of courses (first and second course). Here, the option \code{randomization = "single-course-first"} gives applications for a student's single courses strictly higher priority than for course combinations. This ensures the fairness criterion that a student is only assigned a second course after single course applications of all students have been considered.
 #' @param seed integer setting the state for random number generation. 
 #' @param ... .
 #' 
@@ -79,11 +80,11 @@
 #' # summary(res)
 
 hri2 <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), nCouples=ncol(co.prefs), 
-                  s.prefs=NULL, c.prefs=NULL, co.prefs=NULL, seed=NULL, ...) UseMethod("hri2")
+                  s.prefs=NULL, c.prefs=NULL, co.prefs=NULL, randomization=NULL, seed=NULL, ...) UseMethod("hri2")
 
 #' @export
 hri2.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), nCouples=ncol(co.prefs), 
-                        s.prefs=NULL, c.prefs=NULL, co.prefs=NULL, seed=NULL, ...){
+                        s.prefs=NULL, c.prefs=NULL, co.prefs=NULL, randomization=NULL, seed=NULL, ...){
   
   ## -------------------------------------------------------
   ## --- 1. consistency checks:  ---------------------------
@@ -119,8 +120,21 @@ hri2.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlot
   if(is.null(s.prefs)){  
     s.prefs <- replicate(n=nStudents,sample(seq(from=1,to=nColleges,by=1)))
   }
-  if(is.null(c.prefs)){    
-    c.prefs <- replicate(n=nColleges,sample(seq(from=1,to=nStudents+2*nCouples,by=1)))
+  if(is.null(c.prefs)){  
+    if(randomization == "single"){ 
+      
+      c.prefs <- matrix(sample(seq(from=1, to=nStudents+2*nCouples, by=1)), nrow=nStudents+2*nCouples, ncol=nColleges) 
+
+    } else if(randomization == "single-course-first"){
+      
+      c.prefs <- matrix( c(sample(c(1:nStudents, seq(nStudents+1, nStudents+2*nCouples, by=2))), 
+                 sample(seq(nStudents+2, nStudents+2*nCouples, by=2))),
+                 nrow=nStudents+2*nCouples, ncol=nColleges)
+      
+    } else{ # if(randomization == "multiple")
+      
+      c.prefs <- replicate(n=nColleges ,sample(seq(from=1, to=nStudents+2*nCouples, by=1))) 
+    }
   }
   if(is.null(co.prefs) && nCouples > 0){
     co.prefs <- matrix(ncol = nCouples, nrow = 2+2*nColleges)
