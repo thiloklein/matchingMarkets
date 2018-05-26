@@ -6,7 +6,7 @@
 \usage{
 hri(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs), nSlots = rep(1,
   nColleges), s.prefs = NULL, c.prefs = NULL, s.range = NULL,
-  c.range = NULL, randomization = NULL, seed = NULL, ...)
+  c.range = NULL, randomization = "multiple", seed = NULL, ...)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem) 

@@ -132,11 +132,11 @@
 #'  plot(res, energy=TRUE)
 #'  }
 hri <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), 
-                s.prefs=NULL, c.prefs=NULL, s.range=NULL, c.range=NULL, randomization=NULL, seed=NULL, ...) UseMethod("hri")
+                s.prefs=NULL, c.prefs=NULL, s.range=NULL, c.range=NULL, randomization="multiple", seed=NULL, ...) UseMethod("hri")
 
 #' @export
 hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), 
-                s.prefs=NULL, c.prefs=NULL, s.range=NULL, c.range=NULL, randomization=NULL, seed=NULL, ...){
+                s.prefs=NULL, c.prefs=NULL, s.range=NULL, c.range=NULL, randomization="multiple", seed=NULL, ...){
   
   ## ------------------------
   ## --- 1-a. Preliminaries ---
@@ -448,6 +448,10 @@ plot.hri <- function(x, energy=FALSE, ...){
   n <- nrow(x[x$matching==1,])
   x <- with(x, data.frame(x, sSatisf = n + 1 - sRank, cSatisf = n +1 - cRank))
   x$energy <- with(x, sSatisf*cSatisf)
+  
+  x$college <- as.integer(x$college)
+  x$slots   <- as.integer(x$slots)
+  x$student <- as.integer(x$student)
   
   ## aggregate by matching
   x <- aggregate(x, by=list(x$matching), sum)
