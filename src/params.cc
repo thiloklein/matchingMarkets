@@ -82,8 +82,8 @@ void Params::readOptions() {
   //Sven
   algo = 1;
   verbosity = 0;
-  cclim = -1 ;
-  rnd = false;
+  cclim = 1000;
+  rnd = true;
   rndcclim = std::numeric_limits<int>::max();
   kpr_cclim = -1;
 }

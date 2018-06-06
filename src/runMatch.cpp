@@ -17,6 +17,10 @@ List runMatch(Rcpp::List students, Rcpp::List programs, Rcpp::List couples) {
     Rcpp::Rcout  << prob.getError();
   }
   
+  //cpu limit -> 10 sec
+  rlimit rl;
+  rl.rlim_cur = 10;
+  
   dam = new RPmatcher {};
   auto match = dam->match(prob);
   
