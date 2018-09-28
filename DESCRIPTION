@@ -20,9 +20,12 @@ Title: Analysis of Stable Matchings
 Authors@R: c(person("Thilo", "Klein", role = c("aut", "cre"),
                      email = "thilo@klein.uk"),
               person("Sven", "Giegerich", role = "ctb",
-                     email = "sven.giegerich@mailbox.org"))
+                     email = "sven.giegerich@mailbox.org"),
+              person("Alexander", "Sauer", role = "ctb",
+                     email = "sauer.alexander@gmx.de"))
 Author: Thilo Klein [aut, cre],
-  Sven Giegerich [ctb]
+  Sven Giegerich [ctb],
+  Alexander Sauer [ctb]
 Maintainer: Thilo Klein <thilo@klein.uk>
 Description: Implements structural estimators to correct for
     the sample selection bias from observed outcomes in matching
@@ -36,4 +39,5 @@ URL: http://matchingMarkets.org,
     http://klein.uk
 BugReports: https://github.com/thiloklein/matchingMarkets/issues
 License: GPL (>= 2)
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
+Encoding: UTF-8

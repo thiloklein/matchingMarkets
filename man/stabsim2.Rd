@@ -4,8 +4,9 @@
 \alias{stabsim2}
 \title{Simulated data for college admissions problem}
 \usage{
-stabsim2(m, nStudents, nColleges = length(nSlots), nSlots, colleges, students,
-  outcome, selection, binary = FALSE, seed = 123, verbose = TRUE)
+stabsim2(m, nStudents, nColleges = length(nSlots), nSlots, colleges,
+  students, outcome, selection, binary = FALSE, seed = 123,
+  verbose = TRUE)
 }
 \arguments{
 \item{m}{integer indicating the number of markets to be simulated.}

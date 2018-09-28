@@ -4,9 +4,10 @@
 \alias{hri2}
 \title{Resident-optimal matching in the hospital/residents problem with couples}
 \usage{
-hri2(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs), nSlots = rep(1,
-  nColleges), nCouples = ncol(co.prefs), s.prefs = NULL, c.prefs = NULL,
-  co.prefs = NULL, randomization = NULL, seed = NULL, ...)
+hri2(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
+  nSlots = rep(1, nColleges), nCouples = ncol(co.prefs),
+  s.prefs = NULL, c.prefs = NULL, co.prefs = NULL,
+  randomization = "multiple", seed = NULL, ...)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem) 

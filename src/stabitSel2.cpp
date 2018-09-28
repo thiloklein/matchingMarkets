@@ -76,8 +76,6 @@ List stabitSel2(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
   if(gPrior == FALSE){
     arma::mat sigmabaralpha = 10*arma::eye(kW,kW);
     arma::mat sigmabaralphainverse = arma::inv(sigmabaralpha);
-  } else{
-    sigmabaralphainverse = sigmabaralphainverse;
   }
   arma::mat alphabaroversigma = sigmabaralphainverse*alphabar;  
 
@@ -86,8 +84,6 @@ List stabitSel2(Rcpp::List Xr, Rcpp::List Rr, Rcpp::List Wr,
   if(gPrior == FALSE){
     arma::mat sigmabarbeta = 10*arma::eye(kX,kX);
     arma::mat sigmabarbetainverse = arma::inv(sigmabarbeta);    
-  } else{
-    sigmabarbetainverse = sigmabarbetainverse;
   }
   arma::colvec betabaroversigma = sigmabarbetainverse*betabar;
     

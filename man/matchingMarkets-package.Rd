@@ -41,14 +41,13 @@
   of all feasible matches from individual-level data is a combinatorial problem. 
   The package returns design matrices based on pre-specified transformations to generate counterfactual matches. 
 
-  \item \emph{Algorithms}. The package also contains three matching 
+  \item \emph{Algorithms}. The package also contains matching 
   algorithms that can be used to simulated matching data: \code{\link{hri}}: A constraint model (Posser, 2014) 
   for the \href{http://en.wikipedia.org/wiki/Stable_marriage_problem}{stable marriage} and 
   \href{http://en.wikipedia.org/wiki/Hospital_resident}{college admissions} problem, a.k.a. hospital/residents 
   problem (see Gale and Shapley, 1962). \code{\link{sri}}: A constraint model for the 
   \href{http://en.wikipedia.org/wiki/Stable_roommates_problem}{stable roommates problem} (see Gusfield and
-  Irving, 1989).
-  \code{\link{ttc}}: The top-trading-cycles algorithm for the 
+  Irving, 1989). \code{\link{ttc}}: The top-trading-cycles algorithm for the 
   \href{https://en.wikipedia.org/wiki/Top_trading_cycle}{housing market problem}. These can be used to obtain
   stable matchings from simulated or real preference data (see Shapley and Scarf, 1974). 
 
@@ -130,7 +129,7 @@
 \section{How to cite this package}{
   Whenever using this package, please cite as
 
-  Klein, T. (2018). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.3-5.
+  Klein, T. (2018). matchingMarkets: Structural Estimator and Algorithms for the Analysis of Stable Matchings. R package version 0.3-6.
 }
 
 

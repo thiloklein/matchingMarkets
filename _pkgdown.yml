@@ -1,0 +1,37 @@
+reference:
+  - title: "Package"
+    desc: "Gives an overview of the various functions used in the matchingMarkets package."
+    contents: 
+      - matchingMarkets-package
+  - title: "Algorithms"
+    desc: "Documentation for the most common matching algorithms."
+    contents: 
+      - hri
+      - hri2
+      - iaa
+      - stabchk
+      - sri
+      - plp
+      - rsd
+      - ttc
+      - ttc2
+      - ttcc
+  - title: "Estimators"
+    desc: "Structural estimators for one- and two-sided matching markets."
+    contents:
+      - stabit
+      - stabit2
+      - predict.stabit2
+      - khb
+      - mce
+  - title: "Data generation"
+    desc: "Functions to produce simulated data for one-sided and two-sided matching markets."
+    contents:
+      - stabsim
+      - stabsim2
+  - title: "Datasets"
+    desc: "Description of three datasets for matching markets contained in the package."
+    contents:
+      - baac00
+      - klein15a
+      - klein15b

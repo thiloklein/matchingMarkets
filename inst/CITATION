@@ -8,7 +8,7 @@ citEntry(entry = "Article",
   url          = "https://cran.r-project.org/package=matchingMarkets",
 
   textVersion  =
-  paste("Thilo Klein (2016).",
+  paste("Thilo Klein (2018).",
         "Analysis of Stable Matchings in R: Package matchingMarkets.",
         "The Comprehensive R Archive Network.",
         "URL https://cran.r-project.org/package=matchingMarkets.")

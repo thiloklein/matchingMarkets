@@ -80,11 +80,11 @@
 #' # summary(res)
 
 hri2 <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), nCouples=ncol(co.prefs), 
-                  s.prefs=NULL, c.prefs=NULL, co.prefs=NULL, randomization=NULL, seed=NULL, ...) UseMethod("hri2")
+                  s.prefs=NULL, c.prefs=NULL, co.prefs=NULL, randomization="multiple", seed=NULL, ...) UseMethod("hri2")
 
 #' @export
 hri2.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), nCouples=ncol(co.prefs), 
-                        s.prefs=NULL, c.prefs=NULL, co.prefs=NULL, randomization=NULL, seed=NULL, ...){
+                        s.prefs=NULL, c.prefs=NULL, co.prefs=NULL, randomization="multiple", seed=NULL, ...){
   
   ## -------------------------------------------------------
   ## --- 1. consistency checks:  ---------------------------
@@ -162,10 +162,10 @@ hri2.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlot
   ## --- 3. Prepare preference matrices and apply solver ---
   
   ## prepare and write preference matrices
-  c.matrix <- sapply(1:nrow(t(c.prefs)), function(z) paste("p", z - 1, if(is.na(nSlots[z])){"0"} else{nSlots[z]}, paste( t(c.prefs)[z,][!is.na(t(c.prefs)[z,])] -1, collapse = " ")))
-  s.matrix <- sapply(1:nrow(t(s.prefs)), function(z) paste("r", z - 1, paste( t(s.prefs)[z,][!is.na(t(s.prefs)[z,])] -1, collapse = " ")))
+  c.matrix <- sapply(1:ncol(c.prefs), function(z) paste("p", z - 1, if(is.na(nSlots[z])){"0"} else{nSlots[z]}, paste( t(c.prefs)[z,][!is.na(t(c.prefs)[z,])] -1, collapse = " ")))
+  s.matrix <- sapply(1:ncol(s.prefs), function(z) paste("r", z - 1, paste( t(s.prefs)[z,][!is.na(t(s.prefs)[z,])] -1, collapse = " ")))
   if (nCouples > 0) {
-    co.matrix <- sapply(1:nrow(co.prefs), function(z) paste("c", z - 1, paste(co.prefs[z,][!is.na(t(co.prefs)[z,])] -1, collapse = " ")))
+    co.matrix <- sapply(1:nrow(co.prefs), function(z) paste("c", z - 1, paste(co.prefs[z,][!is.na(co.prefs[z,])] -1, collapse = " ")))
   } else {
     co.matrix <- c("")
   }

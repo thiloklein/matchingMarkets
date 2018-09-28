@@ -4,9 +4,10 @@
 \alias{hri}
 \title{All stable matchings in the hospital/residents problem with incomplete lists}
 \usage{
-hri(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs), nSlots = rep(1,
-  nColleges), s.prefs = NULL, c.prefs = NULL, s.range = NULL,
-  c.range = NULL, randomization = "multiple", seed = NULL, ...)
+hri(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
+  nSlots = rep(1, nColleges), s.prefs = NULL, c.prefs = NULL,
+  s.range = NULL, c.range = NULL, randomization = NULL,
+  seed = NULL, ...)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem) 
@@ -116,12 +117,12 @@ either given or randomly generated preferences.
  
 ## --------------------
 ## --- Summary plots
-\dontrun{
+
 ## 200 students, 200 colleges with 1 slot each
  res <- hri(nStudents=200, nColleges=200, seed=12)
  plot(res)
  plot(res, energy=TRUE)
- }
+ 
 }
 \references{
 Gale, D. and L.S. Shapley (1962). College admissions and the stability 

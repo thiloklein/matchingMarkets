@@ -4,28 +4,33 @@
 \alias{iaa}
 \title{Immediate Acceptance Algorithm (a.k.a. Boston mechanism) for two-sided matching markets}
 \usage{
-iaa(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs), nSlots = rep(1,
-  nColleges), s.prefs = NULL, c.prefs = NULL, acceptance = "immediate")
+iaa(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
+  nSlots = rep(1, nColleges), s.prefs = NULL, c.prefs = NULL,
+  acceptance = "immediate", short_match = TRUE, seed = 123)
 }
 \arguments{
-\item{nStudents}{integer indicating the number of students (in the college admissions problem) 
+\item{nStudents}{integer indicating the number of students (in the college admissions problem)
 or men (in the stable marriage problem) in the market. Defaults to \code{ncol(s.prefs)}.}
 
-\item{nColleges}{integer indicating the number of colleges (in the college admissions problem) 
+\item{nColleges}{integer indicating the number of colleges (in the college admissions problem)
 or women (in the stable marriage problem) in the market. Defaults to \code{ncol(c.prefs)}.}
 
-\item{nSlots}{vector of length \code{nColleges} indicating the number of places (i.e. 
+\item{nSlots}{vector of length \code{nColleges} indicating the number of places (i.e.
 quota) of each college. Defaults to \code{rep(1,nColleges)} for the marriage problem.}
 
-\item{s.prefs}{matrix of dimension \code{nColleges} \code{x} \code{nStudents} with the \code{j}th 
-column containing student \code{j}'s ranking over colleges in decreasing order of 
+\item{s.prefs}{matrix of dimension \code{nColleges} \code{x} \code{nStudents} with the \code{j}th
+column containing student \code{j}'s ranking over colleges in decreasing order of
 preference (i.e. most preferred first).}
 
-\item{c.prefs}{matrix of dimension \code{nStudents} \code{x} \code{nColleges} with the \code{i}th 
-column containing college \code{i}'s ranking over students in decreasing order of 
+\item{c.prefs}{matrix of dimension \code{nStudents} \code{x} \code{nColleges} with the \code{i}th
+column containing college \code{i}'s ranking over students in decreasing order of
 preference (i.e. most preferred first).}
 
 \item{acceptance}{if \code{acceptance="deferred"} returns the solution found by the student-proposing Gale-Shapley deferred acceptance algorithm; if \code{acceptance="immediate"} (the default) returns the solution found by the Boston mechanism.}
+
+\item{short_match}{(Optional)  If \code{FALSE} then in the returned matching, free capacities will be indicated with 0 entries. If \code{TRUE}, free capacities will not be reported in the returned matching but an additonal data.frame is returned that contains free capacities. Defaults to \code{TRUE}.}
+
+\item{seed}{(Optional) integer setting the state for random number generation.}
 }
 \value{
 \code{iaa} returns a list with the following elements.
@@ -36,10 +41,10 @@ preference (i.e. most preferred first).}
 \item{singles}{identifier of single (or unmatched) students/men.}
 }
 \description{
-Finds the optimal assignment of students to colleges in the 
+Finds the optimal assignment of students to colleges in the
 \href{http://en.wikipedia.org/wiki/Hospital_resident}{college admissions} problem
-based on the Boston mechanism. The option \code{acceptance="deferred"} instead uses the Gale-Shapley 
-(1962) Deferred Acceptance Algorithm with male offer. The function works with either 
+based on the Boston mechanism. The algorithmen is also applicable to the stable marriage problem. The option \code{acceptance="deferred"} instead uses the Gale-Shapley
+(1962) Deferred Acceptance Algorithm with student offer. The function works with either
 given or randomly generated preferences.
 }
 \section{Minimum required arguments}{
@@ -57,25 +62,32 @@ given or randomly generated preferences.
 ## --------------------------------
 ## --- College admission problem
 
-## Boston mechanism for 7 students, 2 colleges with 3 slots each
- set.seed(123)
- iaa(nStudents=7, nSlots=c(3,3))
+s.prefs <- matrix(c(1,2,3,
+                    1,2,3,
+                    1,2,3,
+                    2,1,3,
+                    2,1,3),
+                  byrow = FALSE, ncol = 5, nrow = 3); s.prefs
+c.prefs <- matrix(c(1,4,2,3,5,
+                    5,2,3,4,1,
+                    1,2,3,4,5),
+                  byrow = FALSE, ncol = 3, nrow = 5); c.prefs
+nSlots <- c(2,2,1)
+
+## Boston mechanism
+ iaa(s.prefs = s.prefs, c.prefs = c.prefs, nSlots = nSlots)$matchings
 
 ## Gale-Shapley algorithm
- set.seed(123)
- iaa(nStudents=7, nSlots=c(3,3), acceptance="deferred")
+ iaa(s.prefs = s.prefs, c.prefs = c.prefs, nSlots = nSlots, acceptance="deferred")$matchings
 
-## Same results for the Gale-Shapley algorithm with hri() function
+## Same results for the Gale-Shapley algorithm with hri2() function (but different format)
  set.seed(123)
- hri(nStudents=7, nSlots=c(3,3))
-
-## 7 students, 2 colleges with 3 slots each, given preferences:
- s.prefs <- matrix(c(1,2, 1,2, 1,2, 1,2, 1,2, 1,2, 1,2), 2,7)
- c.prefs <- matrix(c(1,2,3,4,5,6,7, 1,2,3,4,5,6,7), 7,2)
- iaa(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=c(3,3))
+ iaa(nStudents=7, nSlots=c(3,3), acceptance="deferred")$matchings
+ set.seed(123)
+ hri2(nStudents=7, nSlots=c(3,3))$matchings
 }
 \references{
-Gale, D. and Shapley, L.S. (1962). College admissions and the stability 
+Gale, D. and Shapley, L.S. (1962). College admissions and the stability
 of marriage. \emph{The American Mathematical Monthly}, 69(1):9--15.
 
 Kojima, F. and M.U. Unver (2014). The "Boston" school-choice mechanism. \emph{Economic Theory}, 55(3): 515--544.
