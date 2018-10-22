@@ -7,7 +7,8 @@
 hri2(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
   nSlots = rep(1, nColleges), nCouples = ncol(co.prefs),
   s.prefs = NULL, c.prefs = NULL, co.prefs = NULL,
-  randomization = "multiple", seed = NULL, ...)
+  randomization = "multiple", seed = NULL, check_consistency = TRUE,
+  ...)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem) 
@@ -37,6 +38,8 @@ preference by rows (i.e. most preferred first).}
 \item{randomization}{determines at which level and in which order random lottery numbers for student priorities are drawn. The default is \code{randomization = "multiple"}, where a student's priority is determined by a separate lottery at each college (i.e. local tie-breaking). For the second variant, \code{randomization = "single"}, a single lottery number determines a student's priority at all colleges (i.e. global tie breaking). A third variant is common in the context of course allocation, where a "couple" represents a student who submits a preference ranking over single courses (first course) and combinations of courses (first and second course). Here, the option \code{randomization = "single-course-first"} gives applications for a student's single courses strictly higher priority than for course combinations. This ensures the fairness criterion that a student is only assigned a second course after single course applications of all students have been considered.}
 
 \item{seed}{integer setting the state for random number generation.}
+
+\item{check_consistency}{Performs additional consicentcy checks if the preference matrices are given by characters. Defaults to \code{FALSE}. Set to \code{FALSE} to reduce run-time.}
 
 \item{...}{.}
 }
@@ -75,6 +78,37 @@ nSlots <- sample(1:nStudents, nColleges)
 res <- hri2(nStudents=nStudents, nColleges=nColleges, nCouples=nCouples, nSlots=nSlots)
 res$matchings
 # summary(res)
+
+## Example with characters in the preferences matrices
+s.prefs <- matrix(c("Micro1", NA, NA,
+                    "Micro2", "Micro1", "Macro",
+                    "Macro",NA ,NA), 
+                    ncol = 3)
+colnames(s.prefs) <- c('Lea', 'Mia', 'Kai')
+c.prefs <- matrix(c("Niklas", "Kai", "Mia", "Anna",
+                    "Lea", "Kai", "Anna",NA,
+                    "Kai", "Mia", "Lea",NA), 
+                    ncol = 3)
+colnames(c.prefs) <- c('Micro1', 'Micro2', 'Macro')
+col1 <- c(rep("Niklas",4),rep("Anna",5))
+col2 <- c(rep("Jan",4),rep("Lisa",5))
+col3 <- c("Micro1","Macro","Micro1",NA,"Macro",
+          NA,"Micro2","Micro2","Macro")
+col4 <- c("Micro2","Micro1",NA,"Macro","Macro",
+          "Micro1","Micro2","Macro",NA)
+co.prefs <- matrix(c(col1,col2,col3,col4), ncol = 4)
+res <- hri2(s.prefs=s.prefs, c.prefs=c.prefs, co.prefs=co.prefs, 
+            nSlots=c(2,1,1))                     
+res$matching
+
+## Example if students are allowed to apply and be accepted by two courses   
+col12 <- c(rep(c(rep("Niklas",4),rep("Anna",2)),2))
+col3 <- c("Micro1","Macro","Micro1","Macro","Macro","Macro")
+col4 <- c("Micro2","Micro1",NA,NA,"Micro1","Micro2")
+co.prefs <- matrix(c(col12,col3,col4), ncol = 4)
+res <- hri2(s.prefs=s.prefs, c.prefs=c.prefs, co.prefs=co.prefs, 
+            nSlots=c(2,1,1))                     
+res$matching                                                                                     
 }
 \references{
 Bacchus, F. (2018). Stable matching suite. GitHub repository.
@@ -87,7 +121,7 @@ Roth, A. E., & Peranson, E. (1999). The redesign of the matching market for Amer
 Kojima, F., Pathak, P. A., & Roth, A. E. (2013). Matching with couples: Stability and incentives in large markets. \emph{The Quarterly Journal of Economics}, 128(4), 1585-1632.
 }
 \author{
-Sven Giegerich, Thilo Klein
+Sven Giegerich, Thilo Klein, Alexander Sauer
 }
 \keyword{algorithms,}
 \keyword{matching}

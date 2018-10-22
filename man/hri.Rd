@@ -7,7 +7,7 @@
 hri(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
   nSlots = rep(1, nColleges), s.prefs = NULL, c.prefs = NULL,
   s.range = NULL, c.range = NULL, randomization = NULL,
-  seed = NULL, ...)
+  seed = NULL, check_consistency = FALSE, ...)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem) 
@@ -38,6 +38,8 @@ the range \code{[c.min, c.max]}. Note: interval is only correct if either c.rang
 \item{randomization}{determines at which level random lottery numbers for student priorities are drawn. The default is \code{randomization = "multiple"}, where a student's priority is determined by a separate lottery at each college (i.e. local tie-breaking). For the second variant, \code{randomization = "single"}, a single lottery number determines a student's priority at all colleges (i.e. global tie breaking).}
 
 \item{seed}{integer setting the state for random number generation.}
+
+\item{check_consistency}{Performs consicentcy checks (Checks if there are columns in the preference matrices that only contains zeros and drops them and checks the matrixes for consistencies if they are given by characters). Defaults to \code{TRUE} but changing it to \code{FALSE} might reduce the running-time for large problems.}
 
 \item{...}{.}
 }

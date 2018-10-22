@@ -102,7 +102,7 @@ protected:
   int totalCMatches;
   int totalCUnMatches;
   int rndReorderings;
-  int rpCplsMatched;;
+  int rpCplsMatched;
 };
 
 #endif

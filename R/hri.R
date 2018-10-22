@@ -41,6 +41,7 @@
 #' Produces incomplete preference lists with the length of each college's list randomly sampled from 
 #' the range \code{[c.min, c.max]}. Note: interval is only correct if either c.range or s.range is used.
 #' @param randomization determines at which level random lottery numbers for student priorities are drawn. The default is \code{randomization = "multiple"}, where a student's priority is determined by a separate lottery at each college (i.e. local tie-breaking). For the second variant, \code{randomization = "single"}, a single lottery number determines a student's priority at all colleges (i.e. global tie breaking). 
+#' @param check_consistency Performs consicentcy checks (Checks if there are columns in the preference matrices that only contains zeros and drops them and checks the matrixes for consistencies if they are given by characters). Defaults to \code{TRUE} but changing it to \code{FALSE} might reduce the running-time for large problems.
 #' @param ... .
 #' 
 #' @export
@@ -82,6 +83,7 @@
 #' Springer International Publishing, 8451: 15--28.
 #' 
 #' @examples
+#' \dontrun{
 #' ## -----------------------
 #' ## --- Marriage problem 
 #' 
@@ -130,14 +132,14 @@
 #'  res <- hri(nStudents=200, nColleges=200, seed=12)
 #'  plot(res)
 #'  plot(res, energy=TRUE)
-#'  
-hri <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), 
-               s.prefs=NULL, c.prefs=NULL, s.range=NULL, c.range=NULL, randomization=NULL, seed=NULL, ...) UseMethod("hri")
+#' }
+ hri <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), 
+                 s.prefs=NULL, c.prefs=NULL, s.range=NULL, c.range=NULL, randomization=NULL, seed=NULL, check_consistency = FALSE, ...) UseMethod("hri")
 
 #' @export
 hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), 
-                       s.prefs=NULL, c.prefs=NULL, s.range=NULL, c.range=NULL, randomization='multiple', seed=NULL, ...){
-
+                        s.prefs=NULL, c.prefs=NULL, s.range=NULL, c.range=NULL, randomization='multiple', seed=NULL, check_consistency = FALSE, ...){
+  
   ###############################################################  
   #print('Section 1a')
   #print(Sys.time())
@@ -194,7 +196,8 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
   if(is.null(colnames(c.prefs))){
     colnames(c.prefs) <- 1:ncol(c.prefs)
   }
-
+  
+  
   ###############################################################  
   #print('Section 2a')
   #print(Sys.time())
@@ -224,50 +227,65 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
   #print('Section 2a Drop missings')
   #print(Sys.time())  
   ## drop columns that contain only missings
-  drop <- which( apply(s.prefs, 2, function(z) all(is.na(z))))
-  if( length(drop)>0 ){
-    s.prefs <- matrix(s.prefs[,-drop], nrow=nrow(s.prefs))
-    colnames(s.prefs) <- s.names[-drop]
-    print(paste("Dropped s.prefs column(s):", paste(s.names[drop], collapse=", ")))
-  }
-  drop <- which( apply(c.prefs, 2, function(z) all(is.na(z))))
-  if( length(drop)>0 ){
-    c.prefs <- matrix(c.prefs[,-drop], nrow=nrow(c.prefs))
-    colnames(c.prefs) <- c.names[-drop]
-    #stop(paste("Need to drop c.prefs column(s):", paste(drop, collapse=", ")))
-    print(paste("Dropped c.prefs column(s):", paste(c.names[drop], collapse=", ")))
-  }
   
+  if(check_consistency){
+    drop <- which( apply(s.prefs, 2, function(z) all(is.na(z))))
+    if( length(drop)>0 ){
+      s.prefs <- matrix(s.prefs[,-drop], nrow=nrow(s.prefs))
+      colnames(s.prefs) <- s.names[-drop]
+      print(paste("Dropped s.prefs column(s):", paste(s.names[drop], collapse=", ")))
+    }
+    drop <- which( apply(c.prefs, 2, function(z) all(is.na(z))))
+    if( length(drop)>0 ){
+      c.prefs <- matrix(c.prefs[,-drop], nrow=nrow(c.prefs))
+      colnames(c.prefs) <- c.names[-drop]
+      #stop(paste("Need to drop c.prefs column(s):", paste(drop, collapse=", ")))
+      print(paste("Dropped c.prefs column(s):", paste(c.names[drop], collapse=", ")))
+    }
+  }
   
   #print('Section 2a First match with identifiers')
   #print(Sys.time())
   ## ---------------------------------------------------
   ## --- ???. Replace college/student names with ids ---
   
-  s.prefs_named <- s.prefs
-  c.prefs_named <- c.prefs
+  prefs_char <- FALSE
   
-  # Replace names with IDs
-  s.names <- 1:ncol(s.prefs)
-  names(s.names) <- colnames(s.prefs)
-  c.names <- 1:ncol(c.prefs)
-  names(c.names) <- colnames(c.prefs)
-  
-  s.prefs <- apply(s.prefs, 2, function(pref){
-    c.names[pref]
-  })
-  
-  c.prefs <- apply(c.prefs, 2, function(pref){
-    s.names[pref]
-  })
-  
-  dimnames(s.prefs) <- NULL
-  dimnames(c.prefs) <- NULL
-
-  
+  if(is.character(s.prefs) || is.character(c.prefs)){
+    
+    if(!(is.character(s.prefs) && is.character(c.prefs))){
+      stop('Both prefs must be in characters')
+    }
+    prefs_char <- TRUE
+    
+    if(check_consistency){consistency_check_hri(s.prefs, c.prefs)}
+    
+    s.prefs_named <- s.prefs
+    c.prefs_named <- c.prefs
+    
+    # Replace names with IDs
+    s.names <- 1:ncol(s.prefs)
+    names(s.names) <- colnames(s.prefs)
+    c.names <- 1:ncol(c.prefs)
+    names(c.names) <- colnames(c.prefs)
+    
+    s.prefs <- apply(s.prefs, 2, function(pref){
+      c.names[pref]
+    })
+    
+    c.prefs <- apply(c.prefs, 2, function(pref){
+      s.names[pref]
+    })
+    
+    dimnames(s.prefs) <- NULL
+    dimnames(c.prefs) <- NULL
+    
+  }
+    
   #print('Section 2a Make consistent')
   #print(Sys.time())
   ## make preference lists consistent (include only mutual preferences)
+  
   c.prefs <- sapply(c.names, function(z){
     x <- c(na.omit(c.prefs[,z]))
     y <- sapply(x, function(i) z %in% s.prefs[,i])
@@ -278,38 +296,42 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
     y <- sapply(x, function(i) z %in% c.prefs[,i])
     return( c(x[y], rep(NA,nrow(s.prefs)-length(x[y]))) )
   })
+
   
   #('Section 2a Drop missings')
   #print(Sys.time())
   ## consistency checks: drop columns that contain only missings
-  drop <- which( apply(s.prefs, 2, function(z) all(is.na(z))))
-  if( length(drop)>0 ){
-    s.prefs <- matrix(s.prefs[,-drop], nrow=nrow(s.prefs))
-    colnames(s.prefs) <- s.names[-drop]
-    #stop(paste("Need to drop s.prefs column(s):", paste(drop, collapse=", ")))
-    print(paste("Dropped s.prefs column(s):", paste(s.names[drop], collapse=", ")))
-  }
-  drop <- which( apply(c.prefs, 2, function(z) all(is.na(z))))
-  if( length(drop)>0 ){
-    c.prefs <- matrix(c.prefs[,-drop], nrow=nrow(c.prefs))
-    colnames(c.prefs) <- c.names[-drop]
-    #stop(paste("Need to drop c.prefs column(s):", paste(drop, collapse=", ")))
-    print(paste("Dropped c.prefs column(s):", paste(c.names[drop], collapse=", ")))
+  
+  if(check_consistency){
+    drop <- which( apply(s.prefs, 2, function(z) all(is.na(z))))
+    if( length(drop)>0 ){
+      s.prefs <- matrix(s.prefs[,-drop], nrow=nrow(s.prefs))
+      colnames(s.prefs) <- s.names[-drop]
+      #stop(paste("Need to drop s.prefs column(s):", paste(drop, collapse=", ")))
+      print(paste("Dropped s.prefs column(s):", paste(s.names[drop], collapse=", ")))
+    }
+    drop <- which( apply(c.prefs, 2, function(z) all(is.na(z))))
+    if( length(drop)>0 ){
+      c.prefs <- matrix(c.prefs[,-drop], nrow=nrow(c.prefs))
+      colnames(c.prefs) <- c.names[-drop]
+      #stop(paste("Need to drop c.prefs column(s):", paste(drop, collapse=", ")))
+      print(paste("Dropped c.prefs column(s):", paste(c.names[drop], collapse=", ")))
+    }
   }
   
   
   ## Check if a second match with new identifiers is necessary
   second_match <- FALSE
-  if(ncol(s.prefs) != ncol(s.prefs_named) || ncol(c.prefs) != ncol(c.prefs_named)) {
+  # Only consider a second match if the preferences are given as characters
+  if(prefs_char && ( ncol(s.prefs) != ncol(s.prefs_named) || ncol(c.prefs) != ncol(c.prefs_named))) {
     second_match <- TRUE
   }
   
+  #print('Section Second match')
+  #print(Sys.time())
+  ## --------------------------------------------------------
+  ## --- ??? Replace college/student names with ids again ---
   if(second_match){
-    #print('Section Second match')
-    #print(Sys.time())
-    ## --------------------------------------------------------
-    ## --- ??? Replace college/student names with ids again ---
-    
     s.prefs_named2 <- s.prefs
     c.prefs_named2 <- c.prefs
     
@@ -331,6 +353,7 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
     dimnames(c.prefs) <- NULL
   }
   
+
   ###############################################################  
   #print('Section 3')
   #print(Sys.time())
@@ -341,8 +364,10 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
   if(sum(nSlots) != length(nSlots)){ # hospital-residents problem
     
     ## set aside preferences for hospital residents instance (to be returned below)
-    #s.prefs.hri <- s.prefs
-    #c.prefs.hri <- c.prefs
+    if(!prefs_char){
+      s.prefs.hri <- s.prefs
+      c.prefs.hri <- c.prefs
+    }
     
     ## apply the transformation
     sm <- c2m(s.prefs, c.prefs, nSlots)
@@ -402,49 +427,62 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
   ## --- 5. For hospital-residents problem: add college ids ---
   
   if(sum(nSlots) != length(nSlots)){ # hospital-residents problem
-    out <- merge(x=out, y=collegeSlots, by.x="college", by.y="slots")
     
-    if(second_match){
-      # Reverse second ids
-      out$student <- colnames(s.prefs_named2)[out$student]
-      out$colleges <- colnames(c.prefs_named2)[out$colleges]
+    # Prefs as character
+    if(prefs_char){
+      
+      out <- merge(x=out, y=collegeSlots, by.x="college", by.y="slots")
+      if(second_match){
+        # Reverse second ids
+        out$student <- colnames(s.prefs_named2)[out$student]
+        out$colleges <- colnames(c.prefs_named2)[out$colleges]
+      }
+      
+      # Reverse first ids
+      out$student <- colnames(s.prefs_named)[out$student]
+      out$colleges <- colnames(c.prefs_named)[out$colleges]
+      
+      out <- with(out, data.frame(matching=matching, college=colleges, slots=college,
+                                  student=student, sOptimal=sOptimal, cOptimal=cOptimal,
+                                  sRank=sRank, cRank=cRank, stringsAsFactors=FALSE))
+      
+    } # Prefs as numeric
+    else{
+      out <- merge(x=out, y=collegeSlots, by.x="college", by.y="slots")
+      out <- with(out, data.frame(matching=matching, college=colleges, slots=college, 
+                                  student=student, sOptimal=sOptimal, cOptimal=cOptimal,
+                                  sRank=sRank, cRank=cRank))
+      
     }
     
-    # Reverse first ids
-    out$student <- colnames(s.prefs_named)[out$student]
-    out$colleges <- colnames(c.prefs_named)[out$colleges]
-    
-    out <- with(out, data.frame(matching=matching, college=colleges, slots=college,
-                                student=student, sOptimal=sOptimal, cOptimal=cOptimal,
-                                sRank=sRank, cRank=cRank, stringsAsFactors=FALSE))
     
   } else {   # stable-marriage problem
     
-    if(second_match){
-      # Reverse second ids
-      out$student <- colnames(s.prefs_named2)[out$student]
-      out$college <- colnames(c.prefs_named2)[out$college] 
+    # Prefs as characters
+    if(prefs_char){
+      if(second_match){
+        # Reverse second ids
+        out$student <- colnames(s.prefs_named2)[out$student]
+        out$college <- colnames(c.prefs_named2)[out$college] 
+      }
+      
+      # Reverse first ids
+      out$student <- colnames(s.prefs_named)[out$student]
+      out$college <- colnames(c.prefs_named)[out$college]
+      
+      out <- with(out, data.frame(matching=matching, college=college, slots=college,
+                                  student=student, sOptimal=sOptimal, cOptimal=cOptimal,
+                                  sRank=sRank, cRank=cRank, stringsAsFactors=FALSE))
+    }# Prefs as numeric
+    else{
+      out <- with(out, data.frame(matching=matching, college=college, slots=college,
+                                  student=student, sOptimal=sOptimal, cOptimal=cOptimal,
+                                  sRank=sRank, cRank=cRank))
     }
-    
-    # Reverse first ids
-    out$student <- colnames(s.prefs_named)[out$student]
-    out$college <- colnames(c.prefs_named)[out$college]
-    
-    out <- with(out, data.frame(matching=matching, college=college, slots=college,
-                                student=student, sOptimal=sOptimal, cOptimal=cOptimal,
-                                sRank=sRank, cRank=cRank, stringsAsFactors=FALSE))
-    }
+  }
   
-  # if(sum(nSlots) != length(nSlots)){ # hospital-residents problem
-  #   out <- with(out, data.frame(matching=matching, college=colleges, slots=college,
-  #                               student=student, sOptimal=sOptimal, cOptimal=cOptimal,
-  #                               sRank=sRank, cRank=cRank))
-  # } else{
-  #   out <- with(out, data.frame(matching=matching, college=college, slots=college,
-  #                               student=student, sOptimal=sOptimal, cOptimal=cOptimal,
-  #                               sRank=sRank, cRank=cRank))
-  # }
 
+  
   ###############################################################
   #print('Section 6')
   #print(Sys.time())
@@ -457,60 +495,64 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
   
   ## return results
   if(sum(nSlots) != length(nSlots)){ # hospital-residents problem
-    res <- list(
-      
-      #s.prefs.smi = s.prefs[rowSums(is.na(s.prefs))<ncol(s.prefs),], 
-      #c.prefs.smi = c.prefs[rowSums(is.na(c.prefs))<ncol(c.prefs),], 
-      
-      s.prefs.hri = if(second_match) {
+    
+    # Prefs as character
+    if(prefs_char){
+      res <- list(
         
-        s.prefs_named2[rowSums(is.na(s.prefs_named))<ncol(s.prefs_named),]
+        #s.prefs.smi = s.prefs[rowSums(is.na(s.prefs))<ncol(s.prefs),], 
+        #c.prefs.smi = c.prefs[rowSums(is.na(c.prefs))<ncol(c.prefs),], 
         
+        s.prefs.hri = if(second_match) {
+          s.prefs_named2[rowSums(is.na(s.prefs_named))<ncol(s.prefs_named),]
         } else {
-          
           s.prefs_named[rowSums(is.na(s.prefs_named))<ncol(s.prefs_named),]
-          
-          },
-      
-      c.prefs.hri = if(second_match) {
+        },
         
-        c.prefs_named2[rowSums(is.na(c.prefs_named))<ncol(c.prefs_named),]
-        
+        c.prefs.hri = if(second_match) {
+          c.prefs_named2[rowSums(is.na(c.prefs_named))<ncol(c.prefs_named),]
         } else {
-          
           c.prefs_named[rowSums(is.na(c.prefs_named))<ncol(c.prefs_named),]
-          
-          },
-      
-      matchings = out
-      
+        },
+        
+        matchings = out
       )
+    } 
+    else{# Prefs numeric
+      res <- list(s.prefs.smi = s.prefs[rowSums(is.na(s.prefs))<ncol(s.prefs),], 
+                  c.prefs.smi = c.prefs[rowSums(is.na(c.prefs))<ncol(c.prefs),], 
+                  s.prefs.hri = s.prefs.hri[rowSums(is.na(s.prefs.hri))<ncol(s.prefs.hri),],
+                  c.prefs.hri = c.prefs.hri[rowSums(is.na(c.prefs.hri))<ncol(c.prefs.hri),], 
+                  matchings = out)
+    }
+    
     
   } else { # stable-marriage problem
     
+    # Prefs as characters
+    if(prefs_char){
     res <- list( s.prefs.smi = if(second_match) {
       
       s.prefs_named2[rowSums(is.na(s.prefs))<ncol(s.prefs),]
-      
-      } else {
-        
-        s.prefs_named[rowSums(is.na(s.prefs))<ncol(s.prefs),]
-        
-        },
-                 
-      c.prefs.smi = if(second_match) {
-        
-        c.prefs_named2[rowSums(is.na(c.prefs))<ncol(c.prefs),]
-        
-        }  else {
-          
-          c.prefs_named[rowSums(is.na(c.prefs))<ncol(c.prefs),]
-          
-          },
-                
-      matchings = out
-      
-      )
+    } else {
+      s.prefs_named[rowSums(is.na(s.prefs))<ncol(s.prefs),]
+    },
+    
+    c.prefs.smi = if(second_match) {
+      c.prefs_named2[rowSums(is.na(c.prefs))<ncol(c.prefs),]
+    }  else {
+      c.prefs_named[rowSums(is.na(c.prefs))<ncol(c.prefs),]
+    },
+    
+    matchings = out
+    
+    )
+    }
+    else{ # Prefs as numeric
+      res <- list(s.prefs.smi = s.prefs[rowSums(is.na(s.prefs))<ncol(s.prefs),], 
+                  c.prefs.smi = c.prefs[rowSums(is.na(c.prefs))<ncol(c.prefs),], 
+                  matchings = out)
+    }
   }
   #print('Section return')
   #print(Sys.time())
@@ -560,7 +602,6 @@ c2m <- function(s.prefs, c.prefs, nSlots){
   return(list(s.prefs=s.prefs, c.prefs=c.prefs, collegeSlots=collegeSlots))
   
 }
-
 
 
 
@@ -631,4 +672,33 @@ plot.hri <- function(x, energy=FALSE, ...){
   ## reset R default
   par(mar=c(5.1, 4.1, 4.1, 2.1)) 
   
+}
+
+
+consistency_check_hri <- function(s.prefs, c.prefs){
+  # Check if student names are unique:
+  if(length(unique(colnames(s.prefs))) != ncol(s.prefs)) {stop('Student names not unique')}
+
+  # Check if colleges are unique:
+  if(length(unique(colnames(c.prefs))) != ncol(c.prefs)) {stop('College/Course names not unique')}
+  
+  # Check if a student applied for a course/college that is not in c.prefs
+  applied_colleges <- unique(as.character(s.prefs))
+  applied_colleges <- applied_colleges[!is.na(applied_colleges)]
+  if(length(setdiff(applied_colleges,colnames(c.prefs))) != 0){
+    missing_college <- setdiff(applied_colleges,colnames(c.prefs))
+    missing_college <- paste('Someone applied to a college (', missing_college, ') that has no ranking', sep = '')
+    stop(missing_college)
+  }
+
+  # Check if a college ranked someone who is not in s.prefs
+  ranked_stud <- unique(c(as.character(c.prefs)))
+  ranked_stud <- ranked_stud[!is.na(ranked_stud)]
+  if(length(setdiff(ranked_stud,colnames(s.prefs))) != 0){
+    missing_stud <- setdiff(ranked_stud,colnames(s.prefs))
+    missing_stud <- paste('A course/college ranked to a student (', missing_stud, ') that has no ranking', sep = '')
+    stop(missing_stud)
+  }
+  
+  #print('Input passed consistency test!')
 }

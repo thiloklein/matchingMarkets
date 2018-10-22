@@ -8,13 +8,13 @@ reference:
     contents: 
       - hri
       - hri2
+      - ttc2
       - iaa
       - stabchk
       - sri
       - plp
       - rsd
       - ttc
-      - ttc2
       - ttcc
   - title: "Estimators"
     desc: "Structural estimators for one- and two-sided matching markets."

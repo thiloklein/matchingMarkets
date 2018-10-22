@@ -92,7 +92,7 @@
 #' \emph{Journal of Finance}, 62 (6): 2725-2762.
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' ## --- SIMULATED EXAMPLE ---
 #' 
 #' ## 1. Simulate two-sided matching data for 20 markets (m=20) with 100 students
@@ -165,7 +165,7 @@
 #'    
 #' ## 5. Plot MCMC draws for coefficients
 #'  plot(fit2)
-#' 
+#' }
 stabit2 <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, outcome=NULL, selection,
                     binary=FALSE, niter, gPrior=FALSE, 
                     censored=1, thin=1, nCores=max(1,detectCores()-1), ...) UseMethod("stabit2")
@@ -502,7 +502,7 @@ stabit2.default <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, ou
       array(unlist(lapply(x, function(z) z[[y]] )), 
             dim = c(nrow(res1[[1]][[y]]), ncol(res1[[1]][[y]]), length(res1)) )
     }
-    est1 <- sapply(1:length(res1[[1]]), function(z){
+    est1 <- lapply(1:length(res1[[1]]), function(z){
       toarray( res1, names(res1[[1]])[z] )
     })
     names(est1) <- names(res1[[1]]); rm(res1)
@@ -850,36 +850,47 @@ stabit2_inner <- function(iter, OUT, SEL, SELs, SELc, colleges, students,
   
   if(method == "Klein" | method=="Klein-selection"){
     
-    ## preference inputs
-    s.prefs <- s.prefs[[iter]]
-    c.prefs <- c.prefs[[iter]]
-    nSlots <- rowSums(H)
-    
-    ## find all stable matchings
-    res <- hri(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=nSlots)$matchings
-    copt.id <- unique(res$matching[res$cOptimal==1]) # college-optimal matching
-    res <- split(res, as.factor(res$matching))
-    
-    ## create adjacency matrices for all equilibrium matchings
-    myfun <- function(x, type){
-      H <- array(0, dim=c(length(unique(x[[1]][,type])), nrow(x[[1]]), length(x)))
-      for(j in 1:length(x)){
-        for(z in 1:nrow(x[[1]])){
-          H[x[[j]][z,type], x[[j]][z,"student"], j] <- 1
-        }
-      }
-      return(H)
-    }
-    H1 <- myfun(x=res, type="college"); names(H1) <- NULL # college admissions problem
-    H2 <- myfun(x=res, type="slots"); names(H2) <- NULL # related stable marriage problem
-    
-    ## consistency check
-    if( length( table(c(H) == c(H1[,,1]))) > 1 ){
-      stop(paste("Data provided is not the student-optimal matching obtained from the 
-                 preference lists in market ", iter, ".", sep=""))
+    if(is.null(s.prefs) | is.null(c.prefs)){
+      
+      H <- array(H, dim=c(dim(H), 1))
+      copt.id = 1
+      
     } else{
-      H <- H1 # replace matrix for student-optimal matching (H) with all matchings (H1)
-      rm(H1)
+      
+      ## preference inputs
+      s.prefs <- s.prefs[[iter]]
+      c.prefs <- c.prefs[[iter]]
+      nSlots <- rowSums(H)
+      
+      ## find all stable matchings
+      res <- hri(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=nSlots)$matchings
+      res$college <- as.integer(res$college)
+      res$student <- as.integer(res$student)
+      res$slots   <- as.integer(res$slots)
+      copt.id <- unique(res$matching[res$cOptimal==1]) # college-optimal matching
+      res <- split(res, as.factor(res$matching))
+      
+      ## create adjacency matrices for all equilibrium matchings
+      myfun <- function(x, type){
+        H <- array(0, dim=c(length(unique(x[[1]][,type])), nrow(x[[1]]), length(x)))
+        for(j in 1:length(x)){
+          for(z in 1:nrow(x[[1]])){
+            H[x[[j]][z,type], x[[j]][z,"student"], j] <- 1
+          }
+        }
+        return(H)
+      }
+      H1 <- myfun(x=res, type="college"); names(H1) <- NULL # college admissions problem
+      H2 <- myfun(x=res, type="slots"); names(H2) <- NULL # related stable marriage problem
+      
+      ## consistency check
+      if( length( table(c(H) == c(H1[,,1]))) > 1 ){
+        stop(paste("Data provided is not the student-optimal matching obtained from the 
+                 preference lists in market ", iter, ".", sep=""))
+      } else{
+        H <- H1 # replace matrix for student-optimal matching (H) with all matchings (H1)
+        rm(H1)
+      }
     }
   }
   

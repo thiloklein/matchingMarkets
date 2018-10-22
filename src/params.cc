@@ -33,6 +33,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <limits>
 #include <params.h>
 
+#include <Rcpp.h>
+
 using namespace Minisat;
 
 /*
@@ -68,24 +70,10 @@ static IntOption opt_kpr_cclim("MAIN", "kprCClim",
 
 Params::Params() {}
 
-void Params::readOptions() {
-  /*verbosity = opt_verb;
-  cclim = opt_cclim;
-  algo = opt_algo;
-  rnd = opt_rnd || algo == 1;
-  rndcclim = opt_rnd_cclim;
-  if(rnd)
-    cclim = rndcclim;
-  if(algo == 1)
-    algo = 0; //algo=1 is just an option on algo=0
-  kpr_cclim = opt_kpr_cclim;*/
-  //Sven
-  algo = 1;
+void Params::readOptions(int opt_algo) {
   verbosity = 0;
-  cclim = 1000;
-  rnd = true;
-  rndcclim = std::numeric_limits<int>::max();
-  kpr_cclim = -1;
+  
+  algo = 2;
 }
 
 Params params;

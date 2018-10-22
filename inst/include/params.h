@@ -35,13 +35,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class Params {
 public:
   Params();
-  void readOptions();
+  void readOptions(int opt_algo);
   int verbosity;
   int cclim;
   bool rnd;
-  int rndcclim;
-  int algo;
   int kpr_cclim;
+  int algo;
 };
 
 extern Params params;

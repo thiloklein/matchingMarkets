@@ -1,9 +1,6 @@
 # matchingMarkets: Analysis of Stable Matchings in R
 
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/matchingMarkets?color=blue)](https://cran.r-project.org/package=matchingMarkets)
-[![CRAN_Downloads](http://cranlogs.r-pkg.org/badges/grand-total/matchingMarkets?color=blue)](https://cran.r-project.org/package=matchingMarkets)
-
 
 ## Documentation
 
