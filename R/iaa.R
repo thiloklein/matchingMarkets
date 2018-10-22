@@ -57,6 +57,7 @@
 #' Kojima, F. and M.U. Unver (2014). The "Boston" school-choice mechanism. \emph{Economic Theory}, 55(3): 515--544.
 #'
 #' @examples
+#' \dontrun{
 #' ## --------------------------------
 #' ## --- College admission problem
 #'
@@ -83,6 +84,7 @@
 #'  iaa(nStudents=7, nSlots=c(3,3), acceptance="deferred")$matchings
 #'  set.seed(123)
 #'  hri2(nStudents=7, nSlots=c(3,3))$matchings
+#'  }
 
 
 

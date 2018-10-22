@@ -24,7 +24,7 @@ The algorithm requires a rule to determine which chain will be used if there is 
 to search for the longest chain and remove it from the problem (even the first kidney which was unassigned).
 }
 \examples{
-
+\dontrun{
 ## Compare Example 1 from Roth et al. (2004) on page 469 - 475
 ## generate matrix of patients' preference rankings over kidneys, a.k.a. Rank Order Lists (ROL)
 
@@ -45,6 +45,7 @@ priority <- 1:12
 ttcc(prefs = prefs, priority = priority)
 ## The final matching differs slightly because in Round 3 another chain is chosen due to a different
 ## decision rule (compare Figure 3, p472. Here W1 instead of W2 is chosen)
+}
 }
 \references{
 Roth, A.; T. Sonmez; U. Unver (2004). Kidney Exchange. \emph{Quarterly Journal of Economics}, 119 (2): 457-488.

@@ -79,7 +79,7 @@ of \eqn{\epsilon} and \eqn{\eta} would be independent and the selection problem 
 That is, the observed outcomes would be a random sample from the population of interest.
 }
 \examples{
-
+\dontrun{
 ## --- SIMULATED EXAMPLE ---
 
 ## 1. Simulate two-sided matching data for 20 markets (m=20) with 100 students
@@ -152,7 +152,7 @@ head(xdata$OUT)
    
 ## 5. Plot MCMC draws for coefficients
  plot(fit2)
-
+}
 }
 \references{
 Sorensen, M. (2007). How Smart is Smart Money? A Two-Sided Matching Model of Venture Capital.

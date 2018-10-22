@@ -18,7 +18,7 @@
 #' @references Abdulkadiroglu, A. and T. Sonmez (1999). House Allocation with Existing Tenants. \emph{Journal of Economic Theory},  88 (2): 233-260.
 #' @references Shapley, L. and H. Scarf (1974). On Cores and Indivisibility. \emph{Journal of Mathematical Economics}, 1(1): 23-37.
 #' @examples
-#'
+#' \dontrun{
 #' ## 1-a. Generate matrix of individuals' preference rankings over objects,
 #' ## a.k.a. Rank Order Lists (ROL).
 #' s.prefs <- matrix(c(3,2,4,1,        # ROL of student 1
@@ -27,7 +27,6 @@
 #'                    2,5,6,4,
 #'                    1,3,2,NA,
 #'                    2,4,5,6), nrow = 4, ncol = 6, byrow = FALSE); s.prefs
-#'
 #'
 #' ## 1-b. Generate vector of house occupation objects ('obj') and their owners ('ind')
 #' (houses <- 1:6)
@@ -53,6 +52,7 @@
 #'
 #' ## 2-d. Find assigment
 #' ttc(s.prefs = s.prefs, houses = houses, priority = priority)
+#' }
 
 ttc <- function(nStudents = ncol(s.prefs), nHouses = length(houses), s.prefs, houses, priority = NULL, seed = 123){
 

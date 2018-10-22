@@ -28,7 +28,7 @@ Implements an algorithm for the
 \href{https://en.wikipedia.org/wiki/Top_trading_cycle}{house allocation problem} proposed by Abdulkadiroglu and Sonmez (1999) for a matching problem in which there are both vacant houses and existing tenants.
 }
 \examples{
-
+\dontrun{
 ## 1-a. Generate matrix of individuals' preference rankings over objects,
 ## a.k.a. Rank Order Lists (ROL).
 s.prefs <- matrix(c(3,2,4,1,        # ROL of student 1
@@ -37,7 +37,6 @@ s.prefs <- matrix(c(3,2,4,1,        # ROL of student 1
                    2,5,6,4,
                    1,3,2,NA,
                    2,4,5,6), nrow = 4, ncol = 6, byrow = FALSE); s.prefs
-
 
 ## 1-b. Generate vector of house occupation objects ('obj') and their owners ('ind')
 (houses <- 1:6)
@@ -63,6 +62,7 @@ priority <- 1:5
 
 ## 2-d. Find assigment
 ttc(s.prefs = s.prefs, houses = houses, priority = priority)
+}
 }
 \references{
 Abdulkadiroglu, A. and T. Sonmez (1999). House Allocation with Existing Tenants. \emph{Journal of Economic Theory},  88 (2): 233-260.

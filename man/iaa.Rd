@@ -59,6 +59,7 @@ given or randomly generated preferences.
 }
 
 \examples{
+\dontrun{
 ## --------------------------------
 ## --- College admission problem
 
@@ -85,6 +86,7 @@ nSlots <- c(2,2,1)
  iaa(nStudents=7, nSlots=c(3,3), acceptance="deferred")$matchings
  set.seed(123)
  hri2(nStudents=7, nSlots=c(3,3))$matchings
+ }
 }
 \references{
 Gale, D. and Shapley, L.S. (1962). College admissions and the stability

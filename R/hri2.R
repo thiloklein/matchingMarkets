@@ -63,6 +63,7 @@
 #' Kojima, F., Pathak, P. A., & Roth, A. E. (2013). Matching with couples: Stability and incentives in large markets. \emph{The Quarterly Journal of Economics}, 128(4), 1585-1632.
 #' 
 #' @examples
+#' \dontrun{
 #' ## Example with given preferences
 #' (s.prefs <- matrix(c(4,2,3,5, 2,1,3,NA, 1,2,3,4), 4,3))
 #' (c.prefs <- matrix(rep(1:5,5), 5,5))
@@ -109,7 +110,8 @@
 #' co.prefs <- matrix(c(col12,col3,col4), ncol = 4)
 #' res <- hri2(s.prefs=s.prefs, c.prefs=c.prefs, co.prefs=co.prefs, 
 #'             nSlots=c(2,1,1))                     
-#' res$matching                                                                                     
+#' res$matching
+#' }                                                                                
 
 
 hri2 <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), nCouples=ncol(co.prefs), 

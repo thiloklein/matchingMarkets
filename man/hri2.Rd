@@ -62,6 +62,7 @@ Implements the Roth Peranson matching algorithm for the \href{https://en.wikiped
 }
 
 \examples{
+\dontrun{
 ## Example with given preferences
 (s.prefs <- matrix(c(4,2,3,5, 2,1,3,NA, 1,2,3,4), 4,3))
 (c.prefs <- matrix(rep(1:5,5), 5,5))
@@ -108,7 +109,8 @@ col4 <- c("Micro2","Micro1",NA,NA,"Micro1","Micro2")
 co.prefs <- matrix(c(col12,col3,col4), ncol = 4)
 res <- hri2(s.prefs=s.prefs, c.prefs=c.prefs, co.prefs=co.prefs, 
             nSlots=c(2,1,1))                     
-res$matching                                                                                     
+res$matching
+}                                                                                
 }
 \references{
 Bacchus, F. (2018). Stable matching suite. GitHub repository.

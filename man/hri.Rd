@@ -76,6 +76,7 @@ either given or randomly generated preferences.
 }
 
 \examples{
+\dontrun{
 ## -----------------------
 ## --- Marriage problem 
 
@@ -124,7 +125,7 @@ either given or randomly generated preferences.
  res <- hri(nStudents=200, nColleges=200, seed=12)
  plot(res)
  plot(res, energy=TRUE)
- 
+}
 }
 \references{
 Gale, D. and L.S. Shapley (1962). College admissions and the stability 

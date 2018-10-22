@@ -23,7 +23,7 @@
 #' @keywords algorithms
 #' @references Abdulkadiroglu, A. and T. Sonmez (2003). School Choice: A Mechanism Design Approach. \emph{American Economic Review}, 93 (3): 729-747.
 #' @examples
-#'
+#' \dontrun{
 #' ## 1-a. Compare example from the Abdulkadiroglu et al. (2003) (in the Appendix, page 742-744)
 #' ## 1-b. Generate matrix of students' preference rankings over schools, a.k.a. Rank Order Lists (ROL)
 #' s.prefs <- matrix(c(
@@ -36,7 +36,6 @@
 #'                   1,2,3,4,
 #'                   1,2,4,3),
 #'                   byrow = FALSE, ncol = 8); s.prefs
-#'
 #'
 #' ## 1-c. Generate matrix of schools' preference rankings over students, a.k.a. Rank Order Lists (ROL)
 #' c.prefs <- matrix(c(
@@ -52,7 +51,6 @@
 #' ## 1-e. Find assignment based on TTC algorithm
 #' ttc2(s.prefs = s.prefs, c.prefs = c.prefs, nSlots = nSlots)
 #'
-#'
 #' ## 2-a. Generate college preferences with college 1 only ranking student 1
 #' c.prefs <- matrix(c(
 #'                    1,rep(NA,7),
@@ -63,7 +61,6 @@
 #'
 #' ## 2-b. Find assignment based on TTC algorithm
 #' ttc2(s.prefs = s.prefs, c.prefs = c.prefs, nSlots = nSlots, priority = 1:8)
-#'
 #'
 #' ## If all schools have the same preferences the two sided ttc and the serial dictator yield
 #' ## the same outcome if the preferences are taken to be the prioirty order for the serial dictator
@@ -80,6 +77,7 @@
 #' match_ttc <- ttc2(s.prefs = s.prefs, c.prefs = c.prefs, nSlots = nSlots); match_ttc
 #' match_sd <- rsd(prefs = s.prefs, priority = priority, nSlots = nSlots); match_sd
 #' all(match_ttc == match_sd)
+#' }
 
 ttc2 <- function( nStudents = ncol(s.prefs), nColleges = ncol(c.prefs), s.prefs = NULL,  c.prefs = NULL,nSlots = NULL, priority = NULL , seed = 123, full_return = FALSE){
 
