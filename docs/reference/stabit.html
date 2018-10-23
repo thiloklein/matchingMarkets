@@ -324,7 +324,7 @@ volume 6, pages 233--243. North-Holland, Amsterdam.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
 <span class='co'>## --- SIMULATED EXAMPLE ---</span>
 
 <span class='co'>## 1. Simulate one-sided matching data for 200 markets (m=200) with 2 groups</span>
@@ -333,83 +333,54 @@ volume 6, pages 233--243. North-Holland, Amsterdam.</p>
 
 <span class='co'>## 1-a. Simulate individual-level, independent variables</span>
  <span class='no'>idata</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stabsim.html'>stabsim</a></span>(<span class='kw'>m</span><span class='kw'>=</span><span class='fl'>200</span>, <span class='kw'>ind</span><span class='kw'>=</span><span class='fl'>5</span>, <span class='kw'>seed</span><span class='kw'>=</span><span class='fl'>123</span>, <span class='kw'>gpm</span><span class='kw'>=</span><span class='fl'>2</span>)
- <span class='fu'>head</span>(<span class='no'>idata</span>)</div><div class='output co'>#&gt;   m.id g.id         wst  R
-#&gt; 1    1    1 -0.56047565 NA
-#&gt; 2    1    1 -0.23017749 NA
-#&gt; 3    1    1  1.55870831 NA
-#&gt; 4    1    1  0.07050839 NA
-#&gt; 5    1    1  0.12928774 NA
-#&gt; 6    1    2  1.71506499 NA</div><div class='input'>
+ <span class='fu'>head</span>(<span class='no'>idata</span>)
+
 <span class='co'>## 1-b. Simulate group-level variables </span>
  <span class='no'>mdata</span> <span class='kw'>&lt;-</span> <span class='fu'>stabit</span>(<span class='kw'>x</span><span class='kw'>=</span><span class='no'>idata</span>, <span class='kw'>simulation</span><span class='kw'>=</span><span class='st'>"NTU"</span>, <span class='kw'>method</span><span class='kw'>=</span><span class='st'>"model.frame"</span>,
- <span class='kw'>selection</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>add</span><span class='kw'>=</span><span class='st'>"wst"</span>), <span class='kw'>outcome</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>add</span><span class='kw'>=</span><span class='st'>"wst"</span>), <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; Generating group-level data for 200 markets... </div><div class='input'> <span class='fu'>head</span>(<span class='no'>mdata</span>$<span class='no'>OUT</span>)</div><div class='output co'>#&gt;   m.id g.id intercept    wst.add          R         xi    epsilon
-#&gt; 1    1    1         1  0.3698086  1.5670690 -0.8497043  1.5670690
-#&gt; 2    1    2         1 -0.2205573 -2.4953827 -1.1373036 -2.4953827
-#&gt; 3    2    1         1  0.7198747  1.3680982 -1.1198997  1.3680982
-#&gt; 4    2    2         1 -0.3026307  0.3707344 -0.7822018  0.3707344
-#&gt; 5    3    1         1 -0.3271234  3.0184259 -0.3719449  3.0184259
-#&gt; 6    3    2         1 -0.5219943 -0.1015002 -0.6527744 -0.1015002</div><div class='input'> <span class='fu'>head</span>(<span class='no'>mdata</span>$<span class='no'>SEL</span>)</div><div class='output co'>#&gt;   m.id g.id reg.id    wst.add D          V         eta
-#&gt; 1    1    1      2  0.3698086 1  2.7865819  2.41677335
-#&gt; 2    1    2      1 -0.2205573 1 -1.5786364 -1.35807906
-#&gt; 3    1    3    128  0.1935703 0 -0.1503470 -0.34391723
-#&gt; 4    1    4    129  0.2221432 0  1.8206520  1.59850877
-#&gt; 5    1    5    130  0.3377849 0  0.2492198 -0.08856511
-#&gt; 6    1    6    131  0.3860231 0  1.4668226  1.08079950</div><div class='input'>
+ <span class='kw'>selection</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>add</span><span class='kw'>=</span><span class='st'>"wst"</span>), <span class='kw'>outcome</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>add</span><span class='kw'>=</span><span class='st'>"wst"</span>), <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
+ <span class='fu'>head</span>(<span class='no'>mdata</span>$<span class='no'>OUT</span>)
+ <span class='fu'>head</span>(<span class='no'>mdata</span>$<span class='no'>SEL</span>)
+
 
 <span class='co'>## 2. Bias from sorting</span>
 
 <span class='co'>## 2-a. Naive OLS estimation</span>
- <span class='fu'>lm</span>(<span class='no'>R</span> ~ <span class='no'>wst.add</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>mdata</span>$<span class='no'>OUT</span>)$<span class='no'>coefficients</span></div><div class='output co'>#&gt; (Intercept)     wst.add 
-#&gt;    1.321692    1.281722 </div><div class='input'>
+ <span class='fu'>lm</span>(<span class='no'>R</span> ~ <span class='no'>wst.add</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>mdata</span>$<span class='no'>OUT</span>)$<span class='no'>coefficients</span>
+
 <span class='co'>## 2-b. epsilon is correlated with independent variables</span>
- <span class='fu'>with</span>(<span class='no'>mdata</span>$<span class='no'>OUT</span>, <span class='fu'>cor</span>(<span class='no'>epsilon</span>, <span class='no'>wst.add</span>))</div><div class='output co'>#&gt; [1] 0.3650137</div><div class='input'>
+ <span class='fu'>with</span>(<span class='no'>mdata</span>$<span class='no'>OUT</span>, <span class='fu'>cor</span>(<span class='no'>epsilon</span>, <span class='no'>wst.add</span>))
+
 <span class='co'>## 2-c. but xi is uncorrelated with independent variables</span>
- <span class='fu'>with</span>(<span class='no'>mdata</span>$<span class='no'>OUT</span>, <span class='fu'>cor</span>(<span class='no'>xi</span>, <span class='no'>wst.add</span>))</div><div class='output co'>#&gt; [1] 0.001335074</div><div class='input'>
+ <span class='fu'>with</span>(<span class='no'>mdata</span>$<span class='no'>OUT</span>, <span class='fu'>cor</span>(<span class='no'>xi</span>, <span class='no'>wst.add</span>))
+
 <span class='co'>## 3. Correction of sorting bias when valuations V are observed</span>
 
 <span class='co'>## 3-a. 1st stage: obtain fitted value for eta</span>
 <span class='no'>lm.sel</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>V</span> ~ -<span class='fl'>1</span> + <span class='no'>wst.add</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>mdata</span>$<span class='no'>SEL</span>)
-<span class='no'>lm.sel</span>$<span class='no'>coefficients</span></div><div class='output co'>#&gt;  wst.add 
-#&gt; 1.006372 </div><div class='input'>
+<span class='no'>lm.sel</span>$<span class='no'>coefficients</span>
+
 <span class='no'>eta</span> <span class='kw'>&lt;-</span> <span class='no'>lm.sel</span>$<span class='no'>resid</span>[<span class='no'>mdata</span>$<span class='no'>SEL</span>$<span class='no'>D</span><span class='kw'>==</span><span class='fl'>1</span>]
 
 <span class='co'>## 3-b. 2nd stage: control for eta</span>
- <span class='fu'>lm</span>(<span class='no'>R</span> ~ <span class='no'>wst.add</span> + <span class='no'>eta</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>mdata</span>$<span class='no'>OUT</span>)$<span class='no'>coefficients</span></div><div class='output co'>#&gt; (Intercept)     wst.add         eta 
-#&gt;  0.09072970  0.09468869  0.94626877 </div><div class='input'>
+ <span class='fu'>lm</span>(<span class='no'>R</span> ~ <span class='no'>wst.add</span> + <span class='no'>eta</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>mdata</span>$<span class='no'>OUT</span>)$<span class='no'>coefficients</span>
+
 
 <span class='co'>## 4. Run Gibbs sampler</span>
  <span class='no'>fit1</span> <span class='kw'>&lt;-</span> <span class='fu'>stabit</span>(<span class='kw'>x</span><span class='kw'>=</span><span class='no'>idata</span>, <span class='kw'>method</span><span class='kw'>=</span><span class='st'>"NTU"</span>, <span class='kw'>simulation</span><span class='kw'>=</span><span class='st'>"NTU"</span>, <span class='kw'>censored</span><span class='kw'>=</span><span class='fl'>1</span>,
                 <span class='kw'>selection</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>add</span><span class='kw'>=</span><span class='st'>"wst"</span>), <span class='kw'>outcome</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>add</span><span class='kw'>=</span><span class='st'>"wst"</span>),
-                <span class='kw'>niter</span><span class='kw'>=</span><span class='fl'>2000</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; Generating group-level data for 200 markets... 
-#&gt; Drawing 2000 MCMC samples...</div><div class='input'>
+                <span class='kw'>niter</span><span class='kw'>=</span><span class='fl'>2000</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
+
 
 <span class='co'>## 5. Coefficient table</span>
- <span class='fu'>summary</span>(<span class='no'>fit1</span>)</div><div class='output co'>#&gt; 
-#&gt; Coefficients for multi-index sample selection model.
-#&gt; Method: Klein (2015), one-sided matching market
-#&gt; 
-#&gt; Call:
-#&gt; stabit(x = idata, selection = list(add = "wst"), outcome = list(add = "wst"), 
-#&gt;     simulation = "NTU", method = "NTU", censored = 1, niter = 2000, 
-#&gt;     verbose = FALSE)
-#&gt; 
-#&gt; Selection equation:
-#&gt;         Estimate  StdErr t.value  p.value   
-#&gt; wst.add  1.15188 0.41565  2.7713 0.005846 **
-#&gt; 
-#&gt; Outcome equation:
-#&gt;             Estimate     StdErr t.value p.value   
-#&gt; intercept  0.0733179  0.3871956  0.1894 0.84991   
-#&gt; wst.add   -0.0083934  0.4812529 -0.0174 0.98609   
-#&gt; delta      0.9632351  0.2999799  3.2110 0.00143 **
-#&gt; ---
-#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</div><div class='input'>
+ <span class='fu'>summary</span>(<span class='no'>fit1</span>)
+
 
 <span class='co'>## 6. Plot MCMC draws for coefficients</span>
- <span class='fu'>plot</span>(<span class='no'>fit1</span>)</div><div class='img'><img src='stabit-1.png' alt='' width='700' height='433' /></div><div class='img'><img src='stabit-2.png' alt='' width='700' height='433' /></div><div class='input'>
+ <span class='fu'>plot</span>(<span class='no'>fit1</span>)
 
-## --- REPLICATION, Klein (2015a) ---
-</div><span class='co'># NOT RUN {</span>
+
+<span class='co'>## --- REPLICATION, Klein (2015a) ---</span>
+
 <span class='co'>## 1. Load data </span>
  <span class='fu'>data</span>(<span class='no'>baac00</span>); <span class='fu'>head</span>(<span class='no'>baac00</span>)
 

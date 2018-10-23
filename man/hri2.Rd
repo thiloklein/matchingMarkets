@@ -123,7 +123,7 @@ Roth, A. E., & Peranson, E. (1999). The redesign of the matching market for Amer
 Kojima, F., Pathak, P. A., & Roth, A. E. (2013). Matching with couples: Stability and incentives in large markets. \emph{The Quarterly Journal of Economics}, 128(4), 1585-1632.
 }
 \author{
-Sven Giegerich, Thilo Klein, Alexander Sauer
+Sven Giegerich, Thilo Klein
 }
 \keyword{algorithms,}
 \keyword{matching}

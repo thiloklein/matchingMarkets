@@ -245,7 +245,7 @@ market identifier <code>m.id</code>, college identifier <code>c.id</code> and st
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
 <span class='co'>## --- SIMULATED EXAMPLE ---</span>
 
 <span class='co'>## 1. Simulate two-sided matching data for 20 markets (m=20) with 100 students</span>
@@ -257,87 +257,26 @@ market identifier <code>m.id</code>, college identifier <code>c.id</code> and st
   <span class='kw'>colleges</span> <span class='kw'>=</span> <span class='st'>"c1"</span>, <span class='kw'>students</span> <span class='kw'>=</span> <span class='st'>"s1"</span>,
   <span class='kw'>outcome</span> <span class='kw'>=</span> ~ <span class='no'>c1</span>:<span class='no'>s1</span> + <span class='no'>eta</span> + <span class='no'>nu</span>,
   <span class='kw'>selection</span> <span class='kw'>=</span> ~ -<span class='fl'>1</span> + <span class='no'>c1</span>:<span class='no'>s1</span> + <span class='no'>eta</span>
-)</div><div class='output co'>#&gt; Generating data for 20 matching markets... </div><div class='input'><span class='fu'>head</span>(<span class='no'>xdata</span>$<span class='no'>OUT</span>)</div><div class='output co'>#&gt;   m.id        y (Intercept)      eta         nu       c1:s1         c1
-#&gt; 1    1 4.043161           1 1.843862  1.0241395  0.17515964 -0.3963161
-#&gt; 2    1 4.252354           1 3.241040 -0.2741297  0.28544335 -0.3963161
-#&gt; 3    1 1.837553           1 2.128452 -1.4896441  0.19874488 -0.3963161
-#&gt; 4    1 4.400099           1 1.997213  1.2346701  0.16821544 -0.3963161
-#&gt; 5    1 5.679860           1 2.198810  2.2819670  0.19908279 -0.3963161
-#&gt; 6    1 1.889756           1 1.955294 -1.0164562 -0.04908123 -0.1627601
-#&gt;           s1 c.id s.id
-#&gt; 1 -0.4419695    1    5
-#&gt; 2 -0.7202416    1   44
-#&gt; 3 -0.5014807    1   54
-#&gt; 4 -0.4244476    1   76
-#&gt; 5 -0.5023333    1   81
-#&gt; 6  0.3015557    2   11</div><div class='input'>
+)
+<span class='fu'>head</span>(<span class='no'>xdata</span>$<span class='no'>OUT</span>)
+
 
 <span class='co'>## 2. Correction for sorting bias when match valuations V are observed</span>
 
 <span class='co'>## 2-a. Bias from sorting</span>
  <span class='no'>lm1</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>y</span> ~ <span class='no'>c1</span>:<span class='no'>s1</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>xdata</span>$<span class='no'>OUT</span>)
- <span class='fu'>summary</span>(<span class='no'>lm1</span>)</div><div class='output co'>#&gt; 
-#&gt; Call:
-#&gt; lm(formula = y ~ c1:s1, data = xdata$OUT)
-#&gt; 
-#&gt; Residuals:
-#&gt;     Min      1Q  Median      3Q     Max 
-#&gt; -5.1032 -0.8373  0.0570  0.8745  3.2334 
-#&gt; 
-#&gt; Coefficients:
-#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    
-#&gt; (Intercept)  2.69375    0.03142   85.75   &lt;2e-16 ***
-#&gt; c1:s1        0.75852    0.04717   16.08   &lt;2e-16 ***
-#&gt; ---
-#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-#&gt; 
-#&gt; Residual standard error: 1.248 on 1998 degrees of freedom
-#&gt; Multiple R-squared:  0.1146,	Adjusted R-squared:  0.1141 
-#&gt; F-statistic: 258.6 on 1 and 1998 DF,  p-value: &lt; 2.2e-16
-#&gt; </div><div class='input'>
+ <span class='fu'>summary</span>(<span class='no'>lm1</span>)
+
 <span class='co'>## 2-b. Cause of the bias</span>
- <span class='fu'>with</span>(<span class='no'>xdata</span>$<span class='no'>OUT</span>, <span class='fu'>cor</span>(<span class='no'>c1</span>*<span class='no'>s1</span>, <span class='no'>eta</span>))</div><div class='output co'>#&gt; [1] -0.2062932</div><div class='input'>
+ <span class='fu'>with</span>(<span class='no'>xdata</span>$<span class='no'>OUT</span>, <span class='fu'>cor</span>(<span class='no'>c1</span>*<span class='no'>s1</span>, <span class='no'>eta</span>))
+
 <span class='co'>## 2-c. Correction for sorting bias</span>
- <span class='no'>lm2a</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>V</span> ~ -<span class='fl'>1</span> + <span class='no'>c1</span>:<span class='no'>s1</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>xdata</span>$<span class='no'>SEL</span>); <span class='fu'>summary</span>(<span class='no'>lm2a</span>)</div><div class='output co'>#&gt; 
-#&gt; Call:
-#&gt; lm(formula = V ~ -1 + c1:s1, data = xdata$SEL)
-#&gt; 
-#&gt; Residuals:
-#&gt;     Min      1Q  Median      3Q     Max 
-#&gt; -3.9728 -0.6657 -0.0007  0.6792  3.9280 
-#&gt; 
-#&gt; Coefficients:
-#&gt;       Estimate Std. Error t value Pr(&gt;|t|)    
-#&gt; c1:s1  1.00548    0.00985   102.1   &lt;2e-16 ***
-#&gt; ---
-#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-#&gt; 
-#&gt; Residual standard error: 1.003 on 39999 degrees of freedom
-#&gt; Multiple R-squared:  0.2067,	Adjusted R-squared:  0.2067 
-#&gt; F-statistic: 1.042e+04 on 1 and 39999 DF,  p-value: &lt; 2.2e-16
-#&gt; </div><div class='input'> <span class='no'>etahat</span> <span class='kw'>&lt;-</span> <span class='no'>lm2a</span>$<span class='no'>residuals</span>[<span class='no'>xdata</span>$<span class='no'>SEL</span>$<span class='no'>D</span><span class='kw'>==</span><span class='fl'>1</span>]
+ <span class='no'>lm2a</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>V</span> ~ -<span class='fl'>1</span> + <span class='no'>c1</span>:<span class='no'>s1</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>xdata</span>$<span class='no'>SEL</span>); <span class='fu'>summary</span>(<span class='no'>lm2a</span>)
+ <span class='no'>etahat</span> <span class='kw'>&lt;-</span> <span class='no'>lm2a</span>$<span class='no'>residuals</span>[<span class='no'>xdata</span>$<span class='no'>SEL</span>$<span class='no'>D</span><span class='kw'>==</span><span class='fl'>1</span>]
 
  <span class='no'>lm2b</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>y</span> ~ <span class='no'>c1</span>:<span class='no'>s1</span> + <span class='no'>etahat</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>xdata</span>$<span class='no'>OUT</span>)
- <span class='fu'>summary</span>(<span class='no'>lm2b</span>)</div><div class='output co'>#&gt; 
-#&gt; Call:
-#&gt; lm(formula = y ~ c1:s1 + etahat, data = xdata$OUT)
-#&gt; 
-#&gt; Residuals:
-#&gt;     Min      1Q  Median      3Q     Max 
-#&gt; -3.5938 -0.6990  0.0384  0.7078  2.9276 
-#&gt; 
-#&gt; Coefficients:
-#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    
-#&gt; (Intercept)  1.00160    0.05774   17.35   &lt;2e-16 ***
-#&gt; etahat       0.98683    0.03025   32.63   &lt;2e-16 ***
-#&gt; c1:s1        1.02606    0.03898   26.32   &lt;2e-16 ***
-#&gt; ---
-#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-#&gt; 
-#&gt; Residual standard error: 1.008 on 1997 degrees of freedom
-#&gt; Multiple R-squared:  0.4225,	Adjusted R-squared:  0.4219 
-#&gt; F-statistic: 730.4 on 2 and 1997 DF,  p-value: &lt; 2.2e-16
-#&gt; </div><div class='input'>
+ <span class='fu'>summary</span>(<span class='no'>lm2b</span>)
+
 
 <span class='co'>## 3. Correction for sorting bias when match valuations V are unobserved</span>
 
@@ -347,7 +286,8 @@ market identifier <code>m.id</code>, college identifier <code>c.id</code> and st
            <span class='kw'>outcome</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>c1</span>:<span class='no'>s1</span>,
            <span class='kw'>selection</span> <span class='kw'>=</span> ~ -<span class='fl'>1</span> + <span class='no'>c1</span>:<span class='no'>s1</span>,
            <span class='kw'>niter</span><span class='kw'>=</span><span class='fl'>1000</span>
- )</div><div class='output co'>#&gt; Drawing 1000 MCMC samples...</div><div class='input'>
+ )
+
 <span class='co'>## 3-b. Alternatively: Run Gibbs sampler (when SEL is not given)</span>
  <span class='no'>fit2</span> <span class='kw'>&lt;-</span> <span class='fu'>stabit2</span>(<span class='kw'>OUT</span> <span class='kw'>=</span> <span class='no'>xdata</span>$<span class='no'>OUT</span>,
            <span class='kw'>colleges</span> <span class='kw'>=</span> <span class='st'>"c1"</span>,
@@ -355,58 +295,20 @@ market identifier <code>m.id</code>, college identifier <code>c.id</code> and st
            <span class='kw'>outcome</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>c1</span>:<span class='no'>s1</span>,
            <span class='kw'>selection</span> <span class='kw'>=</span> ~ -<span class='fl'>1</span> + <span class='no'>c1</span>:<span class='no'>s1</span>,
            <span class='kw'>niter</span><span class='kw'>=</span><span class='fl'>1000</span>
- )</div><div class='output co'>#&gt; Drawing 1000 MCMC samples...</div><div class='input'>
+ )
+
 
 <span class='co'>## 4. Implemented methods</span>
 
 <span class='co'>## 4-a. Get coefficients</span>
- <span class='no'>fit2</span></div><div class='output co'>#&gt; Call:
-#&gt; stabit2.default(OUT = xdata$OUT, colleges = "c1", students = "s1", 
-#&gt;     outcome = y ~ c1:s1, selection = ~-1 + c1:s1, niter = 1000)
-#&gt; 
-#&gt; Coefficients:
-#&gt; o.(Intercept)       o.c1:s1       o.kappa       s.c1:s1 
-#&gt;     0.9946804     1.0348062     0.9944402     1.0207619 </div><div class='input'>
+ <span class='no'>fit2</span>
+
 <span class='co'>## 4-b. Coefficient table</span>
- <span class='fu'>summary</span>(<span class='no'>fit2</span>)</div><div class='output co'>#&gt; 
-#&gt; Coefficients for multi-index sample selection model.
-#&gt; Method: Sorensen (2007), two-sided matching market
-#&gt; 
-#&gt; Call:
-#&gt; stabit2.default(OUT = xdata$OUT, colleges = "c1", students = "s1", 
-#&gt;     outcome = y ~ c1:s1, selection = ~-1 + c1:s1, niter = 1000)
-#&gt; 
-#&gt; Selection equation:
-#&gt;       Estimate   StdErr t.value   p.value    
-#&gt; c1:s1 1.020762 0.096168  10.614 &lt; 2.2e-16 ***
-#&gt; 
-#&gt; Outcome equation:
-#&gt;             Estimate   StdErr t.value   p.value    
-#&gt; (Intercept) 0.994680 0.345121  2.8821  0.003992 ** 
-#&gt; c1:s1       1.034806 0.075968 13.6217 &lt; 2.2e-16 ***
-#&gt; kappa       0.994440 0.198319  5.0143 5.792e-07 ***
-#&gt; ---
-#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</div><div class='input'>
+ <span class='fu'>summary</span>(<span class='no'>fit2</span>)
+
 <span class='co'>## 4-c. Get marginal effects</span>
- <span class='fu'>summary</span>(<span class='no'>fit2</span>, <span class='kw'>mfx</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; 
-#&gt; Marginal effects for multi-index sample selection model.
-#&gt; Method: Sorensen (2007), two-sided matching market
-#&gt; 
-#&gt; Call:
-#&gt; stabit2.default(OUT = xdata$OUT, colleges = "c1", students = "s1", 
-#&gt;     outcome = y ~ c1:s1, selection = ~-1 + c1:s1, niter = 1000)
-#&gt; 
-#&gt; Selection equation:
-#&gt;       Estimate   StdErr t.value   p.value    
-#&gt; c1:s1 0.287952 0.027129  10.614 &lt; 2.2e-16 ***
-#&gt; 
-#&gt; Outcome equation:
-#&gt;             Estimate   StdErr t.value   p.value    
-#&gt; (Intercept) 0.994680 0.345121  2.8821  0.003992 ** 
-#&gt; c1:s1       1.034806 0.075968 13.6217 &lt; 2.2e-16 ***
-#&gt; kappa       0.994440 0.198319  5.0143 5.792e-07 ***
-#&gt; ---
-#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</div><div class='input'>
+ <span class='fu'>summary</span>(<span class='no'>fit2</span>, <span class='kw'>mfx</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
+
 <span class='co'>## 4-d. Also try the following functions</span>
  <span class='co'>#coef(fit2)</span>
  <span class='co'>#fitted(fit2)</span>
@@ -415,8 +317,8 @@ market identifier <code>m.id</code>, college identifier <code>c.id</code> and st
 
 
 <span class='co'>## 5. Plot MCMC draws for coefficients</span>
- <span class='fu'>plot</span>(<span class='no'>fit2</span>)</div><div class='img'><img src='stabit2-1.png' alt='' width='700' height='433' /></div><div class='img'><img src='stabit2-2.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+ <span class='fu'>plot</span>(<span class='no'>fit2</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

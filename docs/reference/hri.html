@@ -223,192 +223,36 @@ Springer International Publishing, 8451: 15--28.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## -----------------------</span>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'>## -----------------------</span>
 <span class='co'>## --- Marriage problem </span>
 
 <span class='co'>## 7 men, 6 women, random preferences:</span>
- <span class='fu'>hri</span>(<span class='kw'>nStudents</span><span class='kw'>=</span><span class='fl'>7</span>, <span class='kw'>nColleges</span><span class='kw'>=</span><span class='fl'>6</span>, <span class='kw'>seed</span><span class='kw'>=</span><span class='fl'>4</span>)</div><div class='output co'>#&gt; $s.prefs.smi
-#&gt;      1 2 3 4 5 6 7
-#&gt; [1,] 4 5 1 6 4 4 3
-#&gt; [2,] 1 6 5 4 5 2 4
-#&gt; [3,] 2 4 2 3 2 6 2
-#&gt; [4,] 5 1 4 5 3 5 1
-#&gt; [5,] 6 2 3 2 6 1 5
-#&gt; [6,] 3 3 6 1 1 3 6
-#&gt; 
-#&gt; $c.prefs.smi
-#&gt;      1 2 3 4 5 6
-#&gt; [1,] 4 4 2 7 3 4
-#&gt; [2,] 2 3 7 2 4 2
-#&gt; [3,] 5 7 5 4 7 1
-#&gt; [4,] 1 5 3 1 2 7
-#&gt; [5,] 3 6 6 6 5 3
-#&gt; [6,] 6 2 1 3 6 6
-#&gt; [7,] 7 1 4 5 1 5
-#&gt; 
-#&gt; $matchings
-#&gt;    matching college slots student sOptimal cOptimal sRank cRank
-#&gt; 1         1       1     1       3        1        0     1     5
-#&gt; 2         1       2     2       5        1        0     3     4
-#&gt; 3         1       3     3       7        1        0     1     2
-#&gt; 4         1       4     4       1        1        0     1     4
-#&gt; 5         1       5     5       2        1        0     1     4
-#&gt; 6         1       6     6       4        1        0     1     1
-#&gt; 7         2       1     1       1        0        1     2     4
-#&gt; 8         2       2     2       5        0        1     3     4
-#&gt; 9         2       3     3       7        0        1     1     2
-#&gt; 10        2       4     4       2        0        1     3     2
-#&gt; 11        2       5     5       3        0        1     2     1
-#&gt; 12        2       6     6       4        0        1     1     1
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "hri"</div><div class='input'>
+ <span class='fu'>hri</span>(<span class='kw'>nStudents</span><span class='kw'>=</span><span class='fl'>7</span>, <span class='kw'>nColleges</span><span class='kw'>=</span><span class='fl'>6</span>, <span class='kw'>seed</span><span class='kw'>=</span><span class='fl'>4</span>)
+
 <span class='co'>## 3 men, 2 women, given preferences:</span>
  <span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>, <span class='fl'>1</span>,<span class='fl'>2</span>, <span class='fl'>1</span>,<span class='fl'>2</span>), <span class='fl'>2</span>,<span class='fl'>3</span>)
  <span class='no'>c.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>, <span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>), <span class='fl'>3</span>,<span class='fl'>2</span>)
- <span class='fu'>hri</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>)</div><div class='output co'>#&gt; $s.prefs.smi
-#&gt;      1 2 3
-#&gt; [1,] 1 1 1
-#&gt; [2,] 2 2 2
-#&gt; 
-#&gt; $c.prefs.smi
-#&gt;      1 2
-#&gt; [1,] 1 1
-#&gt; [2,] 2 2
-#&gt; [3,] 3 3
-#&gt; 
-#&gt; $matchings
-#&gt;   matching college slots student sOptimal cOptimal sRank cRank
-#&gt; 1        1       1     1       1        1        1     1     1
-#&gt; 2        1       2     2       2        1        1     2     2
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "hri"</div><div class='input'>
+ <span class='fu'>hri</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>)
+
 <span class='co'>## 3 men, 2 women, given preferences:</span>
  <span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='st'>"x"</span>,<span class='st'>"y"</span>, <span class='st'>"x"</span>,<span class='st'>"y"</span>, <span class='st'>"x"</span>,<span class='st'>"y"</span>), <span class='fl'>2</span>,<span class='fl'>3</span>)
  <span class='fu'>colnames</span>(<span class='no'>s.prefs</span>) <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"A"</span>,<span class='st'>"B"</span>,<span class='st'>"C"</span>)
  <span class='no'>c.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='st'>"A"</span>,<span class='st'>"B"</span>,<span class='st'>"C"</span>, <span class='st'>"A"</span>,<span class='st'>"B"</span>,<span class='st'>"C"</span>), <span class='fl'>3</span>,<span class='fl'>2</span>)
  <span class='fu'>colnames</span>(<span class='no'>c.prefs</span>) <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"x"</span>,<span class='st'>"y"</span>)
- <span class='fu'>hri</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>)</div><div class='output co'>#&gt; $s.prefs.smi
-#&gt;      A   B   C  
-#&gt; [1,] "x" "x" "x"
-#&gt; [2,] "y" "y" "y"
-#&gt; 
-#&gt; $c.prefs.smi
-#&gt;      x   y  
-#&gt; [1,] "A" "A"
-#&gt; [2,] "B" "B"
-#&gt; [3,] "C" "C"
-#&gt; 
-#&gt; $matchings
-#&gt;   matching college slots student sOptimal cOptimal sRank cRank
-#&gt; 1        1       x     x       A        1        1     1     1
-#&gt; 2        1       y     y       B        1        1     2     2
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "hri"</div><div class='input'>
+ <span class='fu'>hri</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>)
+
 <span class='co'>## --------------------------------</span>
 <span class='co'>## --- College admission problem </span>
 
 <span class='co'>## 7 students, 2 colleges with 3 slots each, random preferences:</span>
- <span class='fu'>hri</span>(<span class='kw'>nStudents</span><span class='kw'>=</span><span class='fl'>7</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>3</span>), <span class='kw'>seed</span><span class='kw'>=</span><span class='fl'>21</span>)</div><div class='output co'>#&gt; $s.prefs.smi
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
-#&gt; [1,]    4    4    4    1    4    4    1
-#&gt; [2,]    5    5    5    2    5    5    2
-#&gt; [3,]    6    6    6    3    6    6    3
-#&gt; [4,]    1    1    1    4    1    1    4
-#&gt; [5,]    2    2    2    5    2    2    5
-#&gt; [6,]    3    3    3    6    3    3    6
-#&gt; 
-#&gt; $c.prefs.smi
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6]
-#&gt; [1,]    2    2    2    5    5    5
-#&gt; [2,]    1    1    1    7    7    7
-#&gt; [3,]    3    3    3    6    6    6
-#&gt; [4,]    7    7    7    2    2    2
-#&gt; [5,]    4    4    4    3    3    3
-#&gt; [6,]    5    5    5    4    4    4
-#&gt; [7,]    6    6    6    1    1    1
-#&gt; 
-#&gt; $s.prefs.hri
-#&gt;      1 2 3 4 5 6 7
-#&gt; [1,] 2 2 2 1 2 2 1
-#&gt; [2,] 1 1 1 2 1 1 2
-#&gt; 
-#&gt; $c.prefs.hri
-#&gt;      1 2
-#&gt; [1,] 2 5
-#&gt; [2,] 1 7
-#&gt; [3,] 3 6
-#&gt; [4,] 7 2
-#&gt; [5,] 4 3
-#&gt; [6,] 5 4
-#&gt; [7,] 6 1
-#&gt; 
-#&gt; $matchings
-#&gt;    matching college slots student sOptimal cOptimal sRank cRank
-#&gt; 1         1       1     1       1        1        0     4     2
-#&gt; 2         1       1     2       3        1        0     5     3
-#&gt; 3         1       1     3       7        1        0     3     4
-#&gt; 4         1       2     6       2        1        0     3     4
-#&gt; 5         1       2     4       5        1        0     1     1
-#&gt; 6         1       2     5       6        1        0     2     3
-#&gt; 7         2       1     2       1        0        1     5     2
-#&gt; 8         2       1     1       2        0        1     4     1
-#&gt; 9         2       1     3       3        0        1     6     3
-#&gt; 10        2       2     4       5        0        1     1     1
-#&gt; 11        2       2     6       6        0        1     3     3
-#&gt; 12        2       2     5       7        0        1     5     2
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "hri"</div><div class='input'>
+ <span class='fu'>hri</span>(<span class='kw'>nStudents</span><span class='kw'>=</span><span class='fl'>7</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>3</span>), <span class='kw'>seed</span><span class='kw'>=</span><span class='fl'>21</span>)
+
 <span class='co'>## 7 students, 2 colleges with 3 slots each, given preferences:</span>
  <span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>, <span class='fl'>1</span>,<span class='fl'>2</span>, <span class='fl'>1</span>,<span class='fl'>NA</span>, <span class='fl'>1</span>,<span class='fl'>2</span>, <span class='fl'>1</span>,<span class='fl'>2</span>, <span class='fl'>1</span>,<span class='fl'>2</span>, <span class='fl'>1</span>,<span class='fl'>2</span>), <span class='fl'>2</span>,<span class='fl'>7</span>)
  <span class='no'>c.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>7</span>, <span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>), <span class='fl'>7</span>,<span class='fl'>2</span>)
- <span class='fu'>hri</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>3</span>))</div><div class='output co'>#&gt; $s.prefs.smi
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
-#&gt; [1,]    1    1    1    1    1    1    1
-#&gt; [2,]    2    2    2    2    2    2    2
-#&gt; [3,]    3    3    3    3    3    3    3
-#&gt; [4,]    4    4   NA    4    4   NA   NA
-#&gt; [5,]    5    5   NA    5    5   NA   NA
-#&gt; [6,]    6    6   NA    6    6   NA   NA
-#&gt; 
-#&gt; $c.prefs.smi
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6]
-#&gt; [1,]    1    1    1    1    1    1
-#&gt; [2,]    2    2    2    2    2    2
-#&gt; [3,]    3    3    3    4    4    4
-#&gt; [4,]    4    4    4    5    5    5
-#&gt; [5,]    5    5    5   NA   NA   NA
-#&gt; [6,]    6    6    6   NA   NA   NA
-#&gt; [7,]    7    7    7   NA   NA   NA
-#&gt; 
-#&gt; $s.prefs.hri
-#&gt;      1 2  3 4 5  6  7
-#&gt; [1,] 1 1  1 1 1  1  1
-#&gt; [2,] 2 2 NA 2 2 NA NA
-#&gt; 
-#&gt; $c.prefs.hri
-#&gt;      1  2
-#&gt; [1,] 1  1
-#&gt; [2,] 2  2
-#&gt; [3,] 3  4
-#&gt; [4,] 4  5
-#&gt; [5,] 5 NA
-#&gt; [6,] 6 NA
-#&gt; [7,] 7 NA
-#&gt; 
-#&gt; $matchings
-#&gt;   matching college slots student sOptimal cOptimal sRank cRank
-#&gt; 1        1       1     1       1        1        1     1     1
-#&gt; 2        1       1     2       2        1        1     2     2
-#&gt; 3        1       1     3       3        1        1     3     3
-#&gt; 4        1       2     4       4        1        1     4     3
-#&gt; 5        1       2     5       5        1        1     5     4
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "hri"</div><div class='input'>
+ <span class='fu'>hri</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>3</span>))
+
 <span class='co'>## 7 students, 2 colleges with 3 slots each, given preferences:</span>
  <span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='st'>"x"</span>,<span class='st'>"y"</span>, <span class='st'>"x"</span>,<span class='st'>"y"</span>, <span class='st'>"x"</span>,<span class='fl'>NA</span>, <span class='st'>"x"</span>,<span class='st'>"y"</span>,
                      <span class='st'>"x"</span>,<span class='st'>"y"</span>, <span class='st'>"x"</span>,<span class='st'>"y"</span>, <span class='st'>"x"</span>,<span class='st'>"y"</span>), <span class='fl'>2</span>,<span class='fl'>7</span>)
@@ -416,84 +260,19 @@ Springer International Publishing, 8451: 15--28.</p>
  <span class='no'>c.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='st'>"A"</span>,<span class='st'>"B"</span>,<span class='st'>"C"</span>,<span class='st'>"D"</span>,<span class='st'>"E"</span>,<span class='st'>"F"</span>,<span class='st'>"G"</span>,
                      <span class='st'>"A"</span>,<span class='st'>"B"</span>,<span class='st'>"C"</span>,<span class='st'>"D"</span>,<span class='st'>"E"</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>), <span class='fl'>7</span>,<span class='fl'>2</span>)
  <span class='fu'>colnames</span>(<span class='no'>c.prefs</span>) <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"x"</span>,<span class='st'>"y"</span>)
- <span class='fu'>hri</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>3</span>))</div><div class='output co'>#&gt; $s.prefs.hri
-#&gt;      A   B   C   D   E   F   G  
-#&gt; [1,] "x" "x" "x" "x" "x" "x" "x"
-#&gt; [2,] "y" "y" NA  "y" "y" "y" "y"
-#&gt; 
-#&gt; $c.prefs.hri
-#&gt;      x   y  
-#&gt; [1,] "A" "A"
-#&gt; [2,] "B" "B"
-#&gt; [3,] "C" "C"
-#&gt; [4,] "D" "D"
-#&gt; [5,] "E" "E"
-#&gt; [6,] "F" NA 
-#&gt; [7,] "G" NA 
-#&gt; 
-#&gt; $matchings
-#&gt;   matching college slots student sOptimal cOptimal sRank cRank
-#&gt; 1        1       x     1       A        1        1     1     1
-#&gt; 2        1       x     2       B        1        1     2     2
-#&gt; 3        1       x     3       C        1        1     3     3
-#&gt; 4        1       y     4       D        1        1     4     3
-#&gt; 5        1       y     5       E        1        1     5     4
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "hri"</div><div class='input'>
+ <span class='fu'>hri</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>3</span>))
+
 <span class='co'>## 7 students, 3 colleges with 3 slots each, incomplete preferences:</span>
- <span class='fu'>hri</span>(<span class='kw'>nStudents</span><span class='kw'>=</span><span class='fl'>7</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>3</span>,<span class='fl'>3</span>), <span class='kw'>seed</span><span class='kw'>=</span><span class='fl'>21</span>, <span class='kw'>s.range</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>3</span>))</div><div class='output co'>#&gt; $s.prefs.smi
-#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7]
-#&gt;  [1,]    7    1    1    7    1    1    4
-#&gt;  [2,]    8    2    2    8    2    2    5
-#&gt;  [3,]    9    3    3    9    3    3    6
-#&gt;  [4,]    1   NA   NA    4   NA    4    7
-#&gt;  [5,]    2   NA   NA    5   NA    5    8
-#&gt;  [6,]    3   NA   NA    6   NA    6    9
-#&gt;  [7,]   NA   NA   NA   NA   NA    7   NA
-#&gt;  [8,]   NA   NA   NA   NA   NA    8   NA
-#&gt;  [9,]   NA   NA   NA   NA   NA    9   NA
-#&gt; 
-#&gt; $c.prefs.smi
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    5    5    5    7    7    7    7    7    7
-#&gt; [2,]    6    6    6    6    6    6    4    4    4
-#&gt; [3,]    2    2    2    4    4    4    6    6    6
-#&gt; [4,]    3    3    3   NA   NA   NA    1    1    1
-#&gt; [5,]    1    1    1   NA   NA   NA   NA   NA   NA
-#&gt; 
-#&gt; $s.prefs.hri
-#&gt;       1  2  3  4  5 6  7
-#&gt; [1,]  3  1  1  3  1 1  2
-#&gt; [2,]  1 NA NA  2 NA 2  3
-#&gt; [3,] NA NA NA NA NA 3 NA
-#&gt; 
-#&gt; $c.prefs.hri
-#&gt;      1  2  3
-#&gt; [1,] 5  7  7
-#&gt; [2,] 6  6  4
-#&gt; [3,] 2  4  6
-#&gt; [4,] 3 NA  1
-#&gt; [5,] 1 NA NA
-#&gt; 
-#&gt; $matchings
-#&gt;   matching college slots student sOptimal cOptimal sRank cRank
-#&gt; 1        1       1     3       2        1        1     3     3
-#&gt; 2        1       1     1       5        1        1     1     1
-#&gt; 3        1       1     2       6        1        1     2     2
-#&gt; 4        1       2     4       7        1        1     1     1
-#&gt; 5        1       3     8       1        1        1     2     4
-#&gt; 6        1       3     7       4        1        1     1     2
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "hri"</div><div class='input'>
+ <span class='fu'>hri</span>(<span class='kw'>nStudents</span><span class='kw'>=</span><span class='fl'>7</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>3</span>,<span class='fl'>3</span>), <span class='kw'>seed</span><span class='kw'>=</span><span class='fl'>21</span>, <span class='kw'>s.range</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>3</span>))
+
 <span class='co'>## --------------------</span>
 <span class='co'>## --- Summary plots</span>
 
 <span class='co'>## 200 students, 200 colleges with 1 slot each</span>
  <span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>hri</span>(<span class='kw'>nStudents</span><span class='kw'>=</span><span class='fl'>200</span>, <span class='kw'>nColleges</span><span class='kw'>=</span><span class='fl'>200</span>, <span class='kw'>seed</span><span class='kw'>=</span><span class='fl'>12</span>)
- <span class='fu'>plot</span>(<span class='no'>res</span>)</div><div class='img'><img src='hri-1.png' alt='' width='700' height='433' /></div><div class='input'> <span class='fu'>plot</span>(<span class='no'>res</span>, <span class='kw'>energy</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='img'><img src='hri-2.png' alt='' width='700' height='433' /></div><div class='input'> 
-</div></pre>
+ <span class='fu'>plot</span>(<span class='no'>res</span>)
+ <span class='fu'>plot</span>(<span class='no'>res</span>, <span class='kw'>energy</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

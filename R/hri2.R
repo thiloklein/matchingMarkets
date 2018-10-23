@@ -49,7 +49,7 @@
 #' \item{matchings}{List of matched students and colleges.}
 #' \item{summary}{Detailed report of the matching result, including futher information on ranks.}
 #' 
-#' @author Sven Giegerich, Thilo Klein, Alexander Sauer
+#' @author Sven Giegerich, Thilo Klein
 #' 
 #' @keywords algorithms, matching
 #' 

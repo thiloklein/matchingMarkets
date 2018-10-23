@@ -154,7 +154,7 @@ house allocation problem proposed by Abdulkadiroglu and Sonmez (1999) for a matc
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
 <span class='co'>## 1-a. Generate matrix of individuals' preference rankings over objects,</span>
 <span class='co'>## a.k.a. Rank Order Lists (ROL).</span>
 <span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>4</span>,<span class='fl'>1</span>,        <span class='co'># ROL of student 1</span>
@@ -162,22 +162,14 @@ house allocation problem proposed by Abdulkadiroglu and Sonmez (1999) for a matc
                    <span class='fl'>3</span>,<span class='fl'>1</span>, <span class='fl'>NA</span>,<span class='fl'>NA</span>,
                    <span class='fl'>2</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>4</span>,
                    <span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>NA</span>,
-                   <span class='fl'>2</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>6</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>); <span class='no'>s.prefs</span></div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6]
-#&gt; [1,]    3    3    3    2    1    2
-#&gt; [2,]    2    5    1    5    3    4
-#&gt; [3,]    4    6   NA    6    2    5
-#&gt; [4,]    1   NA   NA    4   NA    6</div><div class='input'>
+                   <span class='fl'>2</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>6</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>); <span class='no'>s.prefs</span>
 
 <span class='co'>## 1-b. Generate vector of house occupation objects ('obj') and their owners ('ind')</span>
-(<span class='no'>houses</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fl'>6</span>)</div><div class='output co'>#&gt; [1] 1 2 3 4 5 6</div><div class='input'>
+(<span class='no'>houses</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fl'>6</span>)
+
 <span class='co'>## 1-c. Find assignment based on TTC algorithm</span>
-<span class='fu'>ttc</span>(<span class='kw'>s.prefs</span> <span class='kw'>=</span> <span class='no'>s.prefs</span>, <span class='kw'>houses</span> <span class='kw'>=</span> <span class='no'>houses</span>, <span class='kw'>nHouses</span> <span class='kw'>=</span> <span class='fl'>6</span>, <span class='kw'>priority</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>6</span>)</div><div class='output co'>#&gt;    ind obj
-#&gt; 1    1   2
-#&gt; 21   2   5
-#&gt; 2    3   3
-#&gt; 11   4   6
-#&gt; 3    5   1
-#&gt; 22   6   4</div><div class='input'>
+<span class='fu'>ttc</span>(<span class='kw'>s.prefs</span> <span class='kw'>=</span> <span class='no'>s.prefs</span>, <span class='kw'>houses</span> <span class='kw'>=</span> <span class='no'>houses</span>, <span class='kw'>nHouses</span> <span class='kw'>=</span> <span class='fl'>6</span>, <span class='kw'>priority</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>6</span>)
+
 <span class='co'>## 2-a.Compare the example in the paper Abdulkadiroglu et al. (1999)</span>
 <span class='co'>## on page 246-248 (section 5.1 An Example):</span>
 <span class='co'>## generate matrix of students' preference rankings over houses, a.k.a. Rank Order Lists (ROL)</span>
@@ -185,28 +177,18 @@ house allocation problem proposed by Abdulkadiroglu and Sonmez (1999) for a matc
                  <span class='fl'>7</span>,<span class='fl'>1</span>,<span class='fl'>6</span>,<span class='fl'>5</span>,<span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>NA</span>,
                  <span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>4</span>,<span class='fl'>7</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>5</span>,<span class='fl'>NA</span>,
                  <span class='fl'>2</span>,<span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>1</span>,<span class='fl'>7</span>,<span class='fl'>5</span>,<span class='fl'>NA</span>,
-                 <span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>7</span>,<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>NA</span>), <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ncol</span><span class='kw'>=</span> <span class='fl'>5</span>); <span class='no'>s.prefs</span></div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5]
-#&gt; [1,]    2    7    2    2    4
-#&gt; [2,]    6    1    1    4    3
-#&gt; [3,]    5    6    4    3    7
-#&gt; [4,]    1    5    7    6    1
-#&gt; [5,]    4    4    3    1    2
-#&gt; [6,]    3    3    6    7    5
-#&gt; [7,]    7    2    5    5    6
-#&gt; [8,]   NA   NA   NA   NA   NA</div><div class='input'>
+                 <span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>7</span>,<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>NA</span>), <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ncol</span><span class='kw'>=</span> <span class='fl'>5</span>); <span class='no'>s.prefs</span>
+
 <span class='co'>## 2-b. Generate house occupation, so student 1 lives in house 1, ..., student 4 lives in house 4</span>
 <span class='co'>## and the other houses are vacant.</span>
-<span class='no'>houses</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>); <span class='no'>houses</span></div><div class='output co'>#&gt; [1]  1  2  3  4 NA NA NA NA</div><div class='input'>
+<span class='no'>houses</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>); <span class='no'>houses</span>
+
 <span class='co'>## 2-c. Generate priority ordering</span>
 <span class='no'>priority</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fl'>5</span>
 
 <span class='co'>## 2-d. Find assigment</span>
-<span class='fu'>ttc</span>(<span class='kw'>s.prefs</span> <span class='kw'>=</span> <span class='no'>s.prefs</span>, <span class='kw'>houses</span> <span class='kw'>=</span> <span class='no'>houses</span>, <span class='kw'>priority</span> <span class='kw'>=</span> <span class='no'>priority</span>)</div><div class='output co'>#&gt;   ind obj
-#&gt; 1   1   2
-#&gt; 2   2   7
-#&gt; 3   3   1
-#&gt; 4   4   4
-#&gt; 5   5   3</div></pre>
+<span class='fu'>ttc</span>(<span class='kw'>s.prefs</span> <span class='kw'>=</span> <span class='no'>s.prefs</span>, <span class='kw'>houses</span> <span class='kw'>=</span> <span class='no'>houses</span>, <span class='kw'>priority</span> <span class='kw'>=</span> <span class='no'>priority</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -200,25 +200,14 @@ of marriage. <em>The American Mathematical Monthly</em>, 69(1):9--15.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Example with given preferences</span>
-(<span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>4</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>5</span>, <span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>NA</span>, <span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>), <span class='fl'>4</span>,<span class='fl'>3</span>))</div><div class='output co'>#&gt;      [,1] [,2] [,3]
-#&gt; [1,]    4    2    1
-#&gt; [2,]    2    1    2
-#&gt; [3,]    3    3    3
-#&gt; [4,]    5   NA    4</div><div class='input'>(<span class='no'>c.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>rep</span>(<span class='fl'>1</span>:<span class='fl'>5</span>,<span class='fl'>5</span>), <span class='fl'>5</span>,<span class='fl'>5</span>))</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5]
-#&gt; [1,]    1    1    1    1    1
-#&gt; [2,]    2    2    2    2    2
-#&gt; [3,]    3    3    3    3    3
-#&gt; [4,]    4    4    4    4    4
-#&gt; [5,]    5    5    5    5    5</div><div class='input'>(<span class='no'>co.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fl'>4</span>,<span class='fl'>3</span>), <span class='fu'>rep</span>(<span class='fl'>5</span>,<span class='fl'>3</span>), <span class='fl'>3</span>,<span class='fl'>3</span>,<span class='fl'>NA</span>, <span class='fl'>3</span>,<span class='fl'>NA</span>,<span class='fl'>3</span>), <span class='fl'>3</span>,<span class='fl'>4</span>))</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4]
-#&gt; [1,]    4    5    3    3
-#&gt; [2,]    4    5    3   NA
-#&gt; [3,]    4    5   NA    3</div><div class='input'><span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>hri2</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>, <span class='kw'>co.prefs</span><span class='kw'>=</span><span class='no'>co.prefs</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>rep</span>(<span class='fl'>1</span>,<span class='fl'>5</span>))
-<span class='no'>res</span>$<span class='no'>matchings</span></div><div class='output co'>#&gt;      student college
-#&gt; [1,]       1       4
-#&gt; [2,]       2       2
-#&gt; [3,]       3       1
-#&gt; [4,]       4       3</div><div class='input'><span class='co'># summary(res)</span>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'>## Example with given preferences</span>
+(<span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>4</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>5</span>, <span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>NA</span>, <span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>), <span class='fl'>4</span>,<span class='fl'>3</span>))
+(<span class='no'>c.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>rep</span>(<span class='fl'>1</span>:<span class='fl'>5</span>,<span class='fl'>5</span>), <span class='fl'>5</span>,<span class='fl'>5</span>))
+(<span class='no'>co.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fl'>4</span>,<span class='fl'>3</span>), <span class='fu'>rep</span>(<span class='fl'>5</span>,<span class='fl'>3</span>), <span class='fl'>3</span>,<span class='fl'>3</span>,<span class='fl'>NA</span>, <span class='fl'>3</span>,<span class='fl'>NA</span>,<span class='fl'>3</span>), <span class='fl'>3</span>,<span class='fl'>4</span>))
+<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>hri2</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>, <span class='kw'>co.prefs</span><span class='kw'>=</span><span class='no'>co.prefs</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>rep</span>(<span class='fl'>1</span>,<span class='fl'>5</span>))
+<span class='no'>res</span>$<span class='no'>matchings</span>
+<span class='co'># summary(res)</span>
 
 <span class='co'>## Example with random preferences</span>
 <span class='no'>nStudents</span> <span class='kw'>&lt;-</span> <span class='fl'>50</span>
@@ -226,65 +215,8 @@ of marriage. <em>The American Mathematical Monthly</em>, 69(1):9--15.</p>
 <span class='no'>nCouples</span> <span class='kw'>&lt;-</span> <span class='fl'>4</span>
 <span class='no'>nSlots</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='fl'>1</span>:<span class='no'>nStudents</span>, <span class='no'>nColleges</span>)
 <span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>hri2</span>(<span class='kw'>nStudents</span><span class='kw'>=</span><span class='no'>nStudents</span>, <span class='kw'>nColleges</span><span class='kw'>=</span><span class='no'>nColleges</span>, <span class='kw'>nCouples</span><span class='kw'>=</span><span class='no'>nCouples</span>, <span class='kw'>nSlots</span><span class='kw'>=</span><span class='no'>nSlots</span>)
-<span class='no'>res</span>$<span class='no'>matchings</span></div><div class='output co'>#&gt;       student college
-#&gt;  [1,]       1       2
-#&gt;  [2,]       2      20
-#&gt;  [3,]       3      21
-#&gt;  [4,]       4      26
-#&gt;  [5,]       5      20
-#&gt;  [6,]       6       7
-#&gt;  [7,]       7       1
-#&gt;  [8,]       8      24
-#&gt;  [9,]       9      29
-#&gt; [10,]      10      10
-#&gt; [11,]      11      23
-#&gt; [12,]      12      26
-#&gt; [13,]      13      12
-#&gt; [14,]      14       5
-#&gt; [15,]      15       6
-#&gt; [16,]      16      14
-#&gt; [17,]      17       4
-#&gt; [18,]      18      13
-#&gt; [19,]      19      16
-#&gt; [20,]      20      13
-#&gt; [21,]      21      30
-#&gt; [22,]      22      12
-#&gt; [23,]      23      18
-#&gt; [24,]      24       5
-#&gt; [25,]      25       6
-#&gt; [26,]      26      21
-#&gt; [27,]      27      20
-#&gt; [28,]      28      17
-#&gt; [29,]      29       2
-#&gt; [30,]      30      11
-#&gt; [31,]      31      12
-#&gt; [32,]      32      27
-#&gt; [33,]      33       3
-#&gt; [34,]      34      20
-#&gt; [35,]      35      24
-#&gt; [36,]      36       7
-#&gt; [37,]      37      15
-#&gt; [38,]      38      16
-#&gt; [39,]      39       8
-#&gt; [40,]      40      20
-#&gt; [41,]      41       1
-#&gt; [42,]      42      20
-#&gt; [43,]      43       9
-#&gt; [44,]      44      28
-#&gt; [45,]      45      24
-#&gt; [46,]      46      15
-#&gt; [47,]      47      15
-#&gt; [48,]      48      21
-#&gt; [49,]      49      21
-#&gt; [50,]      50      27
-#&gt; [51,]      51      15
-#&gt; [52,]      52      10
-#&gt; [53,]      53       6
-#&gt; [54,]      54      20
-#&gt; [55,]      55      15
-#&gt; [56,]      56       3
-#&gt; [57,]      57       3
-#&gt; [58,]      58       1</div><div class='input'><span class='co'># summary(res)</span>
+<span class='no'>res</span>$<span class='no'>matchings</span>
+<span class='co'># summary(res)</span>
 
 <span class='co'>## Example with characters in the preferences matrices</span>
 <span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='st'>"Micro1"</span>, <span class='fl'>NA</span>, <span class='fl'>NA</span>,
@@ -305,20 +237,18 @@ of marriage. <em>The American Mathematical Monthly</em>, 69(1):9--15.</p>
           <span class='st'>"Micro1"</span>,<span class='st'>"Micro2"</span>,<span class='st'>"Macro"</span>,<span class='fl'>NA</span>)
 <span class='no'>co.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='no'>col1</span>,<span class='no'>col2</span>,<span class='no'>col3</span>,<span class='no'>col4</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>4</span>)
 <span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>hri2</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>, <span class='kw'>co.prefs</span><span class='kw'>=</span><span class='no'>co.prefs</span>,
-            <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))</div><div class='output co'>#&gt; [1] "Input passed consistency test!"</div><div class='input'><span class='no'>res</span>$<span class='no'>matching</span></div><div class='output co'>#&gt;      student  college 
-#&gt; [1,] "Mia"    "Micro1"
-#&gt; [2,] "Kai"    "Macro" 
-#&gt; [3,] "Niklas" "Micro1"</div><div class='input'>
+            <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))
+<span class='no'>res</span>$<span class='no'>matching</span>
+
 <span class='co'>## Example if students are allowed to apply and be accepted by two courses   </span>
 <span class='no'>col12</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='st'>"Niklas"</span>,<span class='fl'>4</span>),<span class='fu'>rep</span>(<span class='st'>"Anna"</span>,<span class='fl'>2</span>)),<span class='fl'>2</span>))
 <span class='no'>col3</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"Micro1"</span>,<span class='st'>"Macro"</span>,<span class='st'>"Micro1"</span>,<span class='st'>"Macro"</span>,<span class='st'>"Macro"</span>,<span class='st'>"Macro"</span>)
 <span class='no'>col4</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"Micro2"</span>,<span class='st'>"Micro1"</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>,<span class='st'>"Micro1"</span>,<span class='st'>"Micro2"</span>)
 <span class='no'>co.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='no'>col12</span>,<span class='no'>col3</span>,<span class='no'>col4</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>4</span>)
 <span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>hri2</span>(<span class='kw'>s.prefs</span><span class='kw'>=</span><span class='no'>s.prefs</span>, <span class='kw'>c.prefs</span><span class='kw'>=</span><span class='no'>c.prefs</span>, <span class='kw'>co.prefs</span><span class='kw'>=</span><span class='no'>co.prefs</span>,
-            <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))</div><div class='output co'>#&gt; [1] "Input passed consistency test!"</div><div class='input'><span class='no'>res</span>$<span class='no'>matching</span></div><div class='output co'>#&gt;      student  college 
-#&gt; [1,] "Mia"    "Micro1"
-#&gt; [2,] "Kai"    "Macro" 
-#&gt; [3,] "Niklas" "Micro1"</div></pre>
+            <span class='kw'>nSlots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>1</span>))
+<span class='no'>res</span>$<span class='no'>matching</span>
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -336,7 +266,7 @@ of marriage. <em>The American Mathematical Monthly</em>, 69(1):9--15.</p>
 
     <h2>Author</h2>
     
-Sven Giegerich, Thilo Klein, Alexander Sauer
+Sven Giegerich, Thilo Klein
 
   </div>
 </div>
