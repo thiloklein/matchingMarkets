@@ -6,7 +6,7 @@
 \usage{
 iaa(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
   nSlots = rep(1, nColleges), s.prefs = NULL, c.prefs = NULL,
-  acceptance = "immediate", short_match = TRUE, seed = 123)
+  acceptance = "immediate", short_match = TRUE, seed = NULL)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem)
@@ -59,7 +59,7 @@ given or randomly generated preferences.
 }
 
 \examples{
-\dontrun{
+##\dontrun{
 ## --------------------------------
 ## --- College admission problem
 
@@ -86,7 +86,7 @@ nSlots <- c(2,2,1)
  iaa(nStudents=7, nSlots=c(3,3), acceptance="deferred")$matchings
  set.seed(123)
  hri2(nStudents=7, nSlots=c(3,3))$matchings
- }
+ ##}
 }
 \references{
 Gale, D. and Shapley, L.S. (1962). College admissions and the stability

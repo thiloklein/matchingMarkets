@@ -183,7 +183,6 @@ eta <- lm.sel$resid[mdata$SEL$D==1]
 ## 6. Plot MCMC draws for coefficients
  plot(fit1)
 
-
 ## --- REPLICATION, Klein (2015a) ---
 
 ## 1. Load data 

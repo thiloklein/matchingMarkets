@@ -7,7 +7,7 @@
 hri(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
   nSlots = rep(1, nColleges), s.prefs = NULL, c.prefs = NULL,
   s.range = NULL, c.range = NULL, randomization = NULL,
-  seed = NULL, check_consistency = FALSE, ...)
+  seed = NULL, check_consistency = TRUE, ...)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem) 
@@ -118,6 +118,21 @@ either given or randomly generated preferences.
 ## 7 students, 3 colleges with 3 slots each, incomplete preferences:
  hri(nStudents=7, nSlots=c(3,3,3), seed=21, s.range=c(1,3))
  
+ s.prefs <- matrix(c('S1', 'S2', NA,
+                     'S3', 'S1', NA,
+                     'S1', NA, NA,
+                      NA, NA,NA,
+                     'S2', 'S1', 'S5'),
+                   nrow = 3, ncol = 5)
+ # Note that we explicitly allow for the existence of entries refering to colleges
+ # that do not exist. A warning is generated and the entry is ignored.
+ colnames(s.prefs) <- c('A', 'B', 'C', 'D', 'E')
+ c.prefs <- matrix(c('B', 'C','D', 'A',
+                     'C', 'D', NA, NA, 
+                     'D', 'B', 'A', 'E'),
+                   nrow = 4, ncol = 3)
+ colnames(c.prefs) <- c('S1', 'S2', 'S3')
+ hri(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=c(3,3,3), check_consistency = TRUE)
 ## --------------------
 ## --- Summary plots
 

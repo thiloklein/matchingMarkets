@@ -57,7 +57,7 @@
 #' Kojima, F. and M.U. Unver (2014). The "Boston" school-choice mechanism. \emph{Economic Theory}, 55(3): 515--544.
 #'
 #' @examples
-#' \dontrun{
+#' ##\dontrun{
 #' ## --------------------------------
 #' ## --- College admission problem
 #'
@@ -84,13 +84,15 @@
 #'  iaa(nStudents=7, nSlots=c(3,3), acceptance="deferred")$matchings
 #'  set.seed(123)
 #'  hri2(nStudents=7, nSlots=c(3,3))$matchings
-#'  }
+#'  ##}
 
 
 
-iaa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), s.prefs=NULL, c.prefs=NULL, acceptance="immediate", short_match = TRUE, seed = 123){
-
-  set.seed(seed)
+iaa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,nColleges), s.prefs=NULL, c.prefs=NULL, acceptance="immediate", short_match = TRUE, seed = NULL){
+  if(!is.null(seed)){
+    set.seed(seed)
+  }
+  
   ## If 'nColleges' not given, obtain it from nSlots
   if(is.null(nColleges)){
     nColleges <- length(nSlots)
@@ -102,7 +104,7 @@ iaa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
   if(is.null(c.prefs)){
     c.prefs <- replicate(n=nColleges,sample(seq(from=1,to=nStudents,by=1)))
   }
-
+  
   ## Consistency checks:
   if( dim(s.prefs)[1] != dim(c.prefs)[2] | dim(s.prefs)[2] != dim(c.prefs)[1] |
       dim(s.prefs)[2] != nStudents | dim(c.prefs)[2] != nColleges |
@@ -112,15 +114,15 @@ iaa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
   if( length(nSlots) != nColleges | length(nSlots) != dim(c.prefs)[2] ){
     stop("length of 'nSlots' must equal 'nColleges' and the number of columns of 'c.prefs'!")
   }
-
+  
   iter <- 0
-
+  
   s.hist    <- rep(0,length=nStudents)  # number of proposals made
   c.hist    <- lapply(nSlots, function(x) rep(0,length=x))  # current students
   s.singles <- 1:nStudents
-
+  
   s.mat <- matrix(data=1:nStudents,nrow=nStudents,ncol=nColleges,byrow=F)
-
+  
   while(min(s.hist[s.singles]) < nColleges){  # there are as many rounds as maximal preference orders
     # look at market: all unassigned students
     # if history not full (been rejected by all colleges in his prefs)
@@ -128,13 +130,13 @@ iaa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
     # propose to next college on list
     iter         <- iter + 1
     offers       <- NULL
-
+    
     ## Look at unassigned students that have not yet applied to all colleges
     temp.singles <- c(na.omit( s.singles[s.hist[s.singles] < nColleges] ))
     if(length(temp.singles)==0){ # if unassigned students have used up all their offers: stop
       return(finish(s.prefs,c.prefs,iter,c.hist,s.singles,short_match))
     }
-
+    
     ## Add to students' offer history
     for(i in 1:length(temp.singles)){
       s.hist[temp.singles[i]] <- s.hist[temp.singles[i]] + 1  # set history of student i one up.
@@ -143,52 +145,52 @@ iaa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
       }
       offers[i] <- s.prefs[s.hist[temp.singles[i]],temp.singles[i]]  # offer if unassigned i is index of current round college
     }
-
+    
     ##print(paste("Iteration: ",iter))
     approached <- unique(offers)	# index of colleges who received offers
-
+    
     # Dont approach college 0 since it means that the student prefers to stay unmatched
     approached <- approached[!approached == 0]
-
+    
     s.singles  <- sort(s.singles[!s.singles %in% temp.singles])  # reset unassigned students, except for singles who already used up all offers
-
+    
     for(j in approached){
       all_proposers   <- temp.singles[offers==j]
       proposers   <- c.prefs[,j][c.prefs[,j] %in% all_proposers]  # Only keep proposers that are ranked by the approached college
       not_ranked <-  all_proposers[!all_proposers %in% proposers] # Students that are not ranked remain single
       stay.single <- temp.singles[offers==0 | is.na(offers)]	# students who prefer remaining unassigned at current history
-
+      
       for (k in 1:length(proposers)){
-
+        
         # Gale-Shapley:
         if(acceptance == 'deferred'){
           #          if(0 %in% c.hist[[j]] && any(c.prefs[ ,j]==proposers[k])){  # if no history and proposer is on preference list
           if(0 %in% c.hist[[j]] && !is.na(any(c.prefs[ ,j]==proposers[k])) && any(c.prefs[ ,j]==proposers[k])){  # if no history and proposer is on preference list
-
+            
             #c.hist[[j]][c.hist[[j]]==0][1] <- proposers[k]			  # then accept
             c.hist[[j]][match(0, c.hist[[j]])] <- proposers[k]
-
+            
           } else{
             # Compare prosposing student to the students that currently hold an offer
             eval_prop  <- proposer_better(proposer = proposers[k], prefs =  c.prefs, college = j, hist = c.hist)
-
+            
             # If the proposing student is not preferred, reject him
             if(is.na(eval_prop$better) || eval_prop$better == FALSE){
               s.singles <- c(s.singles,proposers[k])	# otherwise k stays unassigned
             } else{ # Otherwise assign him to the seat, that is currently holded by the least preferred student, who becomes unassigned again
               s.singles <- c(s.singles, eval_prop$worst_stud)
               c.hist[[j]][eval_prop$index_worst_stud] <- proposers[k]
-
+              
             }
           }
           # IAA Algorithm:
         } else{
           #         if(0 %in% (c.hist[[j]] & any(c.prefs[ ,j]==proposers[k]))){  # if no history and proposer is on preference list
           if(0 %in% c.hist[[j]] && !is.na(any(c.prefs[ ,j]==proposers[k])) && any(c.prefs[ ,j]==proposers[k])){  # if 0 in history and proposer is on preference list
-
+            
             #c.hist[[j]][c.hist[[j]]==0][1] <- proposers[k]			  # then accept
             c.hist[[j]][match(0, c.hist[[j]])] <- proposers[k]
-
+            
           } else{
             s.singles <- c(s.singles,proposers[k])	# otherwise k stays unassigned
           }
@@ -196,10 +198,10 @@ iaa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
       }
       s.singles <- sort(unique(c(s.singles,stay.single, not_ranked))) #Update singles in every round
     }
-
+    
     if(length(s.singles)==0){	# if no unassigned students left: stop
       #current.match <- sapply(1:nColleges, function(x) s.mat[,x] %in% c.hist[[x]])
-
+      
       return(finish(s.prefs,c.prefs,iter,c.hist,s.singles,short_match))
     }
     current.match <- sapply(1:nColleges, function(x) s.mat[,x] %in% c.hist[[x]])
@@ -216,13 +218,13 @@ finish <- function(s.prefs,c.prefs,iter,c.hist,s.singles,short_match){
   else {
     # Format matching
     matching <- edgefun(x=c.hist)
-
+    
     free_caps <- lapply(1:ncol(c.prefs), function(col){
       return(nrow(matching[matching$college == col & matching$student == 0,]))
     })
     free_caps <- data.frame(free_caps)
     colnames(free_caps) <- 1:ncol(c.prefs)
-
+    
     matching <- matching[matching$student != 0, ]
     return(list(s.prefs=s.prefs,c.prefs=c.prefs,iterations=iter,matchings=matching,singles=s.singles, free_cap = free_caps))
   }

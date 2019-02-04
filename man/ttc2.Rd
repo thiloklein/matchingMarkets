@@ -6,7 +6,7 @@
 \usage{
 ttc2(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
   s.prefs = NULL, c.prefs = NULL, nSlots = NULL, priority = NULL,
-  seed = 123, full_return = FALSE)
+  seed = NULL, full_return = FALSE)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students in the matching problem. Defaults to \code{ncol(s.prefs)}.}
@@ -19,9 +19,9 @@ ttc2(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
 
 \item{nSlots}{vector of length \code{nColleges} indicating the number of places (i.e. quota) of each college.}
 
-\item{priority}{(Optional) vector of length \code{nStudents}. Gives the prioirity ordering of the students, if nothing is specified a random ordering is chosen.}
+\item{priority}{(Optional) vector of length \code{nStudents}. Gives the prioirity ordering of the students in the search for cycles (Do not confuse it with the preferences!), if nothing is specified a random ordering is chosen.}
 
-\item{seed}{(Optional) integer setting the state for random number generation. Defaults to seed =123.}
+\item{seed}{(Optional) integer setting the state for random number generation. Defaults to seed = NULL}
 
 \item{full_return}{(Optinal) If \code{TRUE} the return value is a list with the matching, the remaining seats and the unmatchable students is returned. Defaults to \code{FALSE} and only the matching is returned.}
 }
@@ -37,7 +37,7 @@ Now suppose during the matching process a student points to a college that still
 We assume now that the college is indifferent over all other students (so we do not allow for free capacieties) and we match the student who wants to go there to the college.
 }
 \examples{
-\dontrun{
+##\dontrun{
 ## 1-a. Compare example from the Abdulkadiroglu et al. (2003) (in the Appendix, page 742-744)
 ## 1-b. Generate matrix of students' preference rankings over schools, a.k.a. Rank Order Lists (ROL)
 s.prefs <- matrix(c(
@@ -91,7 +91,7 @@ priority <- c.prefs[,1]
 match_ttc <- ttc2(s.prefs = s.prefs, c.prefs = c.prefs, nSlots = nSlots); match_ttc
 match_sd <- rsd(prefs = s.prefs, priority = priority, nSlots = nSlots); match_sd
 all(match_ttc == match_sd)
-}
+##}
 }
 \references{
 Abdulkadiroglu, A. and T. Sonmez (2003). School Choice: A Mechanism Design Approach. \emph{American Economic Review}, 93 (3): 729-747.

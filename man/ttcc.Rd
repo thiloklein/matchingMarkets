@@ -4,16 +4,16 @@
 \alias{ttcc}
 \title{Top-Trading-Cycles and Chains Algorithm}
 \usage{
-ttcc(nPatients = ncol(prefs), prefs, priority = NULL, seed = 123)
+ttcc(nPatients = ncol(prefs), prefs, priority = NULL, seed = NULL)
 }
 \arguments{
 \item{nPatients}{integer indicating the number of patient/donor-pairs in the matching problem. Defaults to  \code{ncol(prefs)}.}
 
 \item{prefs}{matrix of dimension (\code{nPatients} + 1) x \code{nPatients} with column j containg patients jth ranking over kidneys in decreasing order of preferences (i.e. most preferred first). An entry with value (\code{nPatients} +1) indicates that the patient prefers the waiting list to all kidney below in his ranking (therefore they do not matter and can be neglected/NA).}
 
-\item{priority}{(Optional) Vector of length \code{nPatients}. Gives the prioirty ordering of the patient, if nothing is specified a random ordering is chosen.}
+\item{priority}{(Optional) vector of length \code{nStudents}. Gives the prioirity ordering of the students in the search for cycles (Do not confuse it with the preferences!), if nothing is specified a random ordering is chosen.}
 
-\item{seed}{(Optional) integer setting the state for random number generation. Defaults to seed = 123.}
+\item{seed}{(Optional) integer setting the state for random number generation. Defaults to seed = NULL}
 }
 \value{
 \code{ttcc} returns a list with the matching and a vector containing the patients who are assigned to the waiting list. The matching comprises a data frame of the operations to be performed between patient-donor pairs (ind-obj).
@@ -24,7 +24,7 @@ The algorithm requires a rule to determine which chain will be used if there is 
 to search for the longest chain and remove it from the problem (even the first kidney which was unassigned).
 }
 \examples{
-\dontrun{
+##\dontrun{
 ## Compare Example 1 from Roth et al. (2004) on page 469 - 475
 ## generate matrix of patients' preference rankings over kidneys, a.k.a. Rank Order Lists (ROL)
 
@@ -45,7 +45,7 @@ priority <- 1:12
 ttcc(prefs = prefs, priority = priority)
 ## The final matching differs slightly because in Round 3 another chain is chosen due to a different
 ## decision rule (compare Figure 3, p472. Here W1 instead of W2 is chosen)
-}
+##}
 }
 \references{
 Roth, A.; T. Sonmez; U. Unver (2004). Kidney Exchange. \emph{Quarterly Journal of Economics}, 119 (2): 457-488.

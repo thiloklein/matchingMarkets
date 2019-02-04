@@ -5,12 +5,20 @@ runMatch <- function(students, programs, couples) {
     .Call(`_matchingMarkets_runMatch`, students, programs, couples)
 }
 
-stabit2Mat1 <- function(Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, nEquilibsr, sopt2equr, equ2soptr, copt2equr, equ2coptr, coptidr, n, N, niter, T, thin, display_progress = TRUE) {
-    .Call(`_matchingMarkets_stabit2Mat1`, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, nEquilibsr, sopt2equr, equ2soptr, copt2equr, equ2coptr, coptidr, n, N, niter, T, thin, display_progress)
+stabit2Mat0 <- function(Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, cbetterr, cworser, sbetterr, sworser, cbetterNAr, cworseNAr, sbetterNAr, sworseNAr, n, N, niter, T, thin, display_progress = TRUE) {
+    .Call(`_matchingMarkets_stabit2Mat0`, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, cbetterr, cworser, sbetterr, sworser, cbetterNAr, cworseNAr, sbetterNAr, sworseNAr, n, N, niter, T, thin, display_progress)
 }
 
-stabit2Sel1 <- function(Yr, Xmatchr, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, nEquilibsr, sopt2equr, equ2soptr, copt2equr, equ2coptr, coptidr, n, N, binary, niter, T, censored, thin, display_progress = TRUE) {
-    .Call(`_matchingMarkets_stabit2Sel1`, Yr, Xmatchr, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, nEquilibsr, sopt2equr, equ2soptr, copt2equr, equ2coptr, coptidr, n, N, binary, niter, T, censored, thin, display_progress)
+stabit2Mat1 <- function(Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, n, N, niter, T, thin, display_progress = TRUE) {
+    .Call(`_matchingMarkets_stabit2Mat1`, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, n, N, niter, T, thin, display_progress)
+}
+
+stabit2Sel0 <- function(Yr, Xmatchr, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, cbetterr, cworser, sbetterr, sworser, cbetterNAr, cworseNAr, sbetterNAr, sworseNAr, n, N, binary, niter, T, censored, thin, display_progress = TRUE) {
+    .Call(`_matchingMarkets_stabit2Sel0`, Yr, Xmatchr, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, cbetterr, cworser, sbetterr, sworser, cbetterNAr, cworseNAr, sbetterNAr, sworseNAr, n, N, binary, niter, T, censored, thin, display_progress)
+}
+
+stabit2Sel1 <- function(Yr, Xmatchr, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, n, N, binary, niter, T, censored, thin, display_progress = TRUE) {
+    .Call(`_matchingMarkets_stabit2Sel1`, Yr, Xmatchr, Cr, Cmatchr, Sr, Smatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, SSr, CCmatchr, SSmatchr, Lr, studentIdsr, collegeIdr, n, N, binary, niter, T, censored, thin, display_progress)
 }
 
 stabit2Sel2 <- function(Yr, Xmatchr, Cr, Cmatchr, Dr, dr, Mr, Hr, nCollegesr, nStudentsr, XXmatchr, CCr, CCmatchr, Lr, studentIdsr, collegeIdr, n, N, binary, niter, T, censored, thin, display_progress = TRUE) {

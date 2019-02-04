@@ -138,7 +138,9 @@ hri2.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlot
   prefs_as_char <- FALSE
   if(is.character(s.prefs) || is.character(c.prefs)  || is.character(co.prefs)){
     if(!(is.character(s.prefs) && is.character(c.prefs) && is.character(co.prefs))) {
-      stop('Prefs must all be as characters or all numeric')
+      if(!is.null(co.prefs)){
+        stop('Prefs must all be as characters or all numeric')
+      }
     }
     prefs_as_char <- TRUE
     
@@ -354,10 +356,9 @@ consistency_check <- function(s.prefs, c.prefs, co.prefs){
   
   if(length(setdiff(applied_colleges,colnames(c.prefs))) != 0){
     missing_college <- setdiff(applied_colleges,colnames(c.prefs))
-    missing_college <- paste('Someone applied to a college (', missing_college, ') that has no ranking', sep = '')
+    missing_college <- paste('Someone applied to a college (', missing_college, ') that has no ranking \n', sep = '')
     stop(missing_college)
   }
-  
   
   # Check if a college ranked someone who is not in s.prefs
   ranked_stud <- unique(c(as.character(c.prefs)))

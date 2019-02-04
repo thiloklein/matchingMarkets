@@ -15,12 +15,14 @@ double exp_rs(double a, double b);
 double truncn2(double mu, double sigma, double lower, double upper);
 
 // [[Rcpp::export]]
-List stabit2Sel1(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr, 
+List stabit2Sel0(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr, 
   Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Smatchr, 
   Rcpp::List Dr, Rcpp::List dr, Rcpp::List Mr, Rcpp::List Hr, 
   arma::colvec nCollegesr, arma::colvec nStudentsr, Rcpp::List XXmatchr,
   Rcpp::List CCr, Rcpp::List SSr, Rcpp::List CCmatchr, Rcpp::List SSmatchr,
   Rcpp::List Lr, Rcpp::List studentIdsr, Rcpp::List collegeIdr, 
+  Rcpp::List cbetterr, Rcpp::List cworser, Rcpp::List sbetterr, Rcpp::List sworser,
+  Rcpp::List cbetterNAr, Rcpp::List cworseNAr, Rcpp::List sbetterNAr, Rcpp::List sworseNAr,
   int n, int N, bool binary, int niter, int T, int censored, int thin, bool display_progress = true) {
   
   // ---------------------------------------------
@@ -29,7 +31,7 @@ List stabit2Sel1(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
   
   arma::field<arma::mat> Xmatch(T), C(T), Cmatch(T), H(T), S(T), Smatch(T), XXmatch(T), CC(T), SS(T), CCmatch(T), SSmatch(T); 
   arma::field<arma::uvec> L(T), studentIds(N), d(T);
-  arma::field<arma::umat> M(T);
+  arma::field<arma::umat> M(T), cbetter(T), sbetter(T), cworse(T), sworse(T), cbetterNA(T), sbetterNA(T), cworseNA(T), sworseNA(T);
   arma::field<arma::colvec> D(T), collegeId(T); 
 
   for(int i=0; i<T; i++){
@@ -48,7 +50,15 @@ List stabit2Sel1(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
     CCmatch(i) = Rcpp::as<arma::mat>(CCmatchr[i]); 
     SSmatch(i) = Rcpp::as<arma::mat>(SSmatchr[i]); 
     L(i) = Rcpp::as<arma::uvec>(Lr[i]);  // uvec is used for logical indexing
-    collegeId(i) = Rcpp::as<arma::colvec>(collegeIdr[i]);
+    collegeId(i) = Rcpp::as<arma::colvec>(collegeIdr[i]); 
+    cbetter(i) = Rcpp::as<arma::umat>(cbetterr[i]);  // umat is used for logical indexing
+    cworse(i) = Rcpp::as<arma::umat>(cworser[i]);  // umat is used for logical indexing
+    sbetter(i) = Rcpp::as<arma::umat>(sbetterr[i]);  // umat is used for logical indexing
+    sworse(i) = Rcpp::as<arma::umat>(sworser[i]);  // umat is used for logical indexing
+    cbetterNA(i) = Rcpp::as<arma::umat>(cbetterNAr[i]);  // umat is used for logical indexing
+    cworseNA(i) = Rcpp::as<arma::umat>(cworseNAr[i]);  // umat is used for logical indexing
+    sbetterNA(i) = Rcpp::as<arma::umat>(sbetterNAr[i]);  // umat is used for logical indexing
+    sworseNA(i) = Rcpp::as<arma::umat>(sworseNAr[i]);  // umat is used for logical indexing
   }    
   
   for(int i=0; i<N; i++){
@@ -262,25 +272,41 @@ List stabit2Sel1(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
                 }  
               }     
             }
-            
+
           } // non-equilibrium vs. equilibrium 
           
-          if(H(t)(i,j) == 0){ // non-equilibrium matches
-            
-            Vhat = arma::as_scalar( C(t).row(M(t)(i,j))*beta ); 
-            Vc(t)(M(t)(i,j)) = truncn2(Vhat, 1.0, Vclowerbar, Vcupperbar); // mu, sigma, lower, upper
-                      
-          } else{ // equilibrium matches
-            
-            if((Vclowerbar != 0) | (Vcupperbar != 0)){
-            
-            sum7 = Y(t)(M(t)(i,j)) - Xmatch(t).row(M(t)(i,j))*alpha - lambda*(Vs(t)(M(t)(i,j)) - Smatch(t).row(M(t)(i,j))*gamma);
-            Vhat = arma::as_scalar( C(t).row(M(t)(i,j))*beta + kappa*sum7/(sigmasquarenu+pow(kappa,2)) );
-            sigmahatsquareV = sigmasquarenu/(sigmasquarenu+pow(kappa,2));
-            Vc(t)(M(t)(i,j)) = truncn2(Vhat, sqrt(sigmahatsquareV), Vclowerbar, Vcupperbar); // mu, sigma, lower, upper
-            
-            }
+          // rank-order-list based bounds
+          if(sworseNA(t)(i,j) == 0){
+            // student j's valuation over the college that j ranks just below college i.
+            Vclowerbar = std::max( Vclowerbar, Vc(t)(M(t)(sworse(t)(i,j),j)) );
           }
+          if(sbetterNA(t)(i,j) == 0){
+            // student j's valuation over the college that j ranks just above college i.
+            Vcupperbar = std::min( Vcupperbar, Vc(t)(M(t)(sbetter(t)(i,j),j)) );
+          }
+          
+          //if(Vclowerbar >= Vcupperbar){
+          //  Rcpp::Rcout << "Iter: " << iter << " . College: " << i << " . Student: " << j << std::endl;
+          //}
+          
+          //if((Vclowerbar != 0) | (Vcupperbar != 0)){
+          if(Vclowerbar < Vcupperbar){
+            
+            if(H(t)(i,j) == 0){ // non-equilibrium matches
+              
+              Vhat = arma::as_scalar( C(t).row(M(t)(i,j))*beta ); 
+              Vc(t)(M(t)(i,j)) = truncn2(Vhat, 1.0, Vclowerbar, Vcupperbar); // mu, sigma, lower, upper
+              
+            } else{ // equilibrium matches
+              
+              sum7 = Y(t)(M(t)(i,j)) - Xmatch(t).row(M(t)(i,j))*alpha - lambda*(Vs(t)(M(t)(i,j)) - Smatch(t).row(M(t)(i,j))*gamma);
+              Vhat = arma::as_scalar( C(t).row(M(t)(i,j))*beta + kappa*sum7/(sigmasquarenu+pow(kappa,2)) );
+              sigmahatsquareV = sigmasquarenu/(sigmasquarenu+pow(kappa,2));
+              Vc(t)(M(t)(i,j)) = truncn2(Vhat, sqrt(sigmahatsquareV), Vclowerbar, Vcupperbar); // mu, sigma, lower, upper
+            }
+          } //else{
+            //Vc(t)(M(t)(i,j)) = 0;
+          //}
           
           // --- Draw of u_i,j: college i's valuation over student j (truncated by equilibrium bounds) ---
           
@@ -292,7 +318,7 @@ List stabit2Sel1(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
               // then students' valuation has to be lower than that of worst student attending the college
               Vsupperbar = std::min( Vsupperbar, arma::min(Vs(t)(M(t)( iuvec,studentIds(L(t)(i)) ))) ); 
             }
-            
+
           } else{  // equilibrium matches
             
             for( int jprime=0; jprime < nStudents(t); jprime++ ){             
@@ -309,24 +335,41 @@ List stabit2Sel1(Rcpp::List Yr, Rcpp::List Xmatchr, Rcpp::List Cr,
             }
             
           } // non-equilibrium vs. equilibrium 
-
-          if(H(t)(i,j) == 0){ // non-equilibrium matches
-            
-            Vhat = arma::as_scalar( S(t).row(M(t)(i,j))*gamma ); 
-            Vs(t)(M(t)(i,j)) = truncn2(Vhat, 1.0, Vslowerbar, Vsupperbar); // mu, sigma, lower, upper
-            
-          } else{
-            
-            if((Vslowerbar != 0) | (Vsupperbar != 0)){
-
-            sum7 = Y(t)(M(t)(i,j)) - Xmatch(t).row(M(t)(i,j))*alpha - kappa*(Vc(t)(M(t)(i,j)) - Cmatch(t).row(M(t)(i,j))*beta);
-            Vhat = arma::as_scalar( S(t).row(M(t)(i,j))*gamma + lambda*sum7/(sigmasquarenu+pow(lambda,2)) );
-            sigmahatsquareV = sigmasquarenu/(sigmasquarenu+pow(lambda,2));  
-            Vs(t)(M(t)(i,j)) = truncn2(Vhat, sqrt(sigmahatsquareV), Vslowerbar, Vsupperbar); // mu, sigma, lower, upper
-            
-            }
+          
+          // rank-order-list based bounds
+          if(cworseNA(t)(i,j) == 0){
+            // college i's valuation over the student that i ranks just below student j.
+            Vslowerbar = std::max( Vslowerbar, Vs(t)(M(t)(i,cworse(t)(i,j))) );
           }
-
+          if(cbetterNA(t)(i,j) == 0){
+            // college i's valuation over the student that i ranks just above student j.
+            Vsupperbar = std::min( Vsupperbar, Vs(t)(M(t)(i,cbetter(t)(i,j))) );
+          }
+          
+          //if(Vslowerbar > Vsupperbar){
+          //  Rcpp::Rcout << "Iter: " << iter << " . College: " << i << " . Student: " << j << std::endl;
+          //}
+          
+          //if((Vslowerbar != 0) | (Vsupperbar != 0)){
+          if(Vslowerbar < Vsupperbar){
+            
+            if(H(t)(i,j) == 0){ // non-equilibrium matches
+              
+              Vhat = arma::as_scalar( S(t).row(M(t)(i,j))*gamma ); 
+              Vs(t)(M(t)(i,j)) = truncn2(Vhat, 1.0, Vslowerbar, Vsupperbar); // mu, sigma, lower, upper
+              
+            } else{
+              
+              sum7 = Y(t)(M(t)(i,j)) - Xmatch(t).row(M(t)(i,j))*alpha - kappa*(Vc(t)(M(t)(i,j)) - Cmatch(t).row(M(t)(i,j))*beta);
+              Vhat = arma::as_scalar( S(t).row(M(t)(i,j))*gamma + lambda*sum7/(sigmasquarenu+pow(lambda,2)) );
+              sigmahatsquareV = sigmasquarenu/(sigmasquarenu+pow(lambda,2));  
+              Vs(t)(M(t)(i,j)) = truncn2(Vhat, sqrt(sigmahatsquareV), Vslowerbar, Vsupperbar); // mu, sigma, lower, upper
+            }
+            
+          } //else{
+            //Vs(t)(M(t)(i,j)) = 0;
+          //}
+           
         } // j = nStudents
       } // i = nColleges
     } // t = T

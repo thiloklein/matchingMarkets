@@ -5,7 +5,7 @@
 \title{Top-Trading-Cycles Algorithm with existing tenants}
 \usage{
 ttc(nStudents = ncol(s.prefs), nHouses = length(houses), s.prefs,
-  houses, priority = NULL, seed = 123)
+  houses, priority = NULL, seed = NULL)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students. Defaults to \code{ncol(s.prefs)}.}
@@ -16,9 +16,9 @@ ttc(nStudents = ncol(s.prefs), nHouses = length(houses), s.prefs,
 
 \item{houses}{vector of length \code{nHouses} which represents the occupation of the houses. Entry in \code{k} contains \code{j} if student \code{j} is living in house \code{k} and \code{NA} if house \code{k} is vacant.}
 
-\item{priority}{(Optional) vector of length \code{nStudents}. Gives the prioirity ordering of the students, if nothing is specified a random ordering is chosen.}
+\item{priority}{(Optional) vector of length \code{nStudents}. Gives the prioirity ordering of the students in the search for cycles (Do not confuse it with the preferences!), if nothing is specified a random ordering is chosen.}
 
-\item{seed}{(Optional) integer setting the state for random number generation. Defaults to seed =123.}
+\item{seed}{(Optional) integer setting the state for random number generation. Defaults to seed = NULL}
 }
 \value{
 \code{ttc} returns a data frame of the matching of students (int) to houses (obj)  for the house allocation problem based on the Top-Trading-Cycles algorithm.
@@ -28,7 +28,7 @@ Implements an algorithm for the
 \href{https://en.wikipedia.org/wiki/Top_trading_cycle}{house allocation problem} proposed by Abdulkadiroglu and Sonmez (1999) for a matching problem in which there are both vacant houses and existing tenants.
 }
 \examples{
-\dontrun{
+##\dontrun{
 ## 1-a. Generate matrix of individuals' preference rankings over objects,
 ## a.k.a. Rank Order Lists (ROL).
 s.prefs <- matrix(c(3,2,4,1,        # ROL of student 1
@@ -62,7 +62,7 @@ priority <- 1:5
 
 ## 2-d. Find assigment
 ttc(s.prefs = s.prefs, houses = houses, priority = priority)
-}
+##}
 }
 \references{
 Abdulkadiroglu, A. and T. Sonmez (1999). House Allocation with Existing Tenants. \emph{Journal of Economic Theory},  88 (2): 233-260.

@@ -1,5 +1,5 @@
 Package: matchingMarkets
-Version: 0.3-6
+Version: 1.0-1
 Depends:
     R (>= 3.0.2)
 Imports:
@@ -19,11 +19,14 @@ VignetteBuilder: knitr
 Title: Analysis of Stable Matchings
 Authors@R: c(person("Thilo", "Klein", role = c("aut", "cre"),
                      email = "thilo@klein.uk"),
+              person("Robert", "Aue", role = "ctb",
+                     email = "robert.aue@zew.de"),
               person("Sven", "Giegerich", role = "ctb",
                      email = "sven.giegerich@mailbox.org"),
               person("Alexander", "Sauer", role = "ctb",
                      email = "sauer.alexander@gmx.de"))
 Author: Thilo Klein [aut, cre],
+  Robert Aue [ctb],
   Sven Giegerich [ctb],
   Alexander Sauer [ctb]
 Maintainer: Thilo Klein <thilo@klein.uk>
@@ -39,5 +42,5 @@ URL: http://matchingMarkets.org,
     http://klein.uk
 BugReports: https://github.com/thiloklein/matchingMarkets/issues
 License: GPL (>= 2)
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Encoding: UTF-8

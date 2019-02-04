@@ -170,7 +170,6 @@ stabit2 <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, outcome=NU
                     binary=FALSE, niter, gPrior=FALSE, 
                     censored=1, thin=1, nCores=max(1,detectCores()-1), ...) UseMethod("stabit2")
 
-
 #' @export
 stabit2.default <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, outcome=NULL, selection,
                             binary=FALSE, niter, gPrior=FALSE, 
@@ -193,6 +192,9 @@ stabit2.default <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, ou
   } else{
     method <- "Sorensen" # single selection equation with equal sharing rule for student and college utility
   }
+  
+  s.prefs <- NULL
+  c.prefs <- NULL
   
   if(!is.data.frame(SEL)){
     SELs <- SEL$SELs
@@ -223,7 +225,9 @@ stabit2.default <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, ou
   
   ## empty lists for results
   Y=list(); Xmatch=list(); C=list(); Cmatch=list(); S=list(); Smatch=list(); D=list(); d=list()
-  M=list(); H=list(); H2=list(); copt.id=vector(); indices=list()
+  M=list(); H=list(); indices=list()
+  c.better=list(); c.worse=list(); s.better=list(); s.worse=list()
+  c.betterNA=list(); c.worseNA=list(); s.betterNA=list(); s.worseNA=list()
   
   for(i in 1:length(OUT)){
     
@@ -233,7 +237,7 @@ stabit2.default <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, ou
     X <- stabit2_inner(iter=i, OUT=OUT[[i]], SEL=SEL[[i]], SELs=SELs[[i]], SELc=SELc[[i]],
                        colleges=colleges, students=students, outcome=outcome, selection=selection,
                        selection.student=selection.student, selection.college=selection.college, 
-                       s.prefs=s.prefs, c.prefs=c.prefs,
+                       s.prefs=s.prefs[[i]], c.prefs=c.prefs[[i]],
                        method=method)
     
     ## continue to write the results per market
@@ -249,134 +253,55 @@ stabit2.default <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, ou
       S[[i]]      <- as.matrix(X$S)
       Smatch[[i]] <- as.matrix(X$Smatch)
       H[[i]]      <- X$H
-      H2[[i]]     <- X$H2
-      copt.id[i]  <- X$copt.id
     } else{
       H[[i]]      <- as.matrix(X$H)
     }
+    c.better[[i]]  <- X$c.better
+    c.worse[[i]]   <- X$c.worse
+    s.better[[i]]  <- X$s.better
+    s.worse[[i]]   <- X$s.worse
+    c.betterNA[[i]]  <- X$c.betterNA
+    c.worseNA[[i]]   <- X$c.worseNA
+    s.betterNA[[i]]  <- X$s.betterNA
+    s.worseNA[[i]]   <- X$s.worseNA
   }
   
   ## some preliminaries
   T <- length(Y); #// Number of markets.
   nColleges <- nStudents <- XXmatch <- CC <- SS <- CCmatch <- SSmatch <- list()
   L <- rep(list(vector()),T)
-  if(method=="Klein" | method=="Klein-selection"){
-    studentIds <- collegeId <- rep(list(matrix()),T)
-  } else{
-    studentIds <- collegeId <- rep(list(vector()),T)
-  }
+  studentIds <- collegeId <- rep(list(vector()),T)
   
   ## further results
   s <- 0
   for(i in 1:T){
-    if(method=="Klein" | method=="Klein-selection"){
-      nColleges[[i]] <- nrow(H[[i]][,,1])
-      nStudents[[i]] <- ncol(H[[i]][,,1])
-    } else{
-      nColleges[[i]] <- nrow(H[[i]])
-      nStudents[[i]] <- ncol(H[[i]])
-    }
+    nColleges[[i]] <- nrow(H[[i]])
+    nStudents[[i]] <- ncol(H[[i]])
     XXmatch[[i]]   <- t(Xmatch[[i]]) %*% Xmatch[[i]]
     CC[[i]]        <- t(C[[i]]) %*% C[[i]]
     CCmatch[[i]]   <- t(Cmatch[[i]]) %*% Cmatch[[i]]
     if(method=="Klein" | method=="Klein-selection"){
       SSmatch[[i]]   <- t(Smatch[[i]]) %*% Smatch[[i]]
       SS[[i]]        <- t(S[[i]]) %*% S[[i]]
-      collegeId[[i]] <- matrix(NA, nrow=nStudents[[i]], ncol=dim(H[[i]])[3]) ##
+      #collegeId[[i]] <- matrix(NA, nrow=nStudents[[i]], ncol=dim(H[[i]])[3]) ##
     }
     
     ## Record the id's of students matched to each college, and the id of the college matched to each student.
     for(j in 1:nColleges[[i]]){
       s <- s+1
       L[[i]][j] <- s - 1
-      if(method=="Klein" | method=="Klein-selection"){
-        studentIds[[s]] <- matrix(NA, nrow=length(which(H[[i]][j,,1] == 1)), ncol=dim(H[[i]])[3])
-        for(k in 1:dim(H[[i]])[3]){
-          studentIds[[s]][,k] <- which(H[[i]][j,,k] == 1) - 1
-        }
-      } else{
-        studentIds[[s]] <- which(H[[i]][j,] == 1) - 1
-      }      
+      studentIds[[s]] <- which(H[[i]][j,] == 1) - 1
     }
     
     for(j in 1:nStudents[[i]]){
-      if(method=="Klein" | method=="Klein-selection"){
-        for(k in 1:dim(H[[i]])[3]){
-          collegeId[[i]][j,k] <- which(H[[i]][,j,k] == 1) - 1
-        }
-      } else{
-        collegeId[[i]][j] <- which(H[[i]][,j] == 1) - 1
-      }      
+      collegeId[[i]][j] <- which(H[[i]][,j] == 1) - 1
     }
   }
   n <- sum(unlist(nStudents)) # total number of students/matches
   N <- sum(unlist(nColleges)) # total number of colleges
-  nEquilibs <- unlist(lapply(H, function(z) dim(z)[3])) # number of equilibria
-  
-  ## ---------------------------------------------------------------------------------------------
-  ## --- 3. Mapping of hospital/residents problem (HR) to related stable marriage problem (SM) ---
-  
-  if(method=="Klein" | method=="Klein-selection"){
-    
-    sopt.id <- 1 ## student-optimal matching is first in lists
-    
-    sopt2equ <- list()
-    for(i in 1:length(H2)){ ## for each market i
-      h <- apply(H2[[i]][,,sopt.id], 2, function(z) which(z==1))
-      sopt2equ[[i]] <- -1 + sapply(1:dim(H2[[i]])[3], function(z){
-        sapply(1:length(h), function(j){
-          which(H2[[i]][h[j],,z]==1)
-        })
-      }) 
-    }
-    
-    copt2equ <- list() ##!!!
-    for(i in 1:length(H2)){
-      h <- apply(H2[[i]][,,copt.id[i]], 2, function(z) which(z==1))
-      copt2equ[[i]] <- -1 + sapply(1:dim(H2[[i]])[3], function(z){
-        sapply(1:length(h), function(j){
-          which(H2[[i]][h[j],,z]==1)
-        })
-      }) 
-    }
-    
-    equ2sopt <- list()
-    for(i in 1:length(H2)){
-      h <- sapply(1:dim(H2[[i]])[3], function(z){
-        apply(H2[[i]][,,z], 2, function(j){
-          which(j==1)
-        })
-      })
-      equ2sopt[[i]] <- -1 + sapply(1:dim(H2[[i]])[3], function(z){
-        sapply(1:nrow(h), function(j){
-          which(H2[[i]][h[j,z],,sopt.id]==1)
-        })
-      }) 
-    }
-    
-    equ2copt <- list() ##!!!
-    for(i in 1:length(H2)){
-      h <- sapply(1:dim(H2[[i]])[3], function(z){
-        apply(H2[[i]][,,z], 2, function(j){
-          which(j==1)
-        })
-      })
-      equ2copt[[i]] <- -1 + sapply(1:dim(H2[[i]])[3], function(z){
-        sapply(1:nrow(h), function(j){
-          which(H2[[i]][h[j,z],,copt.id[i]]==1)
-        })
-      }) 
-    }
-  }
-  
-  ## drop unused objects
-  rm(H2)
-  
-  ## adjust index for college-optimal matching for C++
-  copt.id <- copt.id -1
   
   ## ----------------------------
-  ## --- 4. Run Gibbs sampler ---
+  ## --- 3. Run Gibbs sampler ---
   
   #save.image("~/Desktop/play.RData")
   #load("~/Desktop/play.RData")
@@ -401,19 +326,46 @@ stabit2.default <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, ou
     cl <- makeCluster(nCores) 
     clusterEvalQ(cl, library(matchingMarkets))
     
-    if(method == "Klein"){
+    if(method == "Klein" & (!is.null(s.prefs) & !is.null(c.prefs)) ){
       
-      ## to avoid 
+      ## split 
       parObject <- lapply(1:nCores, function(i){
         list(Y=Y[Ts[[i]]], Xmatch=Xmatch[Ts[[i]]], C=C[Ts[[i]]], Cmatch=Cmatch[Ts[[i]]], 
         S=S[Ts[[i]]], Smatch=Smatch[Ts[[i]]], D=D[Ts[[i]]], d=d[Ts[[i]]], M=M[Ts[[i]]], 
         H=H[Ts[[i]]], nColleges=unlist(nColleges[Ts[[i]]]), nStudents=unlist(nStudents[Ts[[i]]]), 
         XXmatch=XXmatch[Ts[[i]]], CC=CC[Ts[[i]]], SS=SS[Ts[[i]]], SSmatch=SSmatch[Ts[[i]]], 
         CCmatch=CCmatch[Ts[[i]]], L=L[Ts[[i]]], studentIds=studentIds[Ns[[i]]], 
-        collegeId=collegeId[Ts[[i]]], nEquilibs=nEquilibs[Ts[[i]]], equ2sopt=equ2sopt[Ts[[i]]], 
-        sopt2equ=sopt2equ[Ts[[i]]], equ2copt=equ2copt[Ts[[i]]], copt2equ=copt2equ[Ts[[i]]], 
-        coptid=copt.id[Ts[[i]]], n=sum(unlist(nStudents[Ts[[i]]])), N=sum(unlist(nColleges[Ts[[i]]])), 
-        binary=binary, niter=niter, thin=thin, T=length(Ts[[i]]), censored=censored)
+        collegeId=collegeId[Ts[[i]]], n=sum(unlist(nStudents[Ts[[i]]])), N=sum(unlist(nColleges[Ts[[i]]])), 
+        binary=binary, niter=niter, thin=thin, T=length(Ts[[i]]), censored=censored,
+        c.better=c.better[Ts[[i]]], c.worse=c.worse[Ts[[i]]], s.better=s.better[Ts[[i]]], s.worse=s.worse[Ts[[i]]],
+        c.betterNA=c.betterNA[Ts[[i]]], c.worseNA=c.worseNA[Ts[[i]]], s.betterNA=s.betterNA[Ts[[i]]], s.worseNA=s.worseNA[Ts[[i]]])
+      })
+      
+      cat(paste("Running parallel Gibbs sampler on", nCores, "cores...", sep=" "))
+      res <- parLapply(cl, parObject, function(d){
+        
+        with(d, stabit2Sel0(Yr=Y, Xmatchr=Xmatch, Cr=C, Cmatchr=Cmatch, 
+                            Sr=S, Smatchr=Smatch, Dr=D, dr=d, Mr=M, 
+                            Hr=H, nCollegesr=nColleges, nStudentsr=nStudents, 
+                            XXmatchr=XXmatch, CCr=CC, SSr=SS, SSmatchr=SSmatch, 
+                            CCmatchr=CCmatch, Lr=L, studentIdsr=studentIds, 
+                            collegeIdr=collegeId, n=n, N=N, 
+                            binary=binary, niter=niter, thin=thin, T=T, censored=censored,
+                            cbetterr=c.better, cworser=c.worse, sbetterr=s.better, sworser=s.worse,
+                            cbetterNAr=c.betterNA, cworseNAr=c.worseNA, sbetterNAr=s.betterNA, sworseNAr=s.worseNA))
+      })
+      
+    } else if(method == "Klein" & (is.null(s.prefs) | is.null(c.prefs)) ){
+      
+      ## split 
+      parObject <- lapply(1:nCores, function(i){
+        list(Y=Y[Ts[[i]]], Xmatch=Xmatch[Ts[[i]]], C=C[Ts[[i]]], Cmatch=Cmatch[Ts[[i]]], 
+             S=S[Ts[[i]]], Smatch=Smatch[Ts[[i]]], D=D[Ts[[i]]], d=d[Ts[[i]]], M=M[Ts[[i]]], 
+             H=H[Ts[[i]]], nColleges=unlist(nColleges[Ts[[i]]]), nStudents=unlist(nStudents[Ts[[i]]]), 
+             XXmatch=XXmatch[Ts[[i]]], CC=CC[Ts[[i]]], SS=SS[Ts[[i]]], SSmatch=SSmatch[Ts[[i]]], 
+             CCmatch=CCmatch[Ts[[i]]], L=L[Ts[[i]]], studentIds=studentIds[Ns[[i]]], 
+             collegeId=collegeId[Ts[[i]]], n=sum(unlist(nStudents[Ts[[i]]])), N=sum(unlist(nColleges[Ts[[i]]])), 
+             binary=binary, niter=niter, thin=thin, T=length(Ts[[i]]), censored=censored)
       })
       
       cat(paste("Running parallel Gibbs sampler on", nCores, "cores...", sep=" "))
@@ -424,23 +376,46 @@ stabit2.default <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, ou
                             Hr=H, nCollegesr=nColleges, nStudentsr=nStudents, 
                             XXmatchr=XXmatch, CCr=CC, SSr=SS, SSmatchr=SSmatch, 
                             CCmatchr=CCmatch, Lr=L, studentIdsr=studentIds, 
-                            collegeIdr=collegeId, nEquilibsr=nEquilibs, equ2soptr=equ2sopt, 
-                            sopt2equr=sopt2equ, equ2coptr=equ2copt, copt2equr=copt2equ, 
-                            coptidr=coptid, n=n, N=N, 
+                            collegeIdr=collegeId, n=n, N=N, 
                             binary=binary, niter=niter, thin=thin, T=T, censored=censored))
       })
       
-    } else if(method == "Klein-selection"){
+    } else if(method == "Klein-selection" & (!is.null(s.prefs) & !is.null(c.prefs)) ){
       
-      ## to avoid 
+      ## split
       parObject <- lapply(1:nCores, function(i){
         list(C=C[Ts[[i]]], Cmatch=Cmatch[Ts[[i]]], S=S[Ts[[i]]], Smatch=Smatch[Ts[[i]]], D=D[Ts[[i]]], 
              d=d[Ts[[i]]], M=M[Ts[[i]]], H=H[Ts[[i]]], nColleges=unlist(nColleges[Ts[[i]]]), 
              nStudents=unlist(nStudents[Ts[[i]]]), CC=CC[Ts[[i]]], SS=SS[Ts[[i]]], 
              SSmatch=SSmatch[Ts[[i]]], CCmatch=CCmatch[Ts[[i]]], L=L[Ts[[i]]], 
-             studentIds=studentIds[Ns[[i]]], collegeId=collegeId[Ts[[i]]], nEquilibs=nEquilibs[Ts[[i]]],
-             equ2sopt=equ2sopt[Ts[[i]]], sopt2equ=sopt2equ[Ts[[i]]], equ2copt=equ2copt[Ts[[i]]], 
-             copt2equ=copt2equ[Ts[[i]]], coptid=copt.id[Ts[[i]]], n=sum(unlist(nStudents[Ts[[i]]])), 
+             studentIds=studentIds[Ns[[i]]], collegeId=collegeId[Ts[[i]]], n=sum(unlist(nStudents[Ts[[i]]])), 
+             N=sum(unlist(nColleges[Ts[[i]]])), niter=niter, thin=thin, T=length(Ts[[i]]),
+             c.better=c.better[Ts[[i]]], c.worse=c.worse[Ts[[i]]], s.better=s.better[Ts[[i]]], s.worse=s.worse[Ts[[i]]],
+             c.betterNA=c.betterNA[Ts[[i]]], c.worseNA=c.worseNA[Ts[[i]]], s.betterNA=s.betterNA[Ts[[i]]], s.worseNA=s.worseNA[Ts[[i]]])
+      })
+      
+      cat(paste("Running parallel Gibbs sampler on", nCores, "cores...", sep=" "))
+      res <- parLapply(cl, parObject, function(d){  
+        
+        with(d, stabit2Mat0(Cr=C, Cmatchr=Cmatch, Sr=S, Smatchr=Smatch, Dr=D, 
+                            dr=d, Mr=M, Hr=H, nCollegesr=nColleges, 
+                            nStudentsr=nStudents, CCr=CC, SSr=SS, 
+                            SSmatchr=SSmatch, CCmatchr=CCmatch, Lr=L, 
+                            studentIdsr=studentIds, collegeIdr=collegeId, n=n, 
+                            N=N, niter=niter, thin=thin, T=T,
+                            cbetterr=c.better, cworser=c.worse, sbetterr=s.better, sworser=s.worse,
+                            cbetterNAr=c.betterNA, cworseNAr=c.worseNA, sbetterNAr=s.betterNA, sworseNAr=s.worseNA))
+      })
+
+    } else if(method == "Klein-selection" & (is.null(s.prefs) | is.null(c.prefs)) ){
+      
+      ## split
+      parObject <- lapply(1:nCores, function(i){
+        list(C=C[Ts[[i]]], Cmatch=Cmatch[Ts[[i]]], S=S[Ts[[i]]], Smatch=Smatch[Ts[[i]]], D=D[Ts[[i]]], 
+             d=d[Ts[[i]]], M=M[Ts[[i]]], H=H[Ts[[i]]], nColleges=unlist(nColleges[Ts[[i]]]), 
+             nStudents=unlist(nStudents[Ts[[i]]]), CC=CC[Ts[[i]]], SS=SS[Ts[[i]]], 
+             SSmatch=SSmatch[Ts[[i]]], CCmatch=CCmatch[Ts[[i]]], L=L[Ts[[i]]], 
+             studentIds=studentIds[Ns[[i]]], collegeId=collegeId[Ts[[i]]], n=sum(unlist(nStudents[Ts[[i]]])), 
              N=sum(unlist(nColleges[Ts[[i]]])), niter=niter, thin=thin, T=length(Ts[[i]]))
       })
       
@@ -451,15 +426,13 @@ stabit2.default <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, ou
                             dr=d, Mr=M, Hr=H, nCollegesr=nColleges, 
                             nStudentsr=nStudents, CCr=CC, SSr=SS, 
                             SSmatchr=SSmatch, CCmatchr=CCmatch, Lr=L, 
-                            studentIdsr=studentIds, collegeIdr=collegeId, nEquilibsr=nEquilibs,
-                            equ2soptr=equ2sopt, sopt2equr=sopt2equ, equ2coptr=equ2copt, 
-                            copt2equr=copt2equ, coptidr=coptid, n=n, 
+                            studentIdsr=studentIds, collegeIdr=collegeId, n=n, 
                             N=N, niter=niter, thin=thin, T=T))
       })
-      
+            
     } else if(method == "Sorensen"){
 
-      ## to avoid 
+      ## split
       parObject <- lapply(1:nCores, function(i){
         list(Y=Y[Ts[[i]]], Xmatch=Xmatch[Ts[[i]]], C=C[Ts[[i]]], Cmatch=Cmatch[Ts[[i]]], 
              D=D[Ts[[i]]], d=d[Ts[[i]]], M=M[Ts[[i]]], H=H[Ts[[i]]], 
@@ -515,23 +488,39 @@ stabit2.default <- function(OUT=NULL, SEL=NULL, colleges=NULL, students=NULL, ou
     #Ts <- 1:T
     #Ns <- 1:N  
     
-    if(method=="Klein"){
+    if(method=="Klein" & !is.null(s.prefs) & !is.null(c.prefs) ){
+      
+      est <- stabit2Sel0(Yr=Y, Xmatchr=Xmatch, Cr=C, Cmatchr=Cmatch, Sr=S, Smatchr=Smatch, Dr=D, dr=d,
+                         Mr=M, Hr=H, nCollegesr=unlist(nColleges), nStudentsr=unlist(nStudents), XXmatchr=XXmatch, 
+                         CCr=CC, SSr=SS, SSmatchr=SSmatch, CCmatchr=CCmatch, Lr=L,
+                         studentIdsr=studentIds, collegeIdr=collegeId, n=n, N=N, binary=binary, niter=niter, 
+                         thin=thin, T=T, censored=censored,
+                         cbetterr=c.better, cworser=c.worse, sbetterr=s.better, sworser=s.worse,
+                         cbetterNAr=c.betterNA, cworseNAr=c.worseNA, sbetterNAr=s.betterNA, sworseNAr=s.worseNA)
+      
+    } else if(method=="Klein" & (is.null(s.prefs) | is.null(c.prefs)) ){
       
       est <- stabit2Sel1(Yr=Y, Xmatchr=Xmatch, Cr=C, Cmatchr=Cmatch, Sr=S, Smatchr=Smatch, Dr=D, dr=d,
                          Mr=M, Hr=H, nCollegesr=unlist(nColleges), nStudentsr=unlist(nStudents), XXmatchr=XXmatch, 
                          CCr=CC, SSr=SS, SSmatchr=SSmatch, CCmatchr=CCmatch, Lr=L,
-                         studentIdsr=studentIds, collegeIdr=collegeId, nEquilibsr=nEquilibs,
-                         equ2soptr=equ2sopt, sopt2equr=sopt2equ, equ2coptr=equ2copt, copt2equr=copt2equ,
-                         coptidr=copt.id, n=n, N=N, binary=binary, niter=niter, thin=thin, T=T, censored=censored)
+                         studentIdsr=studentIds, collegeIdr=collegeId, n=n, N=N, binary=binary, niter=niter, 
+                         thin=thin, T=T, censored=censored)
       
-    } else if(method=="Klein-selection"){
+    } else if(method=="Klein-selection" & !is.null(s.prefs) & !is.null(c.prefs) ){
+      
+      est <- stabit2Mat0(Cr=C, Cmatchr=Cmatch, Sr=S, Smatchr=Smatch, Dr=D, dr=d,
+                         Mr=M, Hr=H, nCollegesr=unlist(nColleges), nStudentsr=unlist(nStudents),
+                         CCr=CC, SSr=SS, SSmatchr=SSmatch, CCmatchr=CCmatch, Lr=L,
+                         studentIdsr=studentIds, collegeIdr=collegeId, n=n, N=N, niter=niter, thin=thin, T=T,
+                         cbetterr=c.better, cworser=c.worse, sbetterr=s.better, sworser=s.worse,
+                         cbetterNAr=c.betterNA, cworseNAr=c.worseNA, sbetterNAr=s.betterNA, sworseNAr=s.worseNA)
+
+    } else if(method=="Klein-selection" & (is.null(s.prefs) | is.null(c.prefs)) ){
       
       est <- stabit2Mat1(Cr=C, Cmatchr=Cmatch, Sr=S, Smatchr=Smatch, Dr=D, dr=d,
                          Mr=M, Hr=H, nCollegesr=unlist(nColleges), nStudentsr=unlist(nStudents),
                          CCr=CC, SSr=SS, SSmatchr=SSmatch, CCmatchr=CCmatch, Lr=L,
-                         studentIdsr=studentIds, collegeIdr=collegeId, nEquilibsr=nEquilibs,
-                         equ2soptr=equ2sopt, sopt2equr=sopt2equ, equ2coptr=equ2copt, copt2equr=copt2equ,
-                         coptidr=copt.id, n=n, N=N, niter=niter, thin=thin, T=T)
+                         studentIdsr=studentIds, collegeIdr=collegeId, n=n, N=N, niter=niter, thin=thin, T=T)
       
     } else if(method=="Sorensen"){
       
@@ -847,55 +836,83 @@ stabit2_inner <- function(iter, OUT, SEL, SELs, SELc, colleges, students,
   ind.org <- ind.new[order(ind.new$c.id,ind.new$s.id),]
   M <- matrix(ind.org$index, nrow=length(uColleges), ncol=length(uStudents), byrow=TRUE)
   H <- matrix(ind.org$D, nrow=length(uColleges), ncol=length(uStudents), byrow=TRUE)  
+
+  ## -----------------------------------------------------------------------------------------
+  ## --- 3. Create upper/lower bounds on latent match valuations based on rank order lists ---
   
-  if(method == "Klein" | method=="Klein-selection"){
+  if(!is.null(s.prefs) & !is.null(c.prefs)){
     
-    if(is.null(s.prefs) | is.null(c.prefs)){
+    cprefs_better <- rbind(NA, c.prefs[-dim(c.prefs)[1],])
+    cprefs_worse  <- rbind(c.prefs[-1,], NA)
+    
+    sprefs_better <- rbind(NA, s.prefs[-dim(s.prefs)[1],])
+    sprefs_worse  <- rbind(s.prefs[-1,], NA)
+    
+    mapper <- function(clmn, direction, perspective){
       
-      H <- array(H, dim=c(dim(H), 1))
-      copt.id = 1
+      ## clmn       : column in rank order list (cprefs/sprefs)
+      ## direction  : worse or better
+      ## perspective: student or college perspective
       
-    } else{
-      
-      ## preference inputs
-      s.prefs <- s.prefs[[iter]]
-      c.prefs <- c.prefs[[iter]]
-      nSlots <- rowSums(H)
-      
-      ## find all stable matchings
-      res <- hri(s.prefs=s.prefs, c.prefs=c.prefs, nSlots=nSlots)$matchings
-      res$college <- as.integer(res$college)
-      res$student <- as.integer(res$student)
-      res$slots   <- as.integer(res$slots)
-      copt.id <- unique(res$matching[res$cOptimal==1]) # college-optimal matching
-      res <- split(res, as.factor(res$matching))
-      
-      ## create adjacency matrices for all equilibrium matchings
-      myfun <- function(x, type){
-        H <- array(0, dim=c(length(unique(x[[1]][,type])), nrow(x[[1]]), length(x)))
-        for(j in 1:length(x)){
-          for(z in 1:nrow(x[[1]])){
-            H[x[[j]][z,type], x[[j]][z,"student"], j] <- 1
-          }
-        }
-        return(H)
-      }
-      H1 <- myfun(x=res, type="college"); names(H1) <- NULL # college admissions problem
-      H2 <- myfun(x=res, type="slots"); names(H2) <- NULL # related stable marriage problem
-      
-      ## consistency check
-      if( length( table(c(H) == c(H1[,,1]))) > 1 ){
-        stop(paste("Data provided is not the student-optimal matching obtained from the 
-                 preference lists in market ", iter, ".", sep=""))
-      } else{
-        H <- H1 # replace matrix for student-optimal matching (H) with all matchings (H1)
-        rm(H1)
-      }
+      if(perspective == "college"){
+        
+        ## creates lookup matrix c.better (c.worse) of dimension CxS such that cell (c,s) gives
+        ## student that college c ranks just above (below) student s.
+        
+        if(direction == "worse"){
+
+          h <- merge(x=data.frame(x=1:max(uStudents)), 
+                     y=data.frame(cbind(x=c.prefs[,clmn], y=cprefs_worse[,clmn])), 
+                     by="x", all.x=TRUE); h[order(h$x),"y"]
+        } else{ ## "better"
+
+          h <- merge(x=data.frame(x=1:max(uStudents)), 
+                     y=data.frame(cbind(x=c.prefs[,clmn], y=cprefs_better[,clmn])), 
+                     by="x", all.x=TRUE); h[order(h$x),"y"]
+          
+        } ## end direction
+        
+      } else{ ## "student"
+        
+        ## creates lookup matrix s.better (s.worse) of dimension CxS such that cell (c,s) gives
+        ## college that student s ranks just above (below) college c.
+        
+        if(direction == "worse"){
+
+          h <- merge(x=data.frame(x=1:max(uColleges)), 
+                     y=data.frame(cbind(x=s.prefs[,clmn], y=sprefs_worse[,clmn])), 
+                     by="x", all.x=TRUE); h[order(h$x),"y"]
+        } else{ ## "better"
+          
+          h <- merge(x=data.frame(x=1:max(uColleges)), 
+                     y=data.frame(cbind(x=s.prefs[,clmn], y=sprefs_better[,clmn])), 
+                     by="x", all.x=TRUE); h[order(h$x),"y"]
+        } ## end direction
+      } ## end perspective
     }
+    
+    c.worse    <- t(sapply(1:ncol(c.prefs), function(x) mapper(clmn=x, direction="worse", perspective="college"))) -1
+    c.better   <- t(sapply(1:ncol(c.prefs), function(x) mapper(clmn=x, direction="better", perspective="college"))) -1
+    c.worseNA  <- c.worse;  c.worseNA[!is.na(c.worseNA)]   <- 0; c.worseNA[is.na(c.worseNA)]   <- 1
+    c.betterNA <- c.better; c.betterNA[!is.na(c.betterNA)] <- 0; c.betterNA[is.na(c.betterNA)] <- 1
+    c.worse[is.na(c.worse)] <- 0
+    c.better[is.na(c.better)] <- 0
+    
+    s.worse    <- sapply(1:ncol(s.prefs), function(x) mapper(clmn=x, direction="worse", perspective="student")) -1
+    s.better   <- sapply(1:ncol(s.prefs), function(x) mapper(clmn=x, direction="better", perspective="student")) -1
+    s.worseNA  <- s.worse;  s.worseNA[!is.na(s.worseNA)]   <- 0; s.worseNA[is.na(s.worseNA)]   <- 1
+    s.betterNA <- s.better; s.betterNA[!is.na(s.betterNA)] <- 0; s.betterNA[is.na(s.betterNA)] <- 1
+    s.worse[is.na(s.worse)] <- 0
+    s.better[is.na(s.better)] <- 0
+    
+  } else{
+    
+    s.better <- NULL; c.better <- NULL; s.worse <- NULL; c.worse <- NULL
+    s.betterNA <- NULL; c.betterNA <- NULL; s.worseNA <- NULL; c.worseNA <- NULL
   }
   
   ## ---------------------------------------------------------------------
-  ## --- 3. Produce the datasets to be used based on formulas provided ---
+  ## --- 4. Produce the datasets to be used based on formulas provided ---
   
   if(is.null(SEL) & is.null(SELs) & is.null(SELc)){
     
@@ -944,12 +961,14 @@ stabit2_inner <- function(iter, OUT, SEL, SELs, SELc, colleges, students,
   d <- which(D==1)
   
   ## -----------------------------
-  ## --- 4. Return the results ---
+  ## --- 5. Return the results ---
   
   if(method=="Klein" | method=="Klein-selection"){
     
     return( list(Y=Xmatch[,1], Xmatch=Xmatch[,-1], C=C, Cmatch=C[D==1,], S=S, Smatch=S[D==1,], 
-                 D=D, d=d, M=M, H=H, H2=H2, copt.id=copt.id, indices=indices$id) )
+                 D=D, d=d, M=M, H=H, indices=indices$id, 
+                 c.better=c.better, c.worse=c.worse, s.better=s.better, s.worse=s.worse,
+                 s.betterNA=s.betterNA, c.betterNA=c.betterNA, s.worseNA=s.worseNA, c.worseNA=c.worseNA) )
     
   } else if(method=="Sorensen"){
     

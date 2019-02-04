@@ -35,7 +35,7 @@ install.packages("matchingMarkets", repos="http://R-Forge.R-project.org")
 library(matchingMarkets)
 ```
 
-Java Note 1: If you get a Java error such as `JAVA_HOME cannot be determined from the Registry`, this can be resolved by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See [this post](https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/) and download the Java version from the [Oracle website](http://www.java.com/en/download/manual.jsp).
+Java Note 1: If you get a Java error such as `JAVA_HOME cannot be determined from the Registry`, this can be resolved by either running `install.packages()` with the `INSTALL_opts = "--no-multiarch"` argument or by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See [this post](https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/) and download the Java version from the [Oracle website](http://www.java.com/en/download/manual.jsp).
 
 Java Note 2: If the installation of the dependent `rJava` package fails with [configuration failed for package ‘rJava’](https://stackoverflow.com/questions/3311940/r-rjava-package-install-failing), this can be fixed in Linux by `$ sudo apt-get install r-cran-rjava`.
 
@@ -69,5 +69,5 @@ and algorithms that can be used to simulate matching data:
 
 * `ttcc`: Top-Trading-Cycles and Chains Algorithm for the kidney exchange problem. 
 
-Functions `hri` and `sri` are based on Patrick Prosser's n-ary [constraint encoding](http://www.dcs.gla.ac.uk/~pat/roommates/distribution/papers/cpaior2014.pdf) model. They allow for *incomplete preference lists* (some agents find certain agents unacceptable) and *unbalanced instances* (unequal number of agents on both sides).  
+Functions `hri` and `sri` are based on Patrick Prosser's n-ary [constraint encoding](https://arxiv.org/abs/1308.0183) model. They allow for *incomplete preference lists* (some agents find certain agents unacceptable) and *unbalanced instances* (unequal number of agents on both sides).  
 

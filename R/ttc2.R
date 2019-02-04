@@ -12,8 +12,8 @@
 #' @param s.prefs matrix of dimension \code{nColleges} x \code{nStudents} with the jth column containing student j's ranking over colleges in decreasing order of preference (i.e. most preferred first).
 #' @param c.prefs matrix of dimension \code{nStudents} x \code{nColleges} with the ith column containing college i's ranking over students in decreasing order of preference (i.e. most preferred first).
 #' @param nSlots vector of length \code{nColleges} indicating the number of places (i.e. quota) of each college.
-#' @param priority (Optional) vector of length \code{nStudents}. Gives the prioirity ordering of the students, if nothing is specified a random ordering is chosen.
-#' @param seed (Optional) integer setting the state for random number generation. Defaults to seed =123.
+#' @param priority (Optional) vector of length \code{nStudents}. Gives the prioirity ordering of the students in the search for cycles (Do not confuse it with the preferences!), if nothing is specified a random ordering is chosen.
+#' @param seed (Optional) integer setting the state for random number generation. Defaults to seed = NULL
 #' @param full_return (Optinal) If \code{TRUE} the return value is a list with the matching, the remaining seats and the unmatchable students is returned. Defaults to \code{FALSE} and only the matching is returned.
 #'
 #' @export
@@ -23,7 +23,7 @@
 #' @keywords algorithms
 #' @references Abdulkadiroglu, A. and T. Sonmez (2003). School Choice: A Mechanism Design Approach. \emph{American Economic Review}, 93 (3): 729-747.
 #' @examples
-#' \dontrun{
+#' ##\dontrun{
 #' ## 1-a. Compare example from the Abdulkadiroglu et al. (2003) (in the Appendix, page 742-744)
 #' ## 1-b. Generate matrix of students' preference rankings over schools, a.k.a. Rank Order Lists (ROL)
 #' s.prefs <- matrix(c(
@@ -77,13 +77,13 @@
 #' match_ttc <- ttc2(s.prefs = s.prefs, c.prefs = c.prefs, nSlots = nSlots); match_ttc
 #' match_sd <- rsd(prefs = s.prefs, priority = priority, nSlots = nSlots); match_sd
 #' all(match_ttc == match_sd)
-#' }
+#' ##}
 
-ttc2 <- function( nStudents = ncol(s.prefs), nColleges = ncol(c.prefs), s.prefs = NULL,  c.prefs = NULL,nSlots = NULL, priority = NULL , seed = 123, full_return = FALSE){
-
+ttc2 <- function( nStudents = ncol(s.prefs), nColleges = ncol(c.prefs), s.prefs = NULL,  c.prefs = NULL,nSlots = NULL, priority = NULL , seed = NULL, full_return = FALSE){
+  
   ## To Do
   ## Slots in find_cycle aktualisieren?
-
+  
   # Check priority
   if(missing(priority)){
     set.seed(seed)
@@ -96,23 +96,23 @@ ttc2 <- function( nStudents = ncol(s.prefs), nColleges = ncol(c.prefs), s.prefs 
   if(!(length(nSlots) == nColleges && nrow(c.prefs == ncol(s.prefs) ))){
     stop('Dimensions of nSlots and/or preference matrices do not match!')
   }
-
-
+  
+  
   # Start matching:
   matched_stud = rep(FALSE, nStudents)
   unmatchable_stud = c()
   Res <- data.frame('ind' = NULL, 'obj' = NULL)
-
+  
   # Loop as long as there is an unmatched student
   while(!all(matched_stud)){
-
+    
     if(all(nSlots <= 0)){
       print('Not enough capacity!')
       break
     }
     # Find Cycle
     Cycle <- find_cycle_two_side(s.prefs = s.prefs, c.prefs = c.prefs, matched_stud = matched_stud, nSlots = nSlots, priority = priority)
-
+    
     # Check if find_cyle returned that there was an individual which could not be matched: In this case find_cycle_two_side returns the index of the unmatchable stud
     if(is.numeric(Cycle)){
       # Cycle is the index of the student that was not matchable
@@ -124,25 +124,25 @@ ttc2 <- function( nStudents = ncol(s.prefs), nColleges = ncol(c.prefs), s.prefs 
     }
     # Update Matching
     Res <- rbind(Res, Cycle)
-
+    
     # Update Capacity and matched students
     nSlots[Cycle[,2]] <- nSlots[Cycle[,2]] -1
     matched_stud[Cycle[,1]] <- TRUE
   }
-
+  
   if(length(unmatchable_stud) > 0){
     print('It was not possible to match the following student(s) according to their preference rankings:')
     print(unmatchable_stud)
   }
-
+  
   match_return <- Res[order(Res$ind),]
   rownames(match_return) <- NULL
-
+  
   if(full_return){
     output <- list('matching' = match_return, 'nSlots' = nSlots, 'unmatchable_students' = unmatchable_stud )
     return(output)
   }
-
+  
   return(match_return)
 }
 
@@ -153,43 +153,43 @@ find_cycle_two_side <-function(s.prefs = NULL, c.prefs = NULL, matched_stud = NU
   # Returns data frame with Cycle of Students and schools OR a numeric indicating the student which could not be matched
   #####
   current_slots <- nSlots
-
+  
   Cycle <- data.frame('ind' = NA, 'obj' = NA)
   this_ind_prior_index <- match(FALSE, matched_stud[priority]) # First Student that still has to be matched in order of the given priority
   this_ind <- priority[this_ind_prior_index]
-
+  
   if(is.na(this_ind)){
     stop('All students are matched!')
   }
-
-  for(j in 1:dim(s.prefs)[1]){
-
+  
+  for(j in 1:dim(s.prefs)[2]){
+    
     # Find college with the highest preference ranking that still has capacitie
     index_wanted_school <- match(TRUE, nSlots[s.prefs[,this_ind]]>= 1) # Order the nSlots-vector by the preferences of this ind and take the first instance with free capacity
     #index_wanted_school <- match(TRUE, current_slots[s.prefs[,this_ind]]>= 1) # Order the current_Slots-vector by the preferences of this ind and take the first instance with free capacity
     wanted_school = s.prefs[,this_ind][index_wanted_school]
-
+    
     # If index_wanted_school is NA, then there was no school ranked by the current individual that still has capacities
     if(is.na(index_wanted_school)){
       return(this_ind)
     }
-
+    
     Cycle[j,] <- c(this_ind, wanted_school)
-
+    
     # Adjust slots
     current_slots[wanted_school] <- current_slots[wanted_school] - 1
-
+    
     # Find student with highest priority that is not already matched
     index_wanted_stud <- match(FALSE, matched_stud[c.prefs[,wanted_school]])
     this_ind <- c.prefs[,wanted_school][index_wanted_stud]
-
+    
     # Suppose a student points to a college that still has capacities but does not rank any more students.
     # Then we assume that the college is indifferent over all other students. Therefore we can assume that it points to the first
     # individual in the cycle and the cycle is therefore closed:
     if(is.na(index_wanted_stud)){
       return(Cycle)
     }
-
+    
     if(this_ind %in% Cycle$ind){
       h <- which(this_ind == Cycle$ind)
       ##########
@@ -200,4 +200,3 @@ find_cycle_two_side <-function(s.prefs = NULL, c.prefs = NULL, matched_stud = NU
     }
   }
 }
-

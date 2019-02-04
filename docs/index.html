@@ -6,10 +6,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Analysis of Stable Matchings • matchingMarkets</title>
-<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Analysis of Stable Matchings">
 <meta property="og:description" content="Implements structural estimators to correct for
     the sample selection bias from observed outcomes in matching
@@ -20,7 +19,7 @@
     problem, the college admissions problem, and the house
     allocation problem.">
 <meta name="twitter:card" content="summary">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -38,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">matchingMarkets</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
       </span>
     </div>
 
@@ -68,7 +67,7 @@
       
       </header><div class="row">
   <div class="contents col-md-9">
-    <div id="matchingmarkets-analysis-of-stable-matchings-in-r" class="section level1">
+<div id="matchingmarkets-analysis-of-stable-matchings-in-r" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#matchingmarkets-analysis-of-stable-matchings-in-r" class="anchor"></a>matchingMarkets: Analysis of Stable Matchings in R</h1></div>
 <div id="documentation" class="section level2">
@@ -81,17 +80,17 @@
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>Get started by installing the <a href="https://www.r-project.org/">R software</a> for statistical computing.</p>
 <p>To get the latest <em>stable version</em> of the package from <a href="https://cran.r-project.org/package=matchingMarkets">CRAN</a>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"matchingMarkets"</span>)
-<span class="kw">library</span>(matchingMarkets)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"matchingMarkets"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(matchingMarkets)</code></pre></div>
 <p>Under Linux, the dependency package <code>gmp</code> requires that you have GNU MP (&gt; 4.1.4) installed: <code>$ sudo apt-get install libgmp-dev</code>. See <a href="http://gmplib.org" class="uri">http://gmplib.org</a>.</p>
 <p>To get the most recent <em>development version</em> from <a href="https://github.com/thiloklein/matchingMarkets">GitHub</a>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"devtools"</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"devtools"</span>)
 devtools::<span class="kw">install_github</span>(<span class="st">"thiloklein/matchingMarkets"</span>)
-<span class="kw">library</span>(matchingMarkets)</code></pre></div>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(matchingMarkets)</code></pre></div>
 <p>or from <a href="https://r-forge.r-project.org/R/?group_id=1906">R-Forge</a>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"matchingMarkets"</span>, <span class="dt">repos=</span><span class="st">"http://R-Forge.R-project.org"</span>)
-<span class="kw">library</span>(matchingMarkets)</code></pre></div>
-<p>Java Note 1: If you get a Java error such as <code>JAVA_HOME cannot be determined from the Registry</code>, this can be resolved by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See <a href="https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/">this post</a> and download the Java version from the <a href="http://www.java.com/en/download/manual.jsp">Oracle website</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"matchingMarkets"</span>, <span class="dt">repos=</span><span class="st">"http://R-Forge.R-project.org"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(matchingMarkets)</code></pre></div>
+<p>Java Note 1: If you get a Java error such as <code>JAVA_HOME cannot be determined from the Registry</code>, this can be resolved by either running <code><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages()</a></code> with the <code>INSTALL_opts = "--no-multiarch"</code> argument or by installing a Java version (i.e. 64-bit Java or 32-bit Java) that fits to the type of R version that you are using (i.e. 64-bit R or 32-bit R). This problem can easily effect Windows 7 users, since they might have installed a version of Java that is different than the version of R they are using. See <a href="https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/">this post</a> and download the Java version from the <a href="http://www.java.com/en/download/manual.jsp">Oracle website</a>.</p>
 <p>Java Note 2: If the installation of the dependent <code>rJava</code> package fails with <a href="https://stackoverflow.com/questions/3311940/r-rjava-package-install-failing">configuration failed for package ‘rJava’</a>, this can be fixed in Linux by <code>$ sudo apt-get install r-cran-rjava</code>.</p>
 </div>
 <div id="functions" class="section level2">
@@ -114,12 +113,12 @@ devtools::<span class="kw">install_github</span>(<span class="st">"thiloklein/ma
 <li><p><code>ttc2</code>: Top-Trading-Cycles Algorithm for a two sided matching problem.</p></li>
 <li><p><code>ttcc</code>: Top-Trading-Cycles and Chains Algorithm for the kidney exchange problem.</p></li>
 </ul>
-<p>Functions <code>hri</code> and <code>sri</code> are based on Patrick Prosser’s n-ary <a href="http://www.dcs.gla.ac.uk/~pat/roommates/distribution/papers/cpaior2014.pdf">constraint encoding</a> model. They allow for <em>incomplete preference lists</em> (some agents find certain agents unacceptable) and <em>unbalanced instances</em> (unequal number of agents on both sides).</p>
+<p>Functions <code>hri</code> and <code>sri</code> are based on Patrick Prosser’s n-ary <a href="https://arxiv.org/abs/1308.0183">constraint encoding</a> model. They allow for <em>incomplete preference lists</em> (some agents find certain agents unacceptable) and <em>unbalanced instances</em> (unequal number of agents on both sides).</p>
 </div>
 </div>
   </div>
 
-  <div class="col-md-3" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
@@ -152,15 +151,13 @@ devtools::<span class="kw">install_github</span>(<span class="st">"thiloklein/ma
   </div>
 </div>
 
-
       <footer><div class="copyright">
   <p>Developed by Thilo Klein.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
-
       </footer>
 </div>
 

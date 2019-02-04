@@ -29,18 +29,18 @@
 
 
 
-rsd <- function(nIndividuals = ncol(prefs), nObjects = nrow(prefs) ,prefs, priority, seed = 123, nSlots = rep(1, nObjects)){
-
+rsd <- function(nIndividuals = ncol(prefs), nObjects = nrow(prefs) ,prefs, priority, seed = NULL, nSlots = rep(1, nObjects)){
+  
   if(missing(priority)){
-    if(!missing(seed)){ set.seed(seed) }
+    if(!is.null(seed)){ set.seed(seed) }
     priority <- sample(1:nIndividuals)   # Assign random priority ordering if none is given
   }
-
+  
   #Check dimensions
   if(!(nIndividuals == ncol(prefs) && length(priority)== nIndividuals && length(nSlots)== nObjects)){
     stop('Dimensions do not match')
   }
-
+  
   Res <- data.frame('ind' = NULL, 'obj' = NULL)
   for(i in 1:nIndividuals){
     ind <- priority[i]
@@ -50,7 +50,7 @@ rsd <- function(nIndividuals = ncol(prefs), nObjects = nrow(prefs) ,prefs, prior
       next
     }
     obj <- prefs[,ind][index]
-
+    
     Res <- rbind(Res, data.frame('ind' = ind, 'obj' = obj))
     nSlots[obj] <- nSlots[obj] -1
   }
@@ -58,4 +58,3 @@ rsd <- function(nIndividuals = ncol(prefs), nObjects = nrow(prefs) ,prefs, prior
   rownames(match_return) <- NULL
   return(match_return)
 }
-

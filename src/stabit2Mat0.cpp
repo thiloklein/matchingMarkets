@@ -15,10 +15,12 @@ double exp_rs(double a, double b);
 double truncn2(double mu, double sigma, double lower, double upper);
 
 // [[Rcpp::export]]
-List stabit2Mat1(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Smatchr, 
+List stabit2Mat0(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Smatchr, 
   Rcpp::List Dr, Rcpp::List dr, Rcpp::List Mr, Rcpp::List Hr, arma::colvec nCollegesr, 
   arma::colvec nStudentsr, Rcpp::List CCr, Rcpp::List SSr, Rcpp::List CCmatchr, Rcpp::List SSmatchr,
   Rcpp::List Lr, Rcpp::List studentIdsr, Rcpp::List collegeIdr, 
+  Rcpp::List cbetterr, Rcpp::List cworser, Rcpp::List sbetterr, Rcpp::List sworser,
+  Rcpp::List cbetterNAr, Rcpp::List cworseNAr, Rcpp::List sbetterNAr, Rcpp::List sworseNAr,
   int n, int N, int niter, int T, int thin, bool display_progress = true) {
   
   // ---------------------------------------------
@@ -27,7 +29,7 @@ List stabit2Mat1(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Sm
     
   arma::field<arma::mat> C(T), Cmatch(T), H(T), S(T), Smatch(T), CC(T), SS(T), CCmatch(T), SSmatch(T); 
   arma::field<arma::uvec> L(T), studentIds(N), d(T);
-  arma::field<arma::umat> M(T);
+  arma::field<arma::umat> M(T), cbetter(T), sbetter(T), cworse(T), sworse(T), cbetterNA(T), sbetterNA(T), cworseNA(T), sworseNA(T);
   arma::field<arma::colvec> D(T), collegeId(T); 
 
   for(int i=0; i<T; i++){
@@ -45,6 +47,14 @@ List stabit2Mat1(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Sm
     SSmatch(i) = Rcpp::as<arma::mat>(SSmatchr[i]); 
     L(i) = Rcpp::as<arma::uvec>(Lr[i]);  // uvec is used for logical indexing
     collegeId(i) = Rcpp::as<arma::colvec>(collegeIdr[i]); 
+    cbetter(i) = Rcpp::as<arma::umat>(cbetterr[i]);  // umat is used for logical indexing
+    cworse(i) = Rcpp::as<arma::umat>(cworser[i]);  // umat is used for logical indexing
+    sbetter(i) = Rcpp::as<arma::umat>(sbetterr[i]);  // umat is used for logical indexing
+    sworse(i) = Rcpp::as<arma::umat>(sworser[i]);  // umat is used for logical indexing
+    cbetterNA(i) = Rcpp::as<arma::umat>(cbetterNAr[i]);  // umat is used for logical indexing
+    cworseNA(i) = Rcpp::as<arma::umat>(cworseNAr[i]);  // umat is used for logical indexing
+    sbetterNA(i) = Rcpp::as<arma::umat>(sbetterNAr[i]);  // umat is used for logical indexing
+    sworseNA(i) = Rcpp::as<arma::umat>(sworseNAr[i]);  // umat is used for logical indexing
   }    
   
   for(int i=0; i<N; i++){
@@ -170,6 +180,12 @@ List stabit2Mat1(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Sm
               Vcupperbar = std::min( Vcupperbar, Vc(t)(M(t)(collegeId(t)(j),j)) ); 
             }
             
+            // rank-order-list based bound
+            if(sbetterNA(t)(i,j) == 0){
+              // student j's valuation over the college that j ranks just above college i.
+              Vcupperbar = std::min( Vcupperbar, Vc(t)(M(t)(sbetter(t)(i,j),j)) );
+            }
+            
           } else{  // equilibrium matches
             
             for( int iprime=0; iprime < nColleges(t); iprime++ ){
@@ -188,6 +204,13 @@ List stabit2Mat1(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Sm
                 }  
               }     
             }
+            
+            // rank-order-list based bound
+            if(sworseNA(t)(i,j) == 0){
+              // student j's valuation over the college that j ranks just below college i.
+              Vclowerbar = std::max( Vclowerbar, Vc(t)(M(t)(sworse(t)(i,j),j)) );
+            }
+            
           } // non-equilibrium vs. equilibrium 
           
           if((Vclowerbar != 0) | (Vcupperbar != 0)){ 
@@ -208,6 +231,12 @@ List stabit2Mat1(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Sm
               Vsupperbar = std::min( Vsupperbar, arma::min(Vs(t)(M(t)( iuvec,studentIds(L(t)(i)) ))) ); 
             }
             
+            // rank-order-list based bound
+            if(cbetterNA(t)(i,j) == 0){
+              // college i's valuation over the student that i ranks just above student j.
+              Vsupperbar = std::min( Vsupperbar, Vs(t)(M(t)(i,cbetter(t)(i,j))) );
+            }
+            
           } else{  // equilibrium matches
             
             for( int jprime=0; jprime < nStudents(t); jprime++ ){             
@@ -221,6 +250,12 @@ List stabit2Mat1(Rcpp::List Cr, Rcpp::List Cmatchr, Rcpp::List Sr, Rcpp::List Sm
                   Vslowerbar = std::max( Vslowerbar, Vs(t)(M(t)(i,jprime)) );
                 } 
               } 
+            }
+            
+            // rank-order-list based bound
+            if(cworseNA(t)(i,j) == 0){
+              // college i's valuation over the student that i ranks just below student j.
+              Vslowerbar = std::max( Vslowerbar, Vs(t)(M(t)(i,cworse(t)(i,j))) );
             }
             
           } // non-equilibrium vs. equilibrium 

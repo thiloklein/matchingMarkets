@@ -1,10 +1,22 @@
 
-# matchingMarkets 0.3-6
+# matchingMarkets 1.0-1
 
 Please note that only the most significant changes are reported here.
 A full ChangeLog is available in the log messages of the SVN repository
 on [R-Forge](https://r-forge.r-project.org/scm/viewvc.php/?root=matchingmarkets)
 and on [GitHub](https://github.com/thiloklein/matchingMarkets).
+
+This is a minor update
+
+* Added data generating function for exploded logit in `mlogit.data`.
+
+# matchingMarkets 1.0-0
+
+This is a major update
+
+* Finalised estimators in `stabit2` function, as well as algorithms in `hri` and `hri2` for two-sided matching markets.
+
+# matchingMarkets 0.3-6
 
 This is a minor update
 
@@ -21,7 +33,7 @@ This is a minor update
 This is a minor update
 
 * Implemented multi-core parrallel processing for estimators in function `stabit2`, which can be specified using the `nCores` argument.
-* Updated immediate acceptance algorithm `iaa` and top-trading-cycles `ttc` functions. Thanks to [Sándor Sóvágó](http://www.tinbergen.nl/phd-student/sandor-s-sovago-2/) at Tinbergen Institute and [Kevin Breuer](http://economicdesign.uni-koeln.de/en/home/researchers/kevin-breuer/) at University of Cologne for the reports.
+* Updated immediate acceptance algorithm `iaa` and top-trading-cycles `ttc` functions. Thanks to Sándor Sóvágó at Tinbergen Institute and Kevin Breuer at University of Cologne for the reports.
 
 # matchingMarkets 0.3-1
 
@@ -56,7 +68,7 @@ This is a major update
 
 This is a minor update.
 
-* Fixed `daa` function for college admissions problems when number of students exceeds number of colleges. Thanks to [Jan Tilly](http://jtilly.io/) at University of Pennsylvania for the report.
+* Fixed `daa` function for college admissions problems when number of students exceeds number of colleges. Thanks to Jan Tilly at University of Pennsylvania for the report.
 
 # matchingMarkets 0.1-1
 

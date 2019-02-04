@@ -6,8 +6,8 @@
 #'
 #' @param nPatients integer indicating the number of patient/donor-pairs in the matching problem. Defaults to  \code{ncol(prefs)}.
 #' @param prefs matrix of dimension (\code{nPatients} + 1) x \code{nPatients} with column j containg patients jth ranking over kidneys in decreasing order of preferences (i.e. most preferred first). An entry with value (\code{nPatients} +1) indicates that the patient prefers the waiting list to all kidney below in his ranking (therefore they do not matter and can be neglected/NA).
-#' @param priority (Optional) Vector of length \code{nPatients}. Gives the prioirty ordering of the patient, if nothing is specified a random ordering is chosen.
-#' @param seed (Optional) integer setting the state for random number generation. Defaults to seed = 123.
+#' @param priority (Optional) vector of length \code{nStudents}. Gives the prioirity ordering of the students in the search for cycles (Do not confuse it with the preferences!), if nothing is specified a random ordering is chosen.
+#' @param seed (Optional) integer setting the state for random number generation. Defaults to seed = NULL
 #'
 #' @export
 #'
@@ -16,7 +16,7 @@
 #' @keywords algorithms
 #' @references Roth, A.; T. Sonmez; U. Unver (2004). Kidney Exchange. \emph{Quarterly Journal of Economics}, 119 (2): 457-488.
 #' @examples
-#' \dontrun{
+#' ##\dontrun{
 #' ## Compare Example 1 from Roth et al. (2004) on page 469 - 475
 #' ## generate matrix of patients' preference rankings over kidneys, a.k.a. Rank Order Lists (ROL)
 #'
@@ -37,25 +37,25 @@
 #' ttcc(prefs = prefs, priority = priority)
 #' ## The final matching differs slightly because in Round 3 another chain is chosen due to a different
 #' ## decision rule (compare Figure 3, p472. Here W1 instead of W2 is chosen)
-#' }
+#' ##}
 
-ttcc <- function(nPatients = ncol(prefs), prefs, priority = NULL, seed = 123){
+ttcc <- function(nPatients = ncol(prefs), prefs, priority = NULL, seed = NULL){
   # Chain Rule:   Searches for the longest chain and removes it from the problem (even the first kidney which was unassigned)
-
+  
   if(missing(priority)){
     set.seed(seed)
     priority = sample(1:nPatients)
   }
   prefs <- prefs[, priority]
-
+  
   Res <- data.frame('ind' = NULL, 'obj' = NULL)
   matched_kid <- rep(FALSE, nPatients+1)
   waiting_list <- rep(FALSE, nPatients+1)
-
+  
   while(!all(matched_kid | append(waiting_list[1:(length(waiting_list)-1)], TRUE))){   # The last entry of the waiting list has to be changed to true, to avoid an infinite loop
-
+    
     cycle_chain <- find_cycle_chain(prefs, matched_kid, waiting_list, priority)
-
+    
     if(cycle_chain$type == 'cycle'){
       #Update Result
       Res <- rbind(Res, cycle_chain$obj )
@@ -64,15 +64,15 @@ ttcc <- function(nPatients = ncol(prefs), prefs, priority = NULL, seed = 123){
     }
     if(cycle_chain$type == 'chain'){   #Only a chain was found
       chain <- cycle_chain$obj
-
+      
       # Last individual on the wating list
       last <- tail(chain[,1],1)
       waiting_list[last] <- TRUE
-
+      
       if(dim(chain)[1] > 1){
         # Update matchings of the chain:
         other <- chain[1:(dim(chain)[1]-1),]
-
+        
         Res <- rbind(Res, other)
         matched_kid[other[,1]] <- TRUE
       }
@@ -92,18 +92,18 @@ find_cycle_chain <- function(prefs, matched, waiting_list, priority){
   # If a cycle is found, return it and stop
   # If a chain is found, check if it is longer than all previous found chains, and start with the next individual and try to find a longer chain
   # Return the cycle or the longest chain as the second element of a list, first element indicates whether it is a cycle or chain
-
+  
   nPatients <- dim(prefs)[2]
-
+  
   Chain <- data.frame('ind' = NA, 'obj' = NA)
   for(k in priority){
-
+    
     this_ind <- k
     # Go through priority list until we have a unmatched individuum that is not already on the waiting list
     if(matched[this_ind] == TRUE | waiting_list[this_ind] == TRUE){ next }
-
+    
     Cycle <- data.frame('ind' = NA, 'obj' = NA)
-
+    
     for(i in 1:nPatients){
       wanted_kidney_index <- match(FALSE, matched[prefs[,this_ind]] | waiting_list[prefs[,this_ind]])
       if(is.na(wanted_kidney_index)){
@@ -113,9 +113,9 @@ find_cycle_chain <- function(prefs, matched, waiting_list, priority){
         stop('NO MATCH FOUND')
       }
       wanted_kidney <- prefs[,this_ind][wanted_kidney_index]
-
+      
       Cycle[i,] <- c(this_ind, wanted_kidney)
-
+      
       # Patient points to the waiting list -> Chain
       if(wanted_kidney == (nPatients+1)){
         # Is it a longer chain?
@@ -124,9 +124,9 @@ find_cycle_chain <- function(prefs, matched, waiting_list, priority){
         }
         break
       }
-
+      
       this_ind <- wanted_kidney
-
+      
       if(this_ind %in% Cycle$ind){
         h <- which(this_ind == Cycle$ind)
         Result <- list('type' = 'cycle', 'obj' = Cycle[h:length(Cycle$ind),])
@@ -138,4 +138,3 @@ find_cycle_chain <- function(prefs, matched, waiting_list, priority){
   Result <- list('type' = 'chain', 'obj' = Chain)
   return(Result)
 }
-

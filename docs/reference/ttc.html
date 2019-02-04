@@ -8,20 +8,18 @@
 
 <title>Top-Trading-Cycles Algorithm with existing tenants — ttc • matchingMarkets</title>
 
-<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
-
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
 <!-- sticky kit -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
@@ -41,7 +39,8 @@ house allocation problem proposed by Abdulkadiroglu and Sonmez (1999) for a matc
 
 
 <!-- mathjax -->
-<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -65,7 +64,7 @@ house allocation problem proposed by Abdulkadiroglu and Sonmez (1999) for a matc
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">matchingMarkets</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
       </span>
     </div>
 
@@ -111,19 +110,19 @@ house allocation problem proposed by Abdulkadiroglu and Sonmez (1999) for a matc
     
     </div>
 
-    <pre class="usage"><span class='fu'>ttc</span>(<span class='kw'>nStudents</span> <span class='kw'>=</span> <span class='fu'>ncol</span>(<span class='no'>s.prefs</span>), <span class='kw'>nHouses</span> <span class='kw'>=</span> <span class='fu'>length</span>(<span class='no'>houses</span>), <span class='no'>s.prefs</span>,
-  <span class='no'>houses</span>, <span class='kw'>priority</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>123</span>)</pre>
+    <pre class="usage"><span class='fu'>ttc</span>(<span class='kw'>nStudents</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>s.prefs</span>), <span class='kw'>nHouses</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/length'>length</a></span>(<span class='no'>houses</span>), <span class='no'>s.prefs</span>,
+  <span class='no'>houses</span>, <span class='kw'>priority</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>nStudents</th>
-      <td><p>integer indicating the number of students. Defaults to <code>ncol(s.prefs)</code>.</p></td>
+      <td><p>integer indicating the number of students. Defaults to <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(s.prefs)</a></code>.</p></td>
     </tr>
     <tr>
       <th>nHouses</th>
-      <td><p>integer indicating the number of houses. Defaults to <code>length(houses)</code>.</p></td>
+      <td><p>integer indicating the number of houses. Defaults to <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(houses)</a></code>.</p></td>
     </tr>
     <tr>
       <th>s.prefs</th>
@@ -135,11 +134,11 @@ house allocation problem proposed by Abdulkadiroglu and Sonmez (1999) for a matc
     </tr>
     <tr>
       <th>priority</th>
-      <td><p>(Optional) vector of length <code>nStudents</code>. Gives the prioirity ordering of the students, if nothing is specified a random ordering is chosen.</p></td>
+      <td><p>(Optional) vector of length <code>nStudents</code>. Gives the prioirity ordering of the students in the search for cycles (Do not confuse it with the preferences!), if nothing is specified a random ordering is chosen.</p></td>
     </tr>
     <tr>
       <th>seed</th>
-      <td><p>(Optional) integer setting the state for random number generation. Defaults to seed =123.</p></td>
+      <td><p>(Optional) integer setting the state for random number generation. Defaults to seed = NULL</p></td>
     </tr>
     </table>
     
@@ -154,41 +153,59 @@ house allocation problem proposed by Abdulkadiroglu and Sonmez (1999) for a matc
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
+    <pre class="examples"><div class='input'><span class='co'>##\dontrun{</span>
 <span class='co'>## 1-a. Generate matrix of individuals' preference rankings over objects,</span>
 <span class='co'>## a.k.a. Rank Order Lists (ROL).</span>
-<span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>4</span>,<span class='fl'>1</span>,        <span class='co'># ROL of student 1</span>
+<span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>4</span>,<span class='fl'>1</span>,        <span class='co'># ROL of student 1</span>
                    <span class='fl'>3</span>,<span class='fl'>5</span>,<span class='fl'>6</span>, <span class='fl'>NA</span>,
                    <span class='fl'>3</span>,<span class='fl'>1</span>, <span class='fl'>NA</span>,<span class='fl'>NA</span>,
                    <span class='fl'>2</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>4</span>,
                    <span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>NA</span>,
-                   <span class='fl'>2</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>6</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>); <span class='no'>s.prefs</span>
-
+                   <span class='fl'>2</span>,<span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>6</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>); <span class='no'>s.prefs</span></div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6]
+#&gt; [1,]    3    3    3    2    1    2
+#&gt; [2,]    2    5    1    5    3    4
+#&gt; [3,]    4    6   NA    6    2    5
+#&gt; [4,]    1   NA   NA    4   NA    6</div><div class='input'>
 <span class='co'>## 1-b. Generate vector of house occupation objects ('obj') and their owners ('ind')</span>
-(<span class='no'>houses</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fl'>6</span>)
-
+(<span class='no'>houses</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fl'>6</span>)</div><div class='output co'>#&gt; [1] 1 2 3 4 5 6</div><div class='input'>
 <span class='co'>## 1-c. Find assignment based on TTC algorithm</span>
-<span class='fu'>ttc</span>(<span class='kw'>s.prefs</span> <span class='kw'>=</span> <span class='no'>s.prefs</span>, <span class='kw'>houses</span> <span class='kw'>=</span> <span class='no'>houses</span>, <span class='kw'>nHouses</span> <span class='kw'>=</span> <span class='fl'>6</span>, <span class='kw'>priority</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>6</span>)
-
+<span class='fu'>ttc</span>(<span class='kw'>s.prefs</span> <span class='kw'>=</span> <span class='no'>s.prefs</span>, <span class='kw'>houses</span> <span class='kw'>=</span> <span class='no'>houses</span>, <span class='kw'>nHouses</span> <span class='kw'>=</span> <span class='fl'>6</span>, <span class='kw'>priority</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>6</span>)</div><div class='output co'>#&gt;    ind obj
+#&gt; 1    1   2
+#&gt; 21   2   5
+#&gt; 2    3   3
+#&gt; 11   4   6
+#&gt; 3    5   1
+#&gt; 22   6   4</div><div class='input'>
 <span class='co'>## 2-a.Compare the example in the paper Abdulkadiroglu et al. (1999)</span>
 <span class='co'>## on page 246-248 (section 5.1 An Example):</span>
 <span class='co'>## generate matrix of students' preference rankings over houses, a.k.a. Rank Order Lists (ROL)</span>
-<span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>2</span>,<span class='fl'>6</span>,<span class='fl'>5</span>,<span class='fl'>1</span>,<span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>7</span>,<span class='fl'>NA</span>,
+<span class='no'>s.prefs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>6</span>,<span class='fl'>5</span>,<span class='fl'>1</span>,<span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>7</span>,<span class='fl'>NA</span>,
                  <span class='fl'>7</span>,<span class='fl'>1</span>,<span class='fl'>6</span>,<span class='fl'>5</span>,<span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>NA</span>,
                  <span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>4</span>,<span class='fl'>7</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>5</span>,<span class='fl'>NA</span>,
                  <span class='fl'>2</span>,<span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>1</span>,<span class='fl'>7</span>,<span class='fl'>5</span>,<span class='fl'>NA</span>,
-                 <span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>7</span>,<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>NA</span>), <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ncol</span><span class='kw'>=</span> <span class='fl'>5</span>); <span class='no'>s.prefs</span>
-
+                 <span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>7</span>,<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>5</span>,<span class='fl'>6</span>,<span class='fl'>NA</span>), <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ncol</span><span class='kw'>=</span> <span class='fl'>5</span>); <span class='no'>s.prefs</span></div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5]
+#&gt; [1,]    2    7    2    2    4
+#&gt; [2,]    6    1    1    4    3
+#&gt; [3,]    5    6    4    3    7
+#&gt; [4,]    1    5    7    6    1
+#&gt; [5,]    4    4    3    1    2
+#&gt; [6,]    3    3    6    7    5
+#&gt; [7,]    7    2    5    5    6
+#&gt; [8,]   NA   NA   NA   NA   NA</div><div class='input'>
 <span class='co'>## 2-b. Generate house occupation, so student 1 lives in house 1, ..., student 4 lives in house 4</span>
 <span class='co'>## and the other houses are vacant.</span>
-<span class='no'>houses</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>); <span class='no'>houses</span>
-
+<span class='no'>houses</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>,<span class='fl'>NA</span>); <span class='no'>houses</span></div><div class='output co'>#&gt; [1]  1  2  3  4 NA NA NA NA</div><div class='input'>
 <span class='co'>## 2-c. Generate priority ordering</span>
 <span class='no'>priority</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fl'>5</span>
 
 <span class='co'>## 2-d. Find assigment</span>
-<span class='fu'>ttc</span>(<span class='kw'>s.prefs</span> <span class='kw'>=</span> <span class='no'>s.prefs</span>, <span class='kw'>houses</span> <span class='kw'>=</span> <span class='no'>houses</span>, <span class='kw'>priority</span> <span class='kw'>=</span> <span class='no'>priority</span>)
-<span class='co'># }</span></pre>
+<span class='fu'>ttc</span>(<span class='kw'>s.prefs</span> <span class='kw'>=</span> <span class='no'>s.prefs</span>, <span class='kw'>houses</span> <span class='kw'>=</span> <span class='no'>houses</span>, <span class='kw'>priority</span> <span class='kw'>=</span> <span class='no'>priority</span>)</div><div class='output co'>#&gt;   ind obj
+#&gt; 1   1   2
+#&gt; 2   2   7
+#&gt; 3   3   1
+#&gt; 4   4   4
+#&gt; 5   5   3</div><div class='input'>##}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -203,9 +220,7 @@ house allocation problem proposed by Abdulkadiroglu and Sonmez (1999) for a matc
     </ul>
 
     <h2>Author</h2>
-    
-Thilo Klein, Alexander Sauer
-
+    <p>Thilo Klein, Alexander Sauer</p>
   </div>
 </div>
 
@@ -215,9 +230,8 @@ Thilo Klein, Alexander Sauer
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
-
       </footer>
    </div>
 
