@@ -148,7 +148,7 @@ hri2.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlot
     if(check_consistency){consistency_check(s.prefs, c.prefs, co.prefs)}
     
     #Check if the co.prefs matrix represents real couples or preferences over two subjects
-    kurs_pref <- all(co.prefs[,1] == co.prefs[,2])
+    kurs_pref <- ifelse(is.null(co.prefs), FALSE, all(co.prefs[,1] == co.prefs[,2]))
     
     # All student names (single + couples)
     # If the couples preferences are no real couples, the name of the person is duplicated
@@ -192,20 +192,25 @@ hri2.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlot
     rownames(c.prefs) <- NULL
     
     ## Couples prefs
-    co.prefs <- sapply(1:4,  function(col){
-      pref <- co.prefs[,col]
-      if(col <= 2){
-        if(kurs_pref && col == 2){ # If the co.prefs correspond to one individual, then use that the second column is the same individual with the ID + 1
-          return(s.names[pref] + 1)
+    if(!is.null(co.prefs)){
+      
+      co.prefs <- sapply(1:4,  function(col){
+        pref <- co.prefs[,col]
+        if(col <= 2){
+          if(kurs_pref && col == 2){ # If the co.prefs correspond to one individual, then use that the second column is the same individual with the ID + 1
+            return(s.names[pref] + 1)
+          }
+          return(s.names[pref])
         }
-        return(s.names[pref])
-      }
-      else{
-        return(c.names[pref])
-      }
-    })
-    colnames(co.prefs) <- NULL
-    rownames(co.prefs) <- NULL
+        else{
+          return(c.names[pref])
+        }
+      })
+      colnames(co.prefs) <- NULL
+      rownames(co.prefs) <- NULL
+      
+    }
+
   }
   ######## Transformation of characters prefs finished.
   

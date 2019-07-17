@@ -242,13 +242,19 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
       warning(missing_college)
       
       # Delete the preference entries that refer to non existing columns in the c.pref matrix:
-      
-      s.prefs <- sapply(s.names, function(z){
+      cleaned_pref <- matrix(nrow = nrow(s.prefs), ncol = ncol(s.prefs)) # It is not possible to use an apply function, since we also want to handle the case if one dimension is 1
+      for(k in 1:length(s.names)){
+        z <- s.names[k]
         x <- c(na.omit(s.prefs[,z]))
-        if(length(x) == 0) return(rep(NA, length(s.prefs[,z])))
-        y <- sapply(x, function(i) i %in% colnames(c.prefs))
-        return( c(x[y], rep(NA,nrow(s.prefs)-length(x[y]))) )
-      })
+        if(length(x) == 0){
+          cleaned_pref[,k]<- rep(NA, length(s.prefs[,z]))
+        } else {
+          y <- sapply(x, function(i) i %in% colnames(c.prefs))
+          cleaned_pref[,k]<- c(x[y], rep(NA,nrow(s.prefs)-length(x[y]))) 
+        }  
+      }
+      colnames(cleaned_pref) <- s.names
+      s.prefs <- cleaned_pref
       
     }
     
@@ -260,13 +266,23 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
       missing_stud <- paste('A course/college ranked a student (named ', missing_stud, ') that has no ranking.  This preference entries will be deleted! \n', sep = '')
       warning(missing_stud)
     }
+    
     # Delete the preference entries that refer to non existing columns in the s.pref matrix:
-    c.prefs <- sapply(c.names, function(z){
+    cleaned_pref <- matrix(nrow = nrow(c.prefs), ncol = ncol(c.prefs)) # It is not possible to use an apply function, since we also want to handle the case if one dimension is 1
+    for(k in 1:length(c.names)){
+      z <- c.names[k]
       x <- c(na.omit(c.prefs[,z]))
-      if(length(x) == 0) return(rep(NA, length(c.prefs[,z])))
-      y <- sapply(x, function(i) i %in% colnames(s.prefs))
-      return( c(x[y], rep(NA,nrow(c.prefs)-length(x[y]))) )
-    })
+      if(length(x) == 0){
+        cleaned_pref[,k]<- rep(NA, length(c.prefs[,z]))
+      } else {  
+        y <- sapply(x, function(i) i %in% colnames(s.prefs))
+        cleaned_pref[,k]<- c(x[y], rep(NA,nrow(c.prefs)-length(x[y]))) 
+      }
+    }
+    colnames(cleaned_pref) <- c.names
+    c.prefs <- cleaned_pref
+    cleaned_pref <- NULL
+    
     #print('Input passed consistency test!')
   }
   
@@ -300,22 +316,39 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
   ## --- 2-b. Make prefs consistent and map names to IDs---
   
   # Drop make preferences consistent and drop NA columns
-
-  # Check prefs for mutual consistency and delete all unneccessary entries
-  c.prefs <- sapply(c.names, function(z){
-    x <- c(na.omit(c.prefs[,z]))
-    if(length(x) == 0) return(rep(NA, length(c.prefs[,z])))
-    y <- sapply(x, function(i) z %in% s.prefs[,i])
-    return( c(x[y], rep(NA,nrow(c.prefs)-length(x[y]))) )
-  })
-  s.prefs <- sapply(s.names, function(z){
-    x <- c(na.omit(s.prefs[,z]))
-    if(length(x) == 0) return(rep(NA, length(s.prefs[,z])))
-    y <- sapply(x, function(i) z %in% c.prefs[,i])
-    return( c(x[y], rep(NA,nrow(s.prefs)-length(x[y]))) )
-  })
   
+  # Check prefs for mutual consistency and delete all unneccessary entries
+  cleaned_pref <- matrix(nrow = nrow(c.prefs), ncol = ncol(c.prefs)) # It is not possible to use an apply function, since we also want to handle the case if one dimension is 1
+  for(k in 1:length(c.names)){
+    z <- c.names[k]
+    x <- c(na.omit(c.prefs[,z]))
+    if(length(x) == 0){
+      cleaned_pref[,k]<- rep(NA, length(c.prefs[,z]))
+    } else {
+    y <- sapply(x, function(i) z %in% s.prefs[,i])
+    cleaned_pref[,k]<- c(x[y], rep(NA,nrow(c.prefs)-length(x[y]))) 
+    }
+  }
+  colnames(cleaned_pref) <- c.names
+  c.prefs <- cleaned_pref
 
+  
+  cleaned_pref <- matrix(nrow = nrow(s.prefs), ncol = ncol(s.prefs)) # It is not possible to use an apply function, since we also want to handle the case if one dimension is 1
+  for(k in 1:length(s.names)){
+    z <- s.names[k]
+    x <- c(na.omit(s.prefs[,z]))
+    if(length(x) == 0){
+      cleaned_pref[,k] <-(rep(NA, length(s.prefs[,z])))
+    } else {
+      y <- sapply(x, function(i)  z %in% c.prefs[,i])
+      cleaned_pref[,k]<- c(x[y], rep(NA,nrow(s.prefs)-length(x[y])))
+    }
+  }
+  colnames(cleaned_pref) <- s.names
+  s.prefs <- cleaned_pref
+  cleaned_pref <- NULL
+  
+  
   # drop columns that contain only missings and update nSlots!
   drop <- which( apply(s.prefs, 2, function(z) all(is.na(z))))
   if( length(drop)>0 ){
@@ -337,8 +370,10 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
   # Probably this should be done regardless of the type of prefs (numeric or character)
   # since even in the numeric case the column numbers might not correspond to the ids since some
   # columns might have been deleted (only nas after mutually consistent)
-
-  # Replace college/student names with ids
+  
+  
+  
+  ##### Replace college/student names with ids
   
   # Save prefs
   s.prefs_named <-  s.prefs;
@@ -352,17 +387,23 @@ hri.default <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots
   s.names <-  s.names
   c.names <-  c.names
   
-  s.prefs <- apply(s.prefs, 2, function(pref){
-    c.names[as.character(pref)]
-  })
-  colnames(s.prefs) <- s.names[colnames(s.prefs)]
-  s.prefs <-  s.prefs
+  # It is not possible to use an apply function, since we also want to handle the case if one dimension is 1
+  conv_prefs <- matrix(nrow = nrow(s.prefs), ncol = ncol(s.prefs))
+  for(k in 1:ncol(s.prefs)){
+    conv_prefs[,k] <- c.names[as.character(s.prefs[,k])]
+  }
+  colnames(conv_prefs) <-  s.names[colnames(s.prefs)]
+  s.prefs <- conv_prefs
   
-  c.prefs <- apply(c.prefs, 2, function(pref){
-    s.names[as.character(pref)]
-  })
-  colnames(c.prefs) <- c.names[colnames(c.prefs)]
-  c.prefs <-  c.prefs
+  # It is not possible to use an apply function, since we also want to handle the case if one dimension is 1
+  conv_prefs <- matrix(nrow = nrow(c.prefs), ncol = ncol(c.prefs))
+  for(k in 1:ncol(c.prefs)){
+    conv_prefs[,k] <- s.names[as.character(c.prefs[,k])]
+  }
+  colnames(conv_prefs) <-  c.names[colnames(c.prefs)]
+  c.prefs <- conv_prefs
+  conv_prefs <- NULL
+  
   
   ###############################################################  
   #print('Section 3')
@@ -616,5 +657,4 @@ plot.hri <- function(x, energy=FALSE, ...){
   par(mar=c(5.1, 4.1, 4.1, 2.1)) 
   
 }
-
 

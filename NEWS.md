@@ -1,5 +1,5 @@
 
-# matchingMarkets 1.0-1
+# matchingMarkets 1.0-2
 
 Please note that only the most significant changes are reported here.
 A full ChangeLog is available in the log messages of the SVN repository
@@ -8,7 +8,11 @@ and on [GitHub](https://github.com/thiloklein/matchingMarkets).
 
 This is a minor update
 
-* Added data generating function for exploded logit in `mlogit.data`.
+# matchingMarkets 1.0-1
+
+This is a minor update
+
+* Added data generating function for exploded logit in `xlogit.data`.
 
 # matchingMarkets 1.0-0
 
