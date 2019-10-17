@@ -35,7 +35,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 #include <problem.h>
 #include <params.h>
-#include <io.h>
+#include <mmio.h>
 #include <rcp.h>
 #include <list>
 
