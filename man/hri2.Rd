@@ -4,11 +4,19 @@
 \alias{hri2}
 \title{Resident-optimal matching in the hospital/residents problem with couples}
 \usage{
-hri2(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
-  nSlots = rep(1, nColleges), nCouples = ncol(co.prefs),
-  s.prefs = NULL, c.prefs = NULL, co.prefs = NULL,
-  randomization = "multiple", seed = NULL, check_consistency = TRUE,
-  ...)
+hri2(
+  nStudents = ncol(s.prefs),
+  nColleges = ncol(c.prefs),
+  nSlots = rep(1, nColleges),
+  nCouples = ncol(co.prefs),
+  s.prefs = NULL,
+  c.prefs = NULL,
+  co.prefs = NULL,
+  randomization = "multiple",
+  seed = NULL,
+  check_consistency = TRUE,
+  ...
+)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem) 
@@ -125,5 +133,4 @@ Kojima, F., Pathak, P. A., & Roth, A. E. (2013). Matching with couples: Stabilit
 \author{
 Sven Giegerich, Thilo Klein
 }
-\keyword{algorithms,}
-\keyword{matching}
+\keyword{algorithms}

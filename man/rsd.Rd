@@ -4,8 +4,14 @@
 \alias{rsd}
 \title{Random serial dictatorship mechanism}
 \usage{
-rsd(nIndividuals = ncol(prefs), nObjects = nrow(prefs), prefs,
-  priority, seed = NULL, nSlots = rep(1, nObjects))
+rsd(
+  nIndividuals = ncol(prefs),
+  nObjects = nrow(prefs),
+  prefs,
+  priority,
+  seed = NULL,
+  nSlots = rep(1, nObjects)
+)
 }
 \arguments{
 \item{nIndividuals}{integer indicating the number of individuals in the matching problem. Defaults to ncol(prefs).}

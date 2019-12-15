@@ -151,6 +151,7 @@ iaa <- function(nStudents=ncol(s.prefs), nColleges=ncol(c.prefs), nSlots=rep(1,n
     
     # Dont approach college 0 since it means that the student prefers to stay unmatched
     approached <- approached[!approached == 0]
+    approached <- approached[!is.na(approached)]
     
     s.singles  <- sort(s.singles[!s.singles %in% temp.singles])  # reset unassigned students, except for singles who already used up all offers
     

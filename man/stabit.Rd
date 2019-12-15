@@ -4,12 +4,30 @@
 \alias{stabit}
 \title{Matching model and selection correction for group formation}
 \usage{
-stabit(x, m.id = "m.id", g.id = "g.id", R = "R", selection = NULL,
-  outcome = NULL, simulation = "none", seed = 123, max.combs = Inf,
-  method = "NTU", binary = FALSE, offsetOut = 0, offsetSel = 0,
-  marketFE = FALSE, censored = 0, gPrior = FALSE, dropOnes = FALSE,
-  interOut = 0, interSel = 0, standardize = 0, niter = 10,
-  verbose = FALSE)
+stabit(
+  x,
+  m.id = "m.id",
+  g.id = "g.id",
+  R = "R",
+  selection = NULL,
+  outcome = NULL,
+  simulation = "none",
+  seed = 123,
+  max.combs = Inf,
+  method = "NTU",
+  binary = FALSE,
+  offsetOut = 0,
+  offsetSel = 0,
+  marketFE = FALSE,
+  censored = 0,
+  gPrior = FALSE,
+  dropOnes = FALSE,
+  interOut = 0,
+  interSel = 0,
+  standardize = 0,
+  niter = 10,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{x}{data frame with individual-level characteristics of all group members including

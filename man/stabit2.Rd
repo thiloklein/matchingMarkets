@@ -4,9 +4,21 @@
 \alias{stabit2}
 \title{Matching model and selection correction for college admissions}
 \usage{
-stabit2(OUT = NULL, SEL = NULL, colleges = NULL, students = NULL,
-  outcome = NULL, selection, binary = FALSE, niter, gPrior = FALSE,
-  censored = 1, thin = 1, nCores = max(1, detectCores() - 1), ...)
+stabit2(
+  OUT = NULL,
+  SEL = NULL,
+  colleges = NULL,
+  students = NULL,
+  outcome = NULL,
+  selection,
+  binary = FALSE,
+  niter,
+  gPrior = FALSE,
+  censored = 1,
+  thin = 1,
+  nCores = max(1, detectCores() - 1),
+  ...
+)
 }
 \arguments{
 \item{OUT}{data frame with characteristics of all observed matches, including

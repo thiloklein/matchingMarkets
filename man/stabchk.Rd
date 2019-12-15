@@ -4,8 +4,13 @@
 \alias{stabchk}
 \title{Stability-Check}
 \usage{
-stabchk(matching, c.prefs, s.prefs, nColleges = ncol(c.prefs),
-  nStudents = ncol(s.prefs))
+stabchk(
+  matching,
+  c.prefs,
+  s.prefs,
+  nColleges = ncol(c.prefs),
+  nStudents = ncol(s.prefs)
+)
 }
 \arguments{
 \item{matching}{data frame or matrix of dimension (\code{min[nColleges, nStudents]}) x 2 containing in column 1 the colleges and in column 2 the students with each row forming a couple.}

@@ -4,9 +4,16 @@
 \alias{iaa}
 \title{Immediate Acceptance Algorithm (a.k.a. Boston mechanism) for two-sided matching markets}
 \usage{
-iaa(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
-  nSlots = rep(1, nColleges), s.prefs = NULL, c.prefs = NULL,
-  acceptance = "immediate", short_match = TRUE, seed = NULL)
+iaa(
+  nStudents = ncol(s.prefs),
+  nColleges = ncol(c.prefs),
+  nSlots = rep(1, nColleges),
+  s.prefs = NULL,
+  c.prefs = NULL,
+  acceptance = "immediate",
+  short_match = TRUE,
+  seed = NULL
+)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem)

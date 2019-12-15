@@ -4,10 +4,21 @@
 \alias{xlogit.data}
 \title{data.frame for exploded logit model}
 \usage{
-xlogit.data(data, choice, shape = c("wide", "long"), varying = NULL,
-  sep = ".", alt.var = NULL, chid.var = NULL, alt.levels = NULL,
-  id.var = NULL, opposite = NULL, drop.index = FALSE,
-  ranked = FALSE, ...)
+xlogit.data(
+  data,
+  choice,
+  shape = c("wide", "long"),
+  varying = NULL,
+  sep = ".",
+  alt.var = NULL,
+  chid.var = NULL,
+  alt.levels = NULL,
+  id.var = NULL,
+  opposite = NULL,
+  drop.index = FALSE,
+  ranked = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{a data.frame}

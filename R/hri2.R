@@ -51,7 +51,7 @@
 #' 
 #' @author Sven Giegerich, Thilo Klein
 #' 
-#' @keywords algorithms, matching
+#' @keywords algorithms
 #' 
 #' @references Bacchus, F. (2018). Stable matching suite. GitHub repository.
 #' 

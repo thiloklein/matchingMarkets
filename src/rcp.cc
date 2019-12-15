@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ***********/
 #include <algorithm>
 #include <rcp.h>
-#include <io.h>
+#include <mmio.h>
 //using std::cout;
 //using std::cerr;
 using std::ostream;

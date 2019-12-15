@@ -35,7 +35,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "problem.h"
 #include "System.h"
-#include "io.h"
+#include "mmio.h"
 
 using std::ostream;
 using std::cout;

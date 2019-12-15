@@ -4,9 +4,16 @@
 \alias{ttc2}
 \title{Top-Trading-Cycles Algorithm for a two sided matching problem}
 \usage{
-ttc2(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
-  s.prefs = NULL, c.prefs = NULL, nSlots = NULL, priority = NULL,
-  seed = NULL, full_return = FALSE)
+ttc2(
+  nStudents = ncol(s.prefs),
+  nColleges = ncol(c.prefs),
+  s.prefs = NULL,
+  c.prefs = NULL,
+  nSlots = NULL,
+  priority = NULL,
+  seed = NULL,
+  full_return = FALSE
+)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students in the matching problem. Defaults to \code{ncol(s.prefs)}.}

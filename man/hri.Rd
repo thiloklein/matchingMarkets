@@ -4,10 +4,19 @@
 \alias{hri}
 \title{All stable matchings in the hospital/residents problem with incomplete lists}
 \usage{
-hri(nStudents = ncol(s.prefs), nColleges = ncol(c.prefs),
-  nSlots = rep(1, nColleges), s.prefs = NULL, c.prefs = NULL,
-  s.range = NULL, c.range = NULL, randomization = NULL,
-  seed = NULL, check_consistency = TRUE, ...)
+hri(
+  nStudents = ncol(s.prefs),
+  nColleges = ncol(c.prefs),
+  nSlots = rep(1, nColleges),
+  s.prefs = NULL,
+  c.prefs = NULL,
+  s.range = NULL,
+  c.range = NULL,
+  randomization = NULL,
+  seed = NULL,
+  check_consistency = TRUE,
+  ...
+)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students (in the college admissions problem) 

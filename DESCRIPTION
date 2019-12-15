@@ -42,5 +42,5 @@ URL: http://matchingMarkets.org,
     http://klein.uk
 BugReports: https://github.com/thiloklein/matchingMarkets/issues
 License: GPL (>= 2)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Encoding: UTF-8

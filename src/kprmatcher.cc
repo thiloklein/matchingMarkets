@@ -37,7 +37,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 
 #include <params.h>
-#include <io.h>
+#include <mmio.h>
 #include <kprmatcher.h>
 #include <System.h>
 

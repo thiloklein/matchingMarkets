@@ -4,8 +4,14 @@
 \alias{ttc}
 \title{Top-Trading-Cycles Algorithm with existing tenants}
 \usage{
-ttc(nStudents = ncol(s.prefs), nHouses = length(houses), s.prefs,
-  houses, priority = NULL, seed = NULL)
+ttc(
+  nStudents = ncol(s.prefs),
+  nHouses = length(houses),
+  s.prefs,
+  houses,
+  priority = NULL,
+  seed = NULL
+)
 }
 \arguments{
 \item{nStudents}{integer indicating the number of students. Defaults to \code{ncol(s.prefs)}.}
